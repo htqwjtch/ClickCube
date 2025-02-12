@@ -72,44 +72,42 @@ impl Cube {
             self.up = self.rotate_side_clockwise(self.rotate_side_clockwise(self.up.clone()));
             self.down = self.rotate_side_clockwise(self.rotate_side_clockwise(self.down.clone()));
 
-            let tmp_left = self.left.get_color();
-            self.left.set_color(self.right.get_color());
-            self.right.set_color(tmp_left);
-            self.back.set_color(self.front.get_color());
+            let tmp_left = self.left.clone();
+            self.set_left(self.right.clone());
+            self.set_right(tmp_left);
+            self.set_back(self.front.clone());
         } else if front.get_color() == self.up.get_color() {
             self.set_left(self.rotate_side_clockwise(self.left.clone()));
             self.set_right(self.rotate_side_counterclockwise(self.right.clone()));
 
-            self.up.set_color(self.back.get_color());
-            self.back.set_color(
-                self.rotate_side_clockwise(self.rotate_side_clockwise(self.down.clone()))
-                    .get_color(),
+            self.set_up(self.rotate_side_clockwise(self.rotate_side_clockwise(self.back.clone())));
+            self.set_back(
+                self.rotate_side_clockwise(self.rotate_side_clockwise(self.down.clone())),
             );
-            self.down.set_color(self.front.get_color());
+            self.set_down(self.get_front());
         } else if front.get_color() == self.down.get_color() {
             self.set_left(self.rotate_side_counterclockwise(self.left.clone()));
             self.set_right(self.rotate_side_clockwise(self.right.clone()));
 
-            self.down.set_color(self.back.get_color());
-            self.back.set_color(
-                self.rotate_side_clockwise(self.rotate_side_clockwise(self.up.clone()))
-                    .get_color(),
+            self.set_down(
+                self.rotate_side_clockwise(self.rotate_side_clockwise(self.back.clone())),
             );
-            self.up.set_color(self.front.get_color());
+            self.set_back(self.rotate_side_clockwise(self.rotate_side_clockwise(self.up.clone())));
+            self.set_up(self.front.clone());
         } else if front.get_color() == self.left.get_color() {
             self.set_up(self.rotate_side_counterclockwise(self.up.clone()));
             self.set_down(self.rotate_side_clockwise(self.down.clone()));
 
-            self.left.set_color(self.back.get_color());
-            self.back.set_color(self.right.get_color());
-            self.right.set_color(self.front.get_color());
+            self.set_left(self.back.clone());
+            self.set_back(self.right.clone());
+            self.set_right(self.front.clone());
         } else if front.get_color() == self.right.get_color() {
             self.set_up(self.rotate_side_clockwise(self.up.clone()));
             self.set_down(self.rotate_side_counterclockwise(self.down.clone()));
 
-            self.right.set_color(self.back.get_color());
-            self.back.set_color(self.left.get_color());
-            self.left.set_color(self.front.get_color());
+            self.set_right(self.back.clone());
+            self.set_back(self.left.clone());
+            self.set_left(self.front.clone());
         }
         self.front = front;
     }
@@ -164,7 +162,7 @@ impl Cube {
         let down_color = self.down.get_color();
         let right_color = self.right.get_color();
 
-        self.up.set_color([
+        let new_up = [
             up_color[0].clone(),
             up_color[1].clone(),
             [
@@ -172,8 +170,9 @@ impl Cube {
                 left_color[1][2].clone(),
                 left_color[0][2].clone(),
             ],
-        ]);
-        self.left.set_color([
+        ];
+        self.set_up(Side::new(new_up));
+        let new_left = [
             [
                 left_color[0][0].clone(),
                 left_color[0][1].clone(),
@@ -189,8 +188,9 @@ impl Cube {
                 left_color[2][1].clone(),
                 down_color[0][2].clone(),
             ],
-        ]);
-        self.down.set_color([
+        ];
+        self.set_left(Side::new(new_left));
+        let new_down = [
             [
                 right_color[2][0].clone(),
                 right_color[1][0].clone(),
@@ -198,8 +198,9 @@ impl Cube {
             ],
             down_color[1].clone(),
             down_color[2].clone(),
-        ]);
-        self.right.set_color([
+        ];
+        self.set_down(Side::new(new_down));
+        let new_right = [
             [
                 up_color[2][0].clone(),
                 right_color[0][1].clone(),
@@ -215,7 +216,8 @@ impl Cube {
                 right_color[2][1].clone(),
                 right_color[2][2].clone(),
             ],
-        ]);
+        ];
+        self.set_right(Side::new(new_right));
 
         self.set_front(self.rotate_side_clockwise(self.front.clone()));
     }
@@ -245,7 +247,7 @@ impl Cube {
         new_side
     }
 
-    pub fn pif_paf(&mut self) {
+    pub fn pif_paf_right(&mut self) {
         self.set_front(self.get_right());
         self.rotate_front_clockwise();
         self.set_front(self.get_up());
@@ -256,6 +258,19 @@ impl Cube {
         self.rotate_front_counterclockwise();
         self.set_front(self.get_down());
         self.set_front(self.get_left());
+    }
+
+    pub fn pif_paf_left(&mut self) {
+        self.set_front(self.get_left());
+        self.rotate_front_counterclockwise();
+        self.set_front(self.get_up());
+        self.rotate_front_counterclockwise();
+        self.set_front(self.get_down());
+        self.rotate_front_clockwise();
+        self.set_front(self.get_up());
+        self.rotate_front_clockwise();
+        self.set_front(self.get_down());
+        self.set_front(self.get_right());
     }
 }
 
@@ -729,7 +744,7 @@ mod tests {
     }
 
     #[test]
-    fn test_pif_paf_x1_x6() {
+    fn test_pif_paf_right_x1_x6() {
         let mut cube = Cube::new(Vec::new());
         let expected_front_x0 = cube.get_front().get_color();
         let expected_back_x0 = cube.get_back().get_color();
@@ -737,13 +752,49 @@ mod tests {
         let expected_down_x0 = cube.get_down().get_color();
         let expected_left_x0 = cube.get_left().get_color();
         let expected_right_x0 = cube.get_right().get_color();
-        cube.pif_paf();
+        cube.pif_paf_right();
         let expected_front_x1 = [
             ["OGY".to_string(), "OY".to_string(), "WOB".to_string()],
             ["OG".to_string(), "O".to_string(), "YR".to_string()],
             ["OWG".to_string(), "OW".to_string(), "OYB".to_string()],
         ];
-        assert_eq!(expected_front_x1, cube.get_front().get_color());
+        assert_eq!(cube.get_front().get_color(), expected_front_x1);
+        for _ in 0..5 {
+            cube.pif_paf_right();
+        }
+        let actual_front_x6 = cube.get_front().get_color();
+        assert_eq!(actual_front_x6, expected_front_x0);
+        let actual_back_x6 = cube.get_back().get_color();
+        assert_eq!(actual_back_x6, expected_back_x0);
+        let actual_up_x6 = cube.get_up().get_color();
+        assert_eq!(actual_up_x6, expected_up_x0);
+        let actual_down_x6 = cube.get_down().get_color();
+        assert_eq!(actual_down_x6, expected_down_x0);
+        let actual_left_x6 = cube.get_left().get_color();
+        assert_eq!(actual_left_x6, expected_left_x0);
+        let actual_right_x6 = cube.get_right().get_color();
+        assert_eq!(actual_right_x6, expected_right_x0);
+    }
+
+    #[test]
+    fn test_pif_paf_left_x1_x6() {
+        let mut cube = Cube::new(Vec::new());
+        let expected_front_x0 = cube.get_front().get_color();
+        let expected_back_x0 = cube.get_back().get_color();
+        let expected_up_x0 = cube.get_up().get_color();
+        let expected_down_x0 = cube.get_down().get_color();
+        let expected_left_x0 = cube.get_left().get_color();
+        let expected_right_x0 = cube.get_right().get_color();
+        cube.pif_paf_left();
+        let expected_front_x1 = [
+            ["WGO".to_string(), "OY".to_string(), "OYB".to_string()],
+            ["YR".to_string(), "O".to_string(), "OB".to_string()],
+            ["OGY".to_string(), "OW".to_string(), "OBW".to_string()],
+        ];
+        assert_eq!(cube.get_front().get_color(), expected_front_x1);
+        for _ in 0..5 {
+            cube.pif_paf_left();
+        }
         let actual_front_x6 = cube.get_front().get_color();
         assert_eq!(actual_front_x6, expected_front_x0);
         let actual_back_x6 = cube.get_back().get_color();
