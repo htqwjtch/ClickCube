@@ -1,3 +1,3 @@
 pub mod cube;
 
-pub mod side;
+pub mod face;
