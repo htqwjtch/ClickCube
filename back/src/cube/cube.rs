@@ -287,7 +287,7 @@ impl Cube {
         self.make_third_layer();
     }
 
-    pub fn make_daisy(&mut self) {
+    fn make_daisy(&mut self) {
         for _ in 0..4 {
             let command_to_lift_edge = self.search_edge_with_down_color();
             if !command_to_lift_edge.is_empty() {
@@ -297,23 +297,23 @@ impl Cube {
         }
     }
 
-    pub fn search_edge_with_down_color(&mut self) -> String {
-        let (mut is_there, mut command_to_lift_edge) = self.check_down_face_edges();
+    fn search_edge_with_down_color(&mut self) -> String {
+        let (mut is_there, mut command_to_lift_edge) = self.check_edges_of_down_face();
         if is_there {
             return command_to_lift_edge;
         }
 
-        (is_there, command_to_lift_edge) = self.check_first_layer_edges();
+        (is_there, command_to_lift_edge) = self.check_edges_of_first_layer();
         if is_there {
             return command_to_lift_edge;
         }
 
-        (is_there, command_to_lift_edge) = self.check_second_layer_edges();
+        (is_there, command_to_lift_edge) = self.check_edges_of_second_layer();
         if is_there {
             return command_to_lift_edge;
         }
 
-        (is_there, command_to_lift_edge) = self.check_third_layer_edges();
+        (is_there, command_to_lift_edge) = self.check_edges_of_third_layer();
         if is_there {
             return command_to_lift_edge;
         }
@@ -321,7 +321,7 @@ impl Cube {
         String::from("")
     }
 
-    pub fn check_down_face_edges(&mut self) -> (bool, String) {
+    fn check_edges_of_down_face(&mut self) -> (bool, String) {
         let mut is_here = false;
         let mut command_to_lift_edge = String::from("");
 
@@ -332,7 +332,7 @@ impl Cube {
         if &down_color[0][1][0..1] == down_center_color {
             is_here = true;
             if &up_color[2][1][0..1] == down_center_color {
-                command_to_lift_edge = "U".to_string();
+                command_to_lift_edge += "U";
                 let mut times = 1;
                 if &up_color[1][2][0..1] == down_center_color {
                     times += 1;
@@ -349,7 +349,7 @@ impl Cube {
         } else if &down_color[1][0][0..1] == down_center_color {
             is_here = true;
             if &up_color[1][0][0..1] == down_center_color {
-                command_to_lift_edge = "U".to_string();
+                command_to_lift_edge += "U";
                 let mut times = 1;
                 if &up_color[2][1][0..1] == down_center_color {
                     times += 1;
@@ -366,7 +366,7 @@ impl Cube {
         } else if &down_color[2][1][0..1] == down_center_color {
             is_here = true;
             if &up_color[0][1][0..1] == down_center_color {
-                command_to_lift_edge = "U".to_string();
+                command_to_lift_edge += "U";
                 let mut times = 1;
                 if &up_color[1][0][0..1] == down_center_color {
                     times += 1;
@@ -383,7 +383,7 @@ impl Cube {
         } else if &down_color[1][2][0..1] == down_center_color {
             is_here = true;
             if &up_color[1][2][0..1] == down_center_color {
-                command_to_lift_edge = "U".to_string();
+                command_to_lift_edge += "U";
                 let mut times = 1;
                 if &up_color[0][1][0..1] == down_center_color {
                     times += 1;
@@ -402,7 +402,7 @@ impl Cube {
         (is_here, command_to_lift_edge)
     }
 
-    pub fn check_first_layer_edges(&mut self) -> (bool, String) {
+    fn check_edges_of_first_layer(&mut self) -> (bool, String) {
         let mut is_here = false;
         let mut command_to_lift_edge = String::from("");
 
@@ -416,7 +416,7 @@ impl Cube {
         if &front_color[2][1][0..1] == down_center_color {
             is_here = true;
             if &up_color[2][1][0..1] == down_center_color {
-                command_to_lift_edge = "U".to_string();
+                command_to_lift_edge += "U";
                 let mut times = 1;
                 if &up_color[1][2][0..1] == down_center_color {
                     times += 1;
@@ -448,7 +448,7 @@ impl Cube {
         } else if &left_color[2][1][0..1] == down_center_color {
             is_here = true;
             if &up_color[1][0][0..1] == down_center_color {
-                command_to_lift_edge = "U".to_string();
+                command_to_lift_edge += "U";
                 let mut times = 1;
                 if &up_color[2][1][0..1] == down_center_color {
                     times += 1;
@@ -480,7 +480,7 @@ impl Cube {
         } else if &back_color[2][1][0..1] == down_center_color {
             is_here = true;
             if &up_color[0][1][0..1] == down_center_color {
-                command_to_lift_edge = "U".to_string();
+                command_to_lift_edge += "U";
                 let mut times = 1;
                 if &up_color[1][0][0..1] == down_center_color {
                     times += 1;
@@ -512,7 +512,7 @@ impl Cube {
         } else if &right_color[2][1][0..1] == down_center_color {
             is_here = true;
             if &up_color[1][2][0..1] == down_center_color {
-                command_to_lift_edge = "U".to_string();
+                command_to_lift_edge += "U";
                 let mut times = 1;
                 if &up_color[0][1][0..1] == down_center_color {
                     times += 1;
@@ -546,23 +546,251 @@ impl Cube {
         (is_here, command_to_lift_edge)
     }
 
-    pub fn check_second_layer_edges(&mut self) -> (bool, String) {
+    fn check_edges_of_second_layer(&mut self) -> (bool, String) {
         let mut is_here = false;
         let mut command_to_lift_edge = String::from("");
+
+        let front_color = self.get_front().get_color();
+        let back_color = self.get_back().get_color();
+        let up_color = self.get_up().get_color();
+        let down_center_color = &self.get_down().get_color()[1][1][0..1];
+        let left_color = self.get_left().get_color();
+        let right_color = self.get_right().get_color();
+
+        if &front_color[1][0][0..1] == down_center_color {
+            is_here = true;
+            if &up_color[1][0][0..1] == down_center_color {
+                command_to_lift_edge += "U";
+                let mut times = 1;
+                if &up_color[2][1][0..1] == down_center_color {
+                    times += 1;
+                    if &up_color[1][2][0..1] == down_center_color {
+                        times = 1;
+                        command_to_lift_edge += "'";
+                    }
+                }
+                if times > 1 {
+                    command_to_lift_edge += times.to_string().as_str();
+                }
+            }
+            command_to_lift_edge += "L'";
+        } else if &front_color[1][2][0..1] == down_center_color {
+            is_here = true;
+            if &up_color[1][2][0..1] == down_center_color {
+                command_to_lift_edge += "U";
+                let mut times = 1;
+                if &up_color[0][1][0..1] == down_center_color {
+                    times += 1;
+                    if &up_color[1][0][0..1] == down_center_color {
+                        times = 1;
+                        command_to_lift_edge += "'";
+                    }
+                }
+                if times > 1 {
+                    command_to_lift_edge += times.to_string().as_str();
+                }
+            }
+            command_to_lift_edge += "R";
+        } else if &left_color[1][0][0..1] == down_center_color {
+            is_here = true;
+            if &up_color[0][1][0..1] == down_center_color {
+                command_to_lift_edge += "U";
+                let mut times = 1;
+                if &up_color[1][0][0..1] == down_center_color {
+                    times += 1;
+                    if &up_color[2][1][0..1] == down_center_color {
+                        times = 1;
+                        command_to_lift_edge += "'";
+                    }
+                }
+                if times > 1 {
+                    command_to_lift_edge += times.to_string().as_str();
+                }
+            }
+            command_to_lift_edge += "B'";
+        } else if &left_color[1][2][0..1] == down_center_color {
+            is_here = true;
+            if &up_color[2][1][0..1] == down_center_color {
+                command_to_lift_edge += "U";
+                let mut times = 1;
+                if &up_color[1][2][0..1] == down_center_color {
+                    times += 1;
+                    if &up_color[0][1][0..1] == down_center_color {
+                        times = 1;
+                        command_to_lift_edge += "'";
+                    }
+                }
+                if times > 1 {
+                    command_to_lift_edge += times.to_string().as_str();
+                }
+            }
+            command_to_lift_edge += "F";
+        } else if &back_color[1][0][0..1] == down_center_color {
+            is_here = true;
+            if &up_color[1][2][0..1] == down_center_color {
+                command_to_lift_edge += "U";
+                let mut times = 1;
+                if &up_color[0][1][0..1] == down_center_color {
+                    times += 1;
+                    if &up_color[1][0][0..1] == down_center_color {
+                        times = 1;
+                        command_to_lift_edge += "'";
+                    }
+                }
+                if times > 1 {
+                    command_to_lift_edge += times.to_string().as_str();
+                }
+            }
+            command_to_lift_edge += "R'";
+        } else if &back_color[1][2][0..1] == down_center_color {
+            is_here = true;
+            if &up_color[1][0][0..1] == down_center_color {
+                command_to_lift_edge += "U";
+                let mut times = 1;
+                if &up_color[2][1][0..1] == down_center_color {
+                    times += 1;
+                    if &up_color[1][2][0..1] == down_center_color {
+                        times = 1;
+                        command_to_lift_edge += "'";
+                    }
+                }
+                if times > 1 {
+                    command_to_lift_edge += times.to_string().as_str();
+                }
+            }
+            command_to_lift_edge += "L";
+        } else if &right_color[1][0][0..1] == down_center_color {
+            is_here = true;
+            if &up_color[2][1][0..1] == down_center_color {
+                command_to_lift_edge += "U";
+                let mut times = 1;
+                if &up_color[1][2][0..1] == down_center_color {
+                    times += 1;
+                    if &up_color[0][1][0..1] == down_center_color {
+                        times = 1;
+                        command_to_lift_edge += "'";
+                    }
+                }
+                if times > 1 {
+                    command_to_lift_edge += times.to_string().as_str();
+                }
+            }
+            command_to_lift_edge += "F'";
+        } else if &right_color[1][2][0..1] == down_center_color {
+            is_here = true;
+            if &up_color[0][1][0..1] == down_center_color {
+                command_to_lift_edge += "U";
+                let mut times = 1;
+                if &up_color[1][0][0..1] == down_center_color {
+                    times += 1;
+                    if &up_color[2][1][0..1] == down_center_color {
+                        times = 1;
+                        command_to_lift_edge += "'";
+                    }
+                }
+                if times > 1 {
+                    command_to_lift_edge += times.to_string().as_str();
+                }
+            }
+            command_to_lift_edge += "B";
+        }
+
         (is_here, command_to_lift_edge)
     }
 
-    pub fn check_third_layer_edges(&mut self) -> (bool, String) {
+    fn check_edges_of_third_layer(&mut self) -> (bool, String) {
         let mut is_here = false;
         let mut command_to_lift_edge = String::from("");
+
+        let front_color = self.get_front().get_color();
+        let back_color = self.get_back().get_color();
+        let up_color = self.get_up().get_color();
+        let down_center_color = &self.get_down().get_color()[1][1][0..1];
+        let left_color = self.get_left().get_color();
+        let right_color = self.get_right().get_color();
+
+        if &front_color[0][1][0..1] == down_center_color {
+            is_here = true;
+            command_to_lift_edge += "F'";
+            if &up_color[1][0][0..1] == down_center_color {
+                command_to_lift_edge += "U";
+                let mut times = 1;
+                if &up_color[2][1][0..1] == down_center_color {
+                    times += 1;
+                    if &up_color[1][2][0..1] == down_center_color {
+                        times = 1;
+                        command_to_lift_edge += "'";
+                    }
+                }
+                if times > 1 {
+                    command_to_lift_edge += times.to_string().as_str();
+                }
+            }
+            command_to_lift_edge += "L'";
+        } else if &left_color[0][1][0..1] == down_center_color {
+            is_here = true;
+            command_to_lift_edge += "L'";
+            if &up_color[0][1][0..1] == down_center_color {
+                command_to_lift_edge += "U";
+                let mut times = 1;
+                if &up_color[1][0][0..1] == down_center_color {
+                    times += 1;
+                    if &up_color[2][1][0..1] == down_center_color {
+                        times = 1;
+                        command_to_lift_edge += "'";
+                    }
+                }
+                if times > 1 {
+                    command_to_lift_edge += times.to_string().as_str();
+                }
+            }
+            command_to_lift_edge += "B'";
+        } else if &back_color[0][1][0..1] == down_center_color {
+            is_here = true;
+            command_to_lift_edge += "B'";
+            if &up_color[1][2][0..1] == down_center_color {
+                command_to_lift_edge += "U";
+                let mut times = 1;
+                if &up_color[0][1][0..1] == down_center_color {
+                    times += 1;
+                    if &up_color[1][0][0..1] == down_center_color {
+                        times = 1;
+                        command_to_lift_edge += "'";
+                    }
+                }
+                if times > 1 {
+                    command_to_lift_edge += times.to_string().as_str();
+                }
+            }
+            command_to_lift_edge += "R'";
+        } else if &right_color[0][1][0..1] == down_center_color {
+            is_here = true;
+            command_to_lift_edge += "R'";
+            if &up_color[2][1][0..1] == down_center_color {
+                command_to_lift_edge += "U";
+                let mut times = 1;
+                if &up_color[1][2][0..1] == down_center_color {
+                    times += 1;
+                    if &up_color[0][1][0..1] == down_center_color {
+                        times = 1;
+                        command_to_lift_edge += "'";
+                    }
+                }
+                if times > 1 {
+                    command_to_lift_edge += times.to_string().as_str();
+                }
+            }
+            command_to_lift_edge += "F'";
+        }
+
         (is_here, command_to_lift_edge)
     }
 
-    pub fn lift_edge_of_down(&mut self, command_to_lift: String) {
+    fn lift_edge_of_down(&mut self, command_to_lift: String) {
         self.execute_command(command_to_lift);
     }
 
-    pub fn execute_command(&mut self, command: String) {
+    fn execute_command(&mut self, command: String) {
         let mut i = 0;
         while i < command.len() {
             if &command[i..i + 1] == "F" {
@@ -643,16 +871,19 @@ impl Cube {
         }
     }
 
-    pub fn make_down_cross(&mut self) {
+    fn make_down_cross(&mut self) {
         for _ in 0..4 {
+            //CHECK MOMENT WHEN ARE OTHER FACES ALREADY READY (FACE_COLOR[0][1]==FACE_COLOR[1][1])
             self.set_same_front_center_and_up_edge_of_front();
             self.lower_down_edge_of_up();
             self.set_front(self.get_left());
         }
     }
 
-    pub fn set_same_front_center_and_up_edge_of_front(&mut self) {
-        for _ in 0..4 {
+    fn set_same_front_center_and_up_edge_of_front(&mut self) {
+        for _ in 0..3 {
+            //CHECK MOMENT WHEN IS UP_COLOR[2][1] ALWAYS EQUAL DOWN_COLOR[1][1] (UP_COLOR[2][1]==DOWN_COLOR[1][1])
+            //if self.get_up().get_color()[2][1][0..1] == self.get_down().get_color()[1][1][0..1] {
             if self.get_front().get_color()[0][1][0..1] == self.get_front().get_color()[1][1][0..1]
             {
                 break;
@@ -660,40 +891,41 @@ impl Cube {
             self.set_front(self.get_up());
             self.rotate_front_clockwise();
             self.set_front(self.get_down());
+            //}
         }
     }
 
-    pub fn lower_down_edge_of_up(&mut self) {
+    fn lower_down_edge_of_up(&mut self) {
         if self.get_front().get_color()[0][1][0..1] == self.get_front().get_color()[1][1][0..1] {
             self.rotate_front_clockwise();
             self.rotate_front_clockwise();
         }
     }
 
-    pub fn make_down_corners(&mut self) {
+    fn make_down_corners(&mut self) {
         for _ in 0..4 {
             self.search_corner_with_down_color();
             self.lower_corner_of_down();
         }
     }
 
-    pub fn search_corner_with_down_color(&mut self) -> String {
-        let mut is_there = self.check_down_face_corners();
+    fn search_corner_with_down_color(&mut self) -> String {
+        let mut is_there = self.check_corners_of_down_face();
         if is_there {
             self.set_front(self.get_down());
         }
 
-        is_there = self.check_first_layer_corners();
+        is_there = self.check_corners_of_first_layer();
         if is_there {
             self.set_front(self.get_down());
         }
 
-        is_there = self.check_second_layer_corners();
+        is_there = self.check_corners_of_second_layer();
         if is_there {
             self.set_front(self.get_down());
         }
 
-        is_there = self.check_third_layer_corners();
+        is_there = self.check_corners_of_third_layer();
         if is_there {
             self.set_front(self.get_down());
         }
@@ -701,35 +933,35 @@ impl Cube {
         String::from("")
     }
 
-    pub fn check_down_face_corners(&mut self) -> bool {
+    fn check_corners_of_down_face(&mut self) -> bool {
         let mut is_here = false;
         is_here
     }
 
-    pub fn check_first_layer_corners(&mut self) -> bool {
+    fn check_corners_of_first_layer(&mut self) -> bool {
         let mut is_here = false;
         is_here
     }
 
-    pub fn check_second_layer_corners(&mut self) -> bool {
+    fn check_corners_of_second_layer(&mut self) -> bool {
         let mut is_here = false;
         is_here
     }
 
-    pub fn check_third_layer_corners(&mut self) -> bool {
+    fn check_corners_of_third_layer(&mut self) -> bool {
         let mut is_here = false;
         is_here
     }
 
-    pub fn lower_corner_of_down(&mut self) {}
+    fn lower_corner_of_down(&mut self) {}
 
-    pub fn make_second_layer(&mut self) {}
+    fn make_second_layer(&mut self) {}
 
-    pub fn make_up_cross(&mut self) {}
+    fn make_up_cross(&mut self) {}
 
-    pub fn make_up_corners(&mut self) {}
+    fn make_up_corners(&mut self) {}
 
-    pub fn make_third_layer(&mut self) {}
+    fn make_third_layer(&mut self) {}
 }
 
 #[cfg(test)]
@@ -1304,7 +1536,7 @@ mod tests {
     }
 
     #[test]
-    fn test_make_daisy_one_down_edge_on_front_face() {
+    fn test_make_daisy_one_down_edge_on_first_layer_front_face() {
         let mut cube = Cube::new(Vec::new());
         cube.set_front(cube.get_right());
         cube.rotate_front_clockwise();
@@ -1325,7 +1557,7 @@ mod tests {
         ];
         assert_eq!(actual_front_color, expected_front_color);
         for _ in 0..4 {
-            let (mut is_there, mut command_to_lift_edge) = cube.check_down_face_edges();
+            let (is_there, command_to_lift_edge) = cube.check_edges_of_down_face();
             if is_there {
                 if !command_to_lift_edge.is_empty() {
                     cube.lift_edge_of_down(command_to_lift_edge);
@@ -1357,5 +1589,338 @@ mod tests {
             ["OGY".to_string(), "WO".to_string(), "WGO".to_string()],
         ];
         assert_eq!(actual_up_color, expected_up_color);
+    }
+
+    #[test]
+    fn test_make_daisy_one_down_edge_on_second_layer_front_face() {
+        let mut cube = Cube::new(Vec::new());
+        cube.set_front(cube.get_right());
+        cube.rotate_front_clockwise();
+        cube.set_front(cube.get_left());
+        cube.rotate_front_clockwise();
+        cube.set_front(cube.get_down());
+        cube.rotate_front_counterclockwise();
+        cube.set_front(cube.get_up());
+        cube.rotate_front_counterclockwise();
+        cube.set_front(cube.get_down());
+        cube.rotate_front_clockwise();
+        cube.set_front(cube.get_up());
+        cube.rotate_front_clockwise();
+        let actual_front_color = cube.get_front().get_color();
+        let expected_front_color = [
+            ["WBR".to_string(), "OG".to_string(), "OGY".to_string()],
+            ["WB".to_string(), "O".to_string(), "OY".to_string()],
+            ["GOW".to_string(), "BR".to_string(), "BYR".to_string()],
+        ];
+        assert_eq!(actual_front_color, expected_front_color);
+        for _ in 0..4 {
+            let (is_there, command_to_lift_edge) = cube.check_edges_of_down_face();
+            if is_there {
+                if !command_to_lift_edge.is_empty() {
+                    cube.lift_edge_of_down(command_to_lift_edge);
+                }
+            }
+            cube.set_front(cube.get_left());
+        }
+        let actual_front_color = cube.get_front().get_color();
+        let expected_front_color = [
+            ["RGW".to_string(), "OG".to_string(), "GOW".to_string()],
+            ["RG".to_string(), "O".to_string(), "WB".to_string()],
+            ["RYG".to_string(), "BR".to_string(), "WBR".to_string()],
+        ];
+        assert_eq!(actual_front_color, expected_front_color);
+
+        let actual_up_color = cube.get_up().get_color();
+        let expected_up_color = [
+            ["WOB".to_string(), "WR".to_string(), "RBY".to_string()],
+            ["WG".to_string(), "Y".to_string(), "WO".to_string()],
+            ["WRG".to_string(), "GO".to_string(), "OWG".to_string()],
+        ];
+        assert_eq!(actual_up_color, expected_up_color);
+
+        cube.make_daisy();
+        let actual_up_color = cube.get_up().get_color();
+        let expected_up_color = [
+            ["RBY".to_string(), "WO".to_string(), "GWR".to_string()],
+            ["WR".to_string(), "Y".to_string(), "WB".to_string()],
+            ["WOB".to_string(), "WG".to_string(), "WBR".to_string()],
+        ];
+        assert_eq!(actual_up_color, expected_up_color);
+    }
+
+    #[test]
+    fn test_make_daisy_one_down_edge_on_third_layer_front_face() {
+        let mut cube = Cube::new(Vec::new());
+        cube.set_front(cube.get_right());
+        cube.rotate_front_clockwise();
+        cube.set_front(cube.get_left());
+        cube.rotate_front_clockwise();
+        cube.set_front(cube.get_down());
+        cube.rotate_front_counterclockwise();
+        cube.set_front(cube.get_up());
+        cube.rotate_front_counterclockwise();
+        cube.set_front(cube.get_down());
+        cube.rotate_front_clockwise();
+        cube.set_front(cube.get_up());
+        cube.rotate_front_clockwise();
+        cube.rotate_front_clockwise();
+        let actual_front_color = cube.get_front().get_color();
+        let expected_front_color = [
+            ["GOW".to_string(), "WB".to_string(), "WBR".to_string()],
+            ["BR".to_string(), "O".to_string(), "OG".to_string()],
+            ["BYR".to_string(), "OY".to_string(), "OGY".to_string()],
+        ];
+        assert_eq!(actual_front_color, expected_front_color);
+        for _ in 0..4 {
+            let (is_there, command_to_lift_edge) = cube.check_edges_of_down_face();
+            if is_there {
+                if !command_to_lift_edge.is_empty() {
+                    cube.lift_edge_of_down(command_to_lift_edge);
+                }
+            }
+            cube.set_front(cube.get_left());
+        }
+        let actual_front_color = cube.get_front().get_color();
+        let expected_front_color = [
+            ["RGW".to_string(), "WB".to_string(), "BYR".to_string()],
+            ["RG".to_string(), "O".to_string(), "BR".to_string()],
+            ["RYG".to_string(), "OY".to_string(), "GOW".to_string()],
+        ];
+        assert_eq!(actual_front_color, expected_front_color);
+
+        let actual_up_color = cube.get_up().get_color();
+        let expected_up_color = [
+            ["WOB".to_string(), "WR".to_string(), "YOG".to_string()],
+            ["WG".to_string(), "Y".to_string(), "WO".to_string()],
+            ["WRG".to_string(), "BW".to_string(), "YRB".to_string()],
+        ];
+        assert_eq!(actual_up_color, expected_up_color);
+
+        cube.make_daisy();
+        let actual_up_color = cube.get_up().get_color();
+        let expected_up_color = [
+            ["WGO".to_string(), "WG".to_string(), "WOB".to_string()],
+            ["WB".to_string(), "Y".to_string(), "WR".to_string()],
+            ["RGW".to_string(), "WO".to_string(), "YOG".to_string()],
+        ];
+        assert_eq!(actual_up_color, expected_up_color);
+    }
+
+    #[test]
+    fn test_make_daisy_hard() {
+        let mut cube = Cube::new(Vec::new());
+        for _ in 0..4 {
+            //R
+            cube.set_front(cube.get_right());
+            cube.rotate_front_clockwise();
+            cube.set_front(cube.get_left());
+            //U'
+            cube.set_front(cube.get_up());
+            cube.rotate_front_counterclockwise();
+            cube.set_front(cube.get_down());
+            //R'
+            cube.set_front(cube.get_right());
+            cube.rotate_front_counterclockwise();
+            cube.set_front(cube.get_left());
+            //F
+            cube.rotate_front_clockwise();
+            //R
+            cube.set_front(cube.get_right());
+            cube.rotate_front_clockwise();
+            cube.set_front(cube.get_left());
+            //U'
+            cube.set_front(cube.get_up());
+            cube.rotate_front_counterclockwise();
+            cube.set_front(cube.get_down());
+            //R
+            cube.set_front(cube.get_right());
+            cube.rotate_front_clockwise();
+            cube.set_front(cube.get_left());
+            //U
+            cube.set_front(cube.get_up());
+            cube.rotate_front_clockwise();
+            cube.set_front(cube.get_down());
+            //R
+            cube.set_front(cube.get_right());
+            cube.rotate_front_clockwise();
+            cube.set_front(cube.get_left());
+            //U'
+            cube.set_front(cube.get_up());
+            cube.rotate_front_counterclockwise();
+            cube.set_front(cube.get_down());
+            //R'
+            cube.set_front(cube.get_right());
+            cube.rotate_front_counterclockwise();
+            cube.set_front(cube.get_left());
+            //U'
+            cube.set_front(cube.get_up());
+            cube.rotate_front_counterclockwise();
+            cube.set_front(cube.get_down());
+            //R2
+            cube.set_front(cube.get_right());
+            cube.rotate_front_clockwise();
+            cube.rotate_front_clockwise();
+            cube.set_front(cube.get_left());
+
+            cube.set_front(cube.get_left());
+        }
+
+        let actual_up_color = cube.get_up().get_color();
+        let expected_up_color = [
+            ["OGY".to_string(), "WG".to_string(), "WBR".to_string()],
+            ["YG".to_string(), "Y".to_string(), "WR".to_string()],
+            ["OBW".to_string(), "WB".to_string(), "WGO".to_string()],
+        ];
+        assert_eq!(actual_up_color, expected_up_color);
+
+        //R'
+        cube.set_front(cube.get_right());
+        cube.rotate_front_counterclockwise();
+        cube.set_front(cube.get_left());
+        //F
+        cube.rotate_front_clockwise();
+        //B
+        cube.set_front(cube.get_back());
+        cube.rotate_front_clockwise();
+        cube.set_front(cube.get_back());
+        //L
+        cube.set_front(cube.get_left());
+        cube.rotate_front_clockwise();
+        cube.set_front(cube.get_right());
+        //B'
+        cube.set_front(cube.get_back());
+        cube.rotate_front_counterclockwise();
+        cube.set_front(cube.get_back());
+
+        let actual_up_color = cube.get_up().get_color();
+        let expected_up_color = [
+            ["OWG".to_string(), "BO".to_string(), "OGY".to_string()],
+            ["GW".to_string(), "Y".to_string(), "OY".to_string()],
+            ["YGR".to_string(), "RB".to_string(), "WOB".to_string()],
+        ];
+        assert_eq!(actual_up_color, expected_up_color);
+
+        cube.make_daisy();
+        let actual_up_color = cube.get_up().get_color();
+        let expected_up_color = [
+            ["BYR".to_string(), "WG".to_string(), "BOY".to_string()],
+            ["WO".to_string(), "Y".to_string(), "WB".to_string()],
+            ["GWR".to_string(), "WR".to_string(), "OBW".to_string()],
+        ];
+        assert_eq!(actual_up_color, expected_up_color);
+    }
+
+    #[test]
+    fn test_make_down_cross() {
+        let mut cube = Cube::new(Vec::new());
+        for _ in 0..4 {
+            //R
+            cube.set_front(cube.get_right());
+            cube.rotate_front_clockwise();
+            cube.set_front(cube.get_left());
+            //U'
+            cube.set_front(cube.get_up());
+            cube.rotate_front_counterclockwise();
+            cube.set_front(cube.get_down());
+            //R'
+            cube.set_front(cube.get_right());
+            cube.rotate_front_counterclockwise();
+            cube.set_front(cube.get_left());
+            //F
+            cube.rotate_front_clockwise();
+            //R
+            cube.set_front(cube.get_right());
+            cube.rotate_front_clockwise();
+            cube.set_front(cube.get_left());
+            //U'
+            cube.set_front(cube.get_up());
+            cube.rotate_front_counterclockwise();
+            cube.set_front(cube.get_down());
+            //R
+            cube.set_front(cube.get_right());
+            cube.rotate_front_clockwise();
+            cube.set_front(cube.get_left());
+            //U
+            cube.set_front(cube.get_up());
+            cube.rotate_front_clockwise();
+            cube.set_front(cube.get_down());
+            //R
+            cube.set_front(cube.get_right());
+            cube.rotate_front_clockwise();
+            cube.set_front(cube.get_left());
+            //U'
+            cube.set_front(cube.get_up());
+            cube.rotate_front_counterclockwise();
+            cube.set_front(cube.get_down());
+            //R'
+            cube.set_front(cube.get_right());
+            cube.rotate_front_counterclockwise();
+            cube.set_front(cube.get_left());
+            //U'
+            cube.set_front(cube.get_up());
+            cube.rotate_front_counterclockwise();
+            cube.set_front(cube.get_down());
+            //R2
+            cube.set_front(cube.get_right());
+            cube.rotate_front_clockwise();
+            cube.rotate_front_clockwise();
+            cube.set_front(cube.get_left());
+
+            cube.set_front(cube.get_left());
+        }
+
+        let actual_up_color = cube.get_up().get_color();
+        let expected_up_color = [
+            ["OGY".to_string(), "WG".to_string(), "WBR".to_string()],
+            ["YG".to_string(), "Y".to_string(), "WR".to_string()],
+            ["OBW".to_string(), "WB".to_string(), "WGO".to_string()],
+        ];
+        assert_eq!(actual_up_color, expected_up_color);
+
+        //R'
+        cube.set_front(cube.get_right());
+        cube.rotate_front_counterclockwise();
+        cube.set_front(cube.get_left());
+        //F
+        cube.rotate_front_clockwise();
+        //B
+        cube.set_front(cube.get_back());
+        cube.rotate_front_clockwise();
+        cube.set_front(cube.get_back());
+        //L
+        cube.set_front(cube.get_left());
+        cube.rotate_front_clockwise();
+        cube.set_front(cube.get_right());
+        //B'
+        cube.set_front(cube.get_back());
+        cube.rotate_front_counterclockwise();
+        cube.set_front(cube.get_back());
+
+        let actual_up_color = cube.get_up().get_color();
+        let expected_up_color = [
+            ["OWG".to_string(), "BO".to_string(), "OGY".to_string()],
+            ["GW".to_string(), "Y".to_string(), "OY".to_string()],
+            ["YGR".to_string(), "RB".to_string(), "WOB".to_string()],
+        ];
+        assert_eq!(actual_up_color, expected_up_color);
+
+        cube.make_daisy();
+        let actual_up_color = cube.get_up().get_color();
+        let expected_up_color = [
+            ["BYR".to_string(), "WG".to_string(), "BOY".to_string()],
+            ["WO".to_string(), "Y".to_string(), "WB".to_string()],
+            ["GWR".to_string(), "WR".to_string(), "OBW".to_string()],
+        ];
+        assert_eq!(actual_up_color, expected_up_color);
+
+        cube.make_down_cross();
+
+        let actual_down_color = cube.get_down().get_color();
+        let expected_down_color = [
+            ["BOY".to_string(), "WO".to_string(), "GWR".to_string()],
+            ["WG".to_string(), "W".to_string(), "WB".to_string()],
+            ["RYG".to_string(), "WR".to_string(), "OGY".to_string()],
+        ];
+        assert_eq!(actual_down_color, expected_down_color);
     }
 }
