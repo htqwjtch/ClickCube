@@ -1,3 +1,5 @@
+use core::time;
+
 use crate::cube::face::face::Face;
 
 pub struct Cube {
@@ -318,12 +320,12 @@ impl Cube {
             return command_to_lift_edge;
         }
 
-        String::from("")
+        String::new()
     }
 
     fn check_edges_of_down_face(&mut self) -> (bool, String) {
         let mut is_here = false;
-        let mut command_to_lift_edge = String::from("");
+        let mut command_to_lift_edge = String::new();
 
         let up_color = self.get_up().get_color();
         let down_color = self.get_down().get_color();
@@ -404,7 +406,7 @@ impl Cube {
 
     fn check_edges_of_first_layer(&mut self) -> (bool, String) {
         let mut is_here = false;
-        let mut command_to_lift_edge = String::from("");
+        let mut command_to_lift_edge = String::new();
 
         let front_color = self.get_front().get_color();
         let back_color = self.get_back().get_color();
@@ -548,7 +550,7 @@ impl Cube {
 
     fn check_edges_of_second_layer(&mut self) -> (bool, String) {
         let mut is_here = false;
-        let mut command_to_lift_edge = String::from("");
+        let mut command_to_lift_edge = String::new();
 
         let front_color = self.get_front().get_color();
         let back_color = self.get_back().get_color();
@@ -700,7 +702,7 @@ impl Cube {
 
     fn check_edges_of_third_layer(&mut self) -> (bool, String) {
         let mut is_here = false;
-        let mut command_to_lift_edge = String::from("");
+        let mut command_to_lift_edge = String::new();
 
         let front_color = self.get_front().get_color();
         let back_color = self.get_back().get_color();
@@ -791,6 +793,7 @@ impl Cube {
     }
 
     fn execute_command(&mut self, command: String) {
+        println!("\n{command}");
         let mut i = 0;
         while i < command.len() {
             if &command[i..i + 1] == "F" {
@@ -872,34 +875,53 @@ impl Cube {
     }
 
     fn make_down_cross(&mut self) {
+        println!("\n=============================================");
         for _ in 0..4 {
-            //CHECK MOMENT WHEN ARE OTHER FACES ALREADY READY (FACE_COLOR[0][1]==FACE_COLOR[1][1])
-            self.set_same_front_center_and_up_edge_of_front();
-            self.lower_down_edge_of_up();
+            for _ in 0..4 {
+                //TO CHECK MOMENT WHEN ARE SOME FACES ALREADY READY
+                self.lower_down_edge_of_up();
+                self.set_front(self.get_left());
+            }
+            let command_to_lower_down_edge_of_up =
+                self.check_same_front_center_and_up_edge_of_front();
+            self.execute_command(command_to_lower_down_edge_of_up);
             self.set_front(self.get_left());
         }
     }
 
-    fn set_same_front_center_and_up_edge_of_front(&mut self) {
-        for _ in 0..3 {
-            //CHECK MOMENT WHEN IS UP_COLOR[2][1] ALWAYS EQUAL DOWN_COLOR[1][1] (UP_COLOR[2][1]==DOWN_COLOR[1][1])
-            //if self.get_up().get_color()[2][1][0..1] == self.get_down().get_color()[1][1][0..1] {
-            if self.get_front().get_color()[0][1][0..1] == self.get_front().get_color()[1][1][0..1]
-            {
-                break;
-            }
-            self.set_front(self.get_up());
+    fn lower_down_edge_of_up(&mut self) {
+        if self.get_up().get_color()[2][1][0..1] == self.get_down().get_color()[1][1][0..1]
+            && self.get_front().get_color()[0][1][0..1] == self.get_front().get_color()[1][1][0..1]
+        {
             self.rotate_front_clockwise();
-            self.set_front(self.get_down());
-            //}
+            self.rotate_front_clockwise();
         }
     }
 
-    fn lower_down_edge_of_up(&mut self) {
-        if self.get_front().get_color()[0][1][0..1] == self.get_front().get_color()[1][1][0..1] {
-            self.rotate_front_clockwise();
-            self.rotate_front_clockwise();
+    fn check_same_front_center_and_up_edge_of_front(&mut self) -> String {
+        let mut command_to_lower = String::new();
+
+        let back_color = self.get_back().get_color();
+        let left_color = self.get_left().get_color();
+        let right_color = self.get_right().get_color();
+
+        let front_center_color = &self.get_front().get_color()[1][1][0..1];
+        let down_center_color = &self.get_down().get_color()[1][1][0..1];
+
+        if &self.get_up().get_color()[1][1][0..1] == down_center_color
+            && &right_color[0][1][0..1] == front_center_color
+        {
+            command_to_lower += "UF2";
+        } else if &self.get_up().get_color()[0][1][0..1] == down_center_color
+            && &back_color[0][1][0..1] == front_center_color
+        {
+            command_to_lower += "U2F2";
+        } else if &self.get_up().get_color()[1][0][0..1] == down_center_color
+            && &left_color[0][1][0..1] == front_center_color
+        {
+            command_to_lower += "U'F2";
         }
+        command_to_lower
     }
 
     fn make_down_corners(&mut self) {
@@ -930,7 +952,7 @@ impl Cube {
             self.set_front(self.get_down());
         }
 
-        String::from("")
+        String::new()
     }
 
     fn check_corners_of_down_face(&mut self) -> bool {
@@ -1917,7 +1939,7 @@ mod tests {
 
         let actual_down_color = cube.get_down().get_color();
         let expected_down_color = [
-            ["BOY".to_string(), "WO".to_string(), "GWR".to_string()],
+            ["WBR".to_string(), "WO".to_string(), "BYR".to_string()],
             ["WG".to_string(), "W".to_string(), "WB".to_string()],
             ["RYG".to_string(), "WR".to_string(), "OGY".to_string()],
         ];
