@@ -281,48 +281,48 @@ impl Cube {
     pub fn solve(&mut self) {
         //what if some steps are already ready
         self.make_daisy();
-        self.make_cross_of_down();
-        self.make_corners_of_down();
+        self.make_cross_of_down_face();
+        self.make_corners_of_down_face();
         self.make_second_layer();
-        self.make_cross_of_up();
-        self.make_corners_of_up();
+        self.make_cross_of_up_face();
+        self.make_corners_of_up_face();
         self.make_third_layer();
     }
 
     fn make_daisy(&mut self) {
         for _ in 0..4 {
-            self.lift_edge_of_down();
+            self.put_edge_of_down_face_up();
         }
     }
 
-    fn lift_edge_of_down(&mut self) {
-        let mut command_to_lift_edge = self.check_edges_of_down();
-        if !command_to_lift_edge.is_empty() {
-            self.execute_command(command_to_lift_edge + "Y'");
+    fn put_edge_of_down_face_up(&mut self) {
+        let mut command_to_put_edge_up = self.check_edges_of_down_face();
+        if !command_to_put_edge_up.is_empty() {
+            self.execute_command(command_to_put_edge_up + "Y'");
             return;
         }
 
-        command_to_lift_edge = self.check_edges_of_first_layer();
-        if !command_to_lift_edge.is_empty() {
-            self.execute_command(command_to_lift_edge + "Y'");
+        command_to_put_edge_up = self.check_edges_of_first_layer();
+        if !command_to_put_edge_up.is_empty() {
+            self.execute_command(command_to_put_edge_up + "Y'");
             return;
         }
 
-        command_to_lift_edge = self.check_edges_of_second_layer();
-        if !command_to_lift_edge.is_empty() {
-            self.execute_command(command_to_lift_edge + "Y'");
+        command_to_put_edge_up = self.check_edges_of_second_layer();
+        if !command_to_put_edge_up.is_empty() {
+            self.execute_command(command_to_put_edge_up + "Y'");
             return;
         }
 
-        command_to_lift_edge = self.check_edges_of_third_layer();
-        if !command_to_lift_edge.is_empty() {
-            self.execute_command(command_to_lift_edge + "Y'");
+        command_to_put_edge_up = self.check_edges_of_third_layer();
+        if !command_to_put_edge_up.is_empty() {
+            self.execute_command(command_to_put_edge_up + "Y'");
             return;
         }
     }
 
-    fn check_edges_of_down(&mut self) -> String {
-        let mut command_to_lift_edge = String::new();
+    fn check_edges_of_down_face(&mut self) -> String {
+        let mut command_to_put_edge_up = String::new();
 
         let color_of_up = self.get_up().get_color();
         let color_of_down = self.get_down().get_color();
@@ -331,75 +331,75 @@ impl Cube {
 
         if &color_of_down[0][1][0..1] == center_color_of_down {
             if &color_of_up[2][1][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[1][2][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[0][1][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "F2";
+            command_to_put_edge_up += "F2";
         } else if &color_of_down[1][0][0..1] == center_color_of_down {
             if &color_of_up[1][0][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[2][1][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[1][2][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "L2";
+            command_to_put_edge_up += "L2";
         } else if &color_of_down[2][1][0..1] == center_color_of_down {
             if &color_of_up[0][1][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[1][0][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[2][1][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "B2";
+            command_to_put_edge_up += "B2";
         } else if &color_of_down[1][2][0..1] == center_color_of_down {
             if &color_of_up[1][2][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[0][1][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[1][0][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "R2";
+            command_to_put_edge_up += "R2";
         }
 
-        command_to_lift_edge
+        command_to_put_edge_up
     }
 
     fn check_edges_of_first_layer(&mut self) -> String {
-        let mut command_to_lift_edge = String::new();
+        let mut command_to_put_edge_up = String::new();
 
         let color_of_front = self.get_front().get_color();
         let color_of_back = self.get_back().get_color();
@@ -411,135 +411,135 @@ impl Cube {
 
         if &color_of_front[2][1][0..1] == center_color_of_down {
             if &color_of_up[2][1][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[1][2][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[0][1][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "F";
+            command_to_put_edge_up += "F";
             if &color_of_up[1][0][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[2][1][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[1][2][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "L'";
+            command_to_put_edge_up += "L'";
         } else if &color_of_left[2][1][0..1] == center_color_of_down {
             if &color_of_up[1][0][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[2][1][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[1][2][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "L";
+            command_to_put_edge_up += "L";
             if &color_of_up[0][1][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[1][0][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[2][1][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "B'";
+            command_to_put_edge_up += "B'";
         } else if &color_of_back[2][1][0..1] == center_color_of_down {
             if &color_of_up[0][1][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[1][0][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[2][1][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "B";
+            command_to_put_edge_up += "B";
             if &color_of_up[1][2][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[0][1][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[1][0][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "R'";
+            command_to_put_edge_up += "R'";
         } else if &color_of_right[2][1][0..1] == center_color_of_down {
             if &color_of_up[1][2][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[0][1][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[1][0][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "R";
+            command_to_put_edge_up += "R";
             if &color_of_up[2][1][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[1][2][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[0][1][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "F'";
+            command_to_put_edge_up += "F'";
         }
 
-        command_to_lift_edge
+        command_to_put_edge_up
     }
 
     fn check_edges_of_second_layer(&mut self) -> String {
-        let mut command_to_lift_edge = String::new();
+        let mut command_to_put_edge_up = String::new();
 
         let color_of_front = self.get_front().get_color();
         let color_of_back = self.get_back().get_color();
@@ -551,139 +551,139 @@ impl Cube {
 
         if &color_of_front[1][0][0..1] == center_color_of_down {
             if &color_of_up[1][0][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[2][1][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[1][2][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "L'";
+            command_to_put_edge_up += "L'";
         } else if &color_of_front[1][2][0..1] == center_color_of_down {
             if &color_of_up[1][2][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[0][1][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[1][0][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "R";
+            command_to_put_edge_up += "R";
         } else if &color_of_left[1][0][0..1] == center_color_of_down {
             if &color_of_up[0][1][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[1][0][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[2][1][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "B'";
+            command_to_put_edge_up += "B'";
         } else if &color_of_left[1][2][0..1] == center_color_of_down {
             if &color_of_up[2][1][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[1][2][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[0][1][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "F";
+            command_to_put_edge_up += "F";
         } else if &color_of_back[1][0][0..1] == center_color_of_down {
             if &color_of_up[1][2][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[0][1][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[1][0][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "R'";
+            command_to_put_edge_up += "R'";
         } else if &color_of_back[1][2][0..1] == center_color_of_down {
             if &color_of_up[1][0][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[2][1][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[1][2][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "L";
+            command_to_put_edge_up += "L";
         } else if &color_of_right[1][0][0..1] == center_color_of_down {
             if &color_of_up[2][1][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[1][2][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[0][1][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "F'";
+            command_to_put_edge_up += "F'";
         } else if &color_of_right[1][2][0..1] == center_color_of_down {
             if &color_of_up[0][1][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[1][0][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[2][1][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "B";
+            command_to_put_edge_up += "B";
         }
 
-        command_to_lift_edge
+        command_to_put_edge_up
     }
 
     fn check_edges_of_third_layer(&mut self) -> String {
-        let mut command_to_lift_edge = String::new();
+        let mut command_to_put_edge_up = String::new();
 
         let color_of_front = self.get_front().get_color();
         let color_of_back = self.get_back().get_color();
@@ -694,79 +694,80 @@ impl Cube {
         let center_color_of_down = &self.get_down().get_color()[1][1][0..1];
 
         if &color_of_front[0][1][0..1] == center_color_of_down {
-            command_to_lift_edge += "F'";
+            command_to_put_edge_up += "F'";
             if &color_of_up[1][0][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[2][1][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[1][2][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "L'";
+            command_to_put_edge_up += "L'";
         } else if &color_of_left[0][1][0..1] == center_color_of_down {
-            command_to_lift_edge += "L'";
+            command_to_put_edge_up += "L'";
             if &color_of_up[0][1][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[1][0][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[2][1][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "B'";
+            command_to_put_edge_up += "B'";
         } else if &color_of_back[0][1][0..1] == center_color_of_down {
-            command_to_lift_edge += "B'";
+            command_to_put_edge_up += "B'";
             if &color_of_up[1][2][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[0][1][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[1][0][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "R'";
+            command_to_put_edge_up += "R'";
         } else if &color_of_right[0][1][0..1] == center_color_of_down {
-            command_to_lift_edge += "R'";
+            command_to_put_edge_up += "R'";
             if &color_of_up[2][1][0..1] == center_color_of_down {
-                command_to_lift_edge += "U";
+                command_to_put_edge_up += "U";
                 let mut times = 1;
                 if &color_of_up[1][2][0..1] == center_color_of_down {
                     times += 1;
                     if &color_of_up[0][1][0..1] == center_color_of_down {
                         times = 1;
-                        command_to_lift_edge += "'";
+                        command_to_put_edge_up += "'";
                     }
                 }
                 if times > 1 {
-                    command_to_lift_edge += times.to_string().as_str();
+                    command_to_put_edge_up += times.to_string().as_str();
                 }
             }
-            command_to_lift_edge += "F'";
+            command_to_put_edge_up += "F'";
         }
 
-        command_to_lift_edge
+        command_to_put_edge_up
     }
 
     fn execute_command(&mut self, command: String) {
+        //println!("{}", command);
         let mut i = 0;
         while i < command.len() {
             if &command[i..i + 1] == "F" {
@@ -888,20 +889,20 @@ impl Cube {
         }
     }
 
-    fn make_cross_of_down(&mut self) {
+    fn make_cross_of_down_face(&mut self) {
         for _ in 0..4 {
             for _ in 0..4 {
                 //TO CHECK MOMENT WHEN ARE SOME FACES ALREADY READY
-                self.lower_edge_of_up();
+                self.put_edge_of_up_face_down();
                 self.set_front(self.get_left());
             }
-            let command_to_lower_lower_edge_of_up =
-                self.check_same_center_of_front_and_upper_edge_of_front();
-            self.execute_command(command_to_lower_lower_edge_of_up + "Y'");
+            let command_to_put_lower_edge_of_up_face_down =
+                self.check_same_center_and_upper_edge_of_front_face();
+            self.execute_command(command_to_put_lower_edge_of_up_face_down + "Y'");
         }
     }
 
-    fn lower_edge_of_up(&mut self) {
+    fn put_edge_of_up_face_down(&mut self) {
         if self.get_up().get_color()[2][1][0..1] == self.get_down().get_color()[1][1][0..1]
             && self.get_front().get_color()[0][1][0..1] == self.get_front().get_color()[1][1][0..1]
         {
@@ -910,8 +911,8 @@ impl Cube {
         }
     }
 
-    fn check_same_center_of_front_and_upper_edge_of_front(&mut self) -> String {
-        let mut command_to_lower = String::new();
+    fn check_same_center_and_upper_edge_of_front_face(&mut self) -> String {
+        let mut command_to_put_edge_down = String::new();
 
         let color_of_back = self.get_back().get_color();
         let color_of_left = self.get_left().get_color();
@@ -923,38 +924,38 @@ impl Cube {
         if &self.get_up().get_color()[1][1][0..1] == center_color_of_down
             && &color_of_right[0][1][0..1] == center_color_of_front
         {
-            command_to_lower += "UF2";
+            command_to_put_edge_down += "UF2";
         } else if &self.get_up().get_color()[0][1][0..1] == center_color_of_down
             && &color_of_back[0][1][0..1] == center_color_of_front
         {
-            command_to_lower += "U2F2";
+            command_to_put_edge_down += "U2F2";
         } else if &self.get_up().get_color()[1][0][0..1] == center_color_of_down
             && &color_of_left[0][1][0..1] == center_color_of_front
         {
-            command_to_lower += "U'F2";
+            command_to_put_edge_down += "U'F2";
         }
-        command_to_lower
+        command_to_put_edge_down
     }
 
-    fn make_corners_of_down(&mut self) {
-        self.lift_corners_of_down();
-        self.lower_corners_of_down();
+    fn make_corners_of_down_face(&mut self) {
+        self.put_corners_of_down_face_up();
+        self.put_corners_of_up_face_down();
     }
 
-    fn lift_corners_of_down(&mut self) {
+    fn put_corners_of_down_face_up(&mut self) {
         for _ in 0..2 {
             for _ in 0..2 {
-                let command_to_lift_corner = self.check_corners_of_down();
-                if !command_to_lift_corner.is_empty() {
-                    self.execute_command(command_to_lift_corner);
+                let command_to_put_corner_up = self.check_corners_of_down_face();
+                if !command_to_put_corner_up.is_empty() {
+                    self.execute_command(command_to_put_corner_up);
                 }
             }
             self.execute_command("Y2".to_string());
         }
     }
 
-    fn check_corners_of_down(&mut self) -> String {
-        let mut command_to_lift = String::new();
+    fn check_corners_of_down_face(&mut self) -> String {
+        let mut command_to_put_corner_up = String::new();
 
         let color_of_upper_left_corner_of_down = self.get_down().get_color()[0][0].clone();
         let color_of_upper_right_corner_of_down = self.get_down().get_color()[0][2].clone();
@@ -976,14 +977,14 @@ impl Cube {
         {
             if color_of_lower_left_corner_of_up.contains("W") {
                 if !color_of_lower_right_corner_of_up.contains("W") {
-                    command_to_lift += "U";
+                    command_to_put_corner_up += "U";
                 } else if !color_of_upper_left_corner_of_up.contains("W") {
-                    command_to_lift += "U'";
+                    command_to_put_corner_up += "U'";
                 } else if !color_of_upper_right_corner_of_up.contains("W") {
-                    command_to_lift += "U2";
+                    command_to_put_corner_up += "U2";
                 }
             }
-            command_to_lift += "L'U'LU";
+            command_to_put_corner_up += "L'U'LU";
         } else if color_of_upper_right_corner_of_down.contains("W")
             && (&color_of_upper_right_corner_of_down[0..1] != "W"
                 || (&color_of_upper_right_corner_of_down[0..1] == "W"
@@ -992,33 +993,33 @@ impl Cube {
         {
             if color_of_lower_right_corner_of_up.contains("W") {
                 if !color_of_upper_right_corner_of_up.contains("W") {
-                    command_to_lift += "U";
+                    command_to_put_corner_up += "U";
                 } else if !color_of_lower_left_corner_of_up.contains("W") {
-                    command_to_lift += "U'";
+                    command_to_put_corner_up += "U'";
                 } else if !color_of_upper_left_corner_of_up.contains("W") {
-                    command_to_lift += "U2";
+                    command_to_put_corner_up += "U2";
                 }
             }
-            command_to_lift += "RUR'U'";
+            command_to_put_corner_up += "RUR'U'";
         }
 
-        command_to_lift
+        command_to_put_corner_up
     }
 
-    fn lower_corners_of_down(&mut self) {
+    fn put_corners_of_up_face_down(&mut self) {
         for _ in 0..4 {
             for _ in 0..2 {
-                let command_to_lift_corner = self.check_corners_of_up();
-                if !command_to_lift_corner.is_empty() {
-                    self.execute_command(command_to_lift_corner);
+                let command_to_put_corner_down = self.check_corners_of_up_face();
+                if !command_to_put_corner_down.is_empty() {
+                    self.execute_command(command_to_put_corner_down);
                 }
             }
             self.execute_command("Y'".to_string());
         }
     }
 
-    fn check_corners_of_up(&mut self) -> String {
-        let mut command_to_lower = String::new();
+    fn check_corners_of_up_face(&mut self) -> String {
+        let mut command_to_put_corner_down = String::new();
 
         let color_of_upper_left_corner_of_up = self.get_up().get_color()[0][0].clone();
         let color_of_upper_right_corner_of_up = self.get_up().get_color()[0][2].clone();
@@ -1035,104 +1036,125 @@ impl Cube {
             && color_of_lower_left_corner_of_up.contains(third_color_of_upper_left_corner_of_down)
         {
             if &color_of_lower_left_corner_of_up[0..1] == "W" {
-                command_to_lower += "(L'U'LU)x3";
+                command_to_put_corner_down += "(L'U'LU)x3";
             } else if &color_of_lower_left_corner_of_up[1..2] == "W" {
-                command_to_lower += "Y'RUR'U'Y";
+                command_to_put_corner_down += "Y'RUR'U'Y";
             } else if &color_of_lower_left_corner_of_up[2..3] == "W" {
-                command_to_lower += "L'U'LU";
+                command_to_put_corner_down += "L'U'LU";
             }
         } else if color_of_lower_right_corner_of_up
             .contains(second_color_of_upper_right_corner_of_down)
             && color_of_lower_right_corner_of_up.contains(third_color_of_upper_right_corner_of_down)
         {
             if &color_of_lower_right_corner_of_up[0..1] == "W" {
-                command_to_lower += "(RUR'U')x3";
+                command_to_put_corner_down += "(RUR'U')x3";
             } else if &color_of_lower_right_corner_of_up[1..2] == "W" {
-                command_to_lower += "RUR'U'";
+                command_to_put_corner_down += "RUR'U'";
             } else if &color_of_lower_right_corner_of_up[2..3] == "W" {
-                command_to_lower += "YL'U'LUY'";
+                command_to_put_corner_down += "YL'U'LUY'";
             }
         } else if color_of_upper_left_corner_of_up
             .contains(second_color_of_upper_left_corner_of_down)
             && color_of_upper_left_corner_of_up.contains(third_color_of_upper_left_corner_of_down)
         {
-            command_to_lower += "U'";
+            command_to_put_corner_down += "U'";
             if &color_of_lower_left_corner_of_up[0..1] == "W" {
-                command_to_lower += "(L'U'LU)x3";
+                command_to_put_corner_down += "(L'U'LU)x3";
             } else if &color_of_lower_left_corner_of_up[1..2] == "W" {
-                command_to_lower += "Y'RUR'U'Y";
+                command_to_put_corner_down += "Y'RUR'U'Y";
             } else if &color_of_lower_left_corner_of_up[2..3] == "W" {
-                command_to_lower += "L'U'LU";
+                command_to_put_corner_down += "L'U'LU";
             }
         } else if color_of_lower_right_corner_of_up
             .contains(second_color_of_upper_left_corner_of_down)
             && color_of_lower_right_corner_of_up.contains(third_color_of_upper_left_corner_of_down)
         {
-            command_to_lower += "U";
+            command_to_put_corner_down += "U";
             if &color_of_lower_left_corner_of_up[0..1] == "W" {
-                command_to_lower += "(L'U'LU)x3";
+                command_to_put_corner_down += "(L'U'LU)x3";
             } else if &color_of_lower_left_corner_of_up[1..2] == "W" {
-                command_to_lower += "Y'RUR'U'Y";
+                command_to_put_corner_down += "Y'RUR'U'Y";
             } else if &color_of_lower_left_corner_of_up[2..3] == "W" {
-                command_to_lower += "L'U'LU";
+                command_to_put_corner_down += "L'U'LU";
             }
         } else if color_of_lower_left_corner_of_up
             .contains(second_color_of_upper_right_corner_of_down)
             && color_of_lower_left_corner_of_up.contains(third_color_of_upper_right_corner_of_down)
         {
-            command_to_lower += "U'";
+            command_to_put_corner_down += "U'";
             if &color_of_lower_left_corner_of_up[0..1] == "W" {
-                command_to_lower += "(RUR'U')x3";
+                command_to_put_corner_down += "(RUR'U')x3";
             } else if &color_of_lower_left_corner_of_up[1..2] == "W" {
-                command_to_lower += "RUR'U'";
+                command_to_put_corner_down += "RUR'U'";
             } else if &color_of_lower_left_corner_of_up[2..3] == "W" {
-                command_to_lower += "YL'U'LUY'";
+                command_to_put_corner_down += "YL'U'LUY'";
             }
         } else if color_of_upper_right_corner_of_up
             .contains(second_color_of_upper_right_corner_of_down)
             && color_of_upper_right_corner_of_up.contains(third_color_of_upper_right_corner_of_down)
         {
-            command_to_lower += "U";
+            command_to_put_corner_down += "U";
             if &color_of_lower_left_corner_of_up[0..1] == "W" {
-                command_to_lower += "(RUR'U')x3";
+                command_to_put_corner_down += "(RUR'U')x3";
             } else if &color_of_lower_left_corner_of_up[1..2] == "W" {
-                command_to_lower += "RUR'U'";
+                command_to_put_corner_down += "RUR'U'";
             } else if &color_of_lower_left_corner_of_up[2..3] == "W" {
-                command_to_lower += "YL'U'LUY'";
+                command_to_put_corner_down += "YL'U'LUY'";
             }
         } else if color_of_upper_right_corner_of_up
             .contains(second_color_of_upper_left_corner_of_down)
             && color_of_upper_right_corner_of_up.contains(third_color_of_upper_left_corner_of_down)
         {
-            command_to_lower += "U2";
+            command_to_put_corner_down += "U2";
             if &color_of_lower_left_corner_of_up[0..1] == "W" {
-                command_to_lower += "(L'U'LU)x3";
+                command_to_put_corner_down += "(L'U'LU)x3";
             } else if &color_of_lower_left_corner_of_up[1..2] == "W" {
-                command_to_lower += "Y'RUR'U'Y";
+                command_to_put_corner_down += "Y'RUR'U'Y";
             } else if &color_of_lower_left_corner_of_up[2..3] == "W" {
-                command_to_lower += "L'U'LU";
+                command_to_put_corner_down += "L'U'LU";
             }
         } else if color_of_upper_left_corner_of_up
             .contains(second_color_of_upper_right_corner_of_down)
             && color_of_upper_left_corner_of_up.contains(third_color_of_upper_right_corner_of_down)
         {
-            command_to_lower += "U2";
+            command_to_put_corner_down += "U2";
             if &color_of_lower_left_corner_of_up[0..1] == "W" {
-                command_to_lower += "(RUR'U')x3";
+                command_to_put_corner_down += "(RUR'U')x3";
             } else if &color_of_lower_left_corner_of_up[1..2] == "W" {
-                command_to_lower += "RUR'U'";
+                command_to_put_corner_down += "RUR'U'";
             } else if &color_of_lower_left_corner_of_up[2..3] == "W" {
-                command_to_lower += "YL'U'LUY'";
+                command_to_put_corner_down += "YL'U'LUY'";
             }
         }
-        command_to_lower
+        command_to_put_corner_down
     }
 
-    fn make_second_layer(&mut self) {}
+    fn make_second_layer(&mut self) {
+        self.put_edges_of_second_layer_up();
+        self.put_edges_of_second_layer_in_place();
+    }
 
-    fn make_cross_of_up(&mut self) {}
+    fn put_edges_of_second_layer_up(&mut self) {
+        for _ in 0..2 {
+            for _ in 0..2 {
+                let command_to_put_edge_up = self.check_edges_of_second_layer_of_front_face();
+                if !command_to_put_edge_up.is_empty() {
+                    self.execute_command(command_to_put_edge_up);
+                }
+            }
+            self.execute_command("Y2".to_string());
+        }
+    }
 
-    fn make_corners_of_up(&mut self) {}
+    fn check_edges_of_second_layer_of_front_face(&mut self) -> String {
+        String::new()
+    }
+
+    fn put_edges_of_second_layer_in_place(&mut self) {}
+
+    fn make_cross_of_up_face(&mut self) {}
+
+    fn make_corners_of_up_face(&mut self) {}
 
     fn make_third_layer(&mut self) {}
 }
@@ -1892,7 +1914,7 @@ mod tests {
         ];
         assert_eq!(actual_color_of_up, expected_color_of_up);
 
-        cube.make_cross_of_down();
+        cube.make_cross_of_down_face();
 
         let actual_color_of_down = cube.get_down().get_color();
         let expected_color_of_down = [
@@ -2006,7 +2028,7 @@ mod tests {
         ];
         assert_eq!(actual_color_of_up, expected_color_of_up);
 
-        cube.make_cross_of_down();
+        cube.make_cross_of_down_face();
 
         let actual_color_of_down = cube.get_down().get_color();
         let expected_color_of_down = [
@@ -2016,15 +2038,15 @@ mod tests {
         ];
         assert_eq!(actual_color_of_down, expected_color_of_down);
 
-        cube.make_corners_of_down();
+        cube.make_corners_of_down_face();
 
         let actual_color_of_front = cube.get_front().get_color();
         let expected_color_of_front = [
-            ["RYG".to_string(), "RY".to_string(), "BYR".to_string()],
+            ["RBY".to_string(), "BR".to_string(), "BOY".to_string()],
             ["RG".to_string(), "O".to_string(), "BO".to_string()],
             ["OWG".to_string(), "OW".to_string(), "OBW".to_string()],
         ];
-        assert_eq!(actual_color_of_down, expected_color_of_down);
+        assert_eq!(actual_color_of_front, expected_color_of_front);
 
         let actual_color_of_down = cube.get_down().get_color();
         let expected_color_of_down = [
