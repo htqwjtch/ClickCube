@@ -262,7 +262,9 @@ impl Cube {
     }
 
     fn make_daisy(&mut self) {
+        print!("\n________MAKE_DAISY________");
         self.put_edges_of_down_face_up();
+        self.println_all_faces();
     }
 
     fn put_edges_of_down_face_up(&mut self) {
@@ -739,6 +741,7 @@ impl Cube {
     }
 
     fn execute_command(&mut self, command: String) {
+        println!("\n{}", command);
         let mut i = 0;
         while i < command.len() {
             if &command[i..i + 1] == "F" {
@@ -875,8 +878,33 @@ impl Cube {
         }
     }
 
+    fn println_all_faces(&mut self) {
+        println!("FRONT:");
+        self.println_face(&(self.get_front()));
+        println!("\nBACK:");
+        self.println_face(&(self.get_back()));
+
+        println!("\nUP:");
+        self.println_face(&(self.get_up()));
+        println!("\nDOWN:");
+        self.println_face(&(self.get_down()));
+
+        println!("\nLEFT:");
+        self.println_face(&(self.get_left()));
+        println!("\nRIGHT:");
+        self.println_face(&(self.get_right()));
+    }
+
+    fn println_face(&mut self, face: &Face) {
+        println!("{:?}", face.get_color()[0]);
+        println!("{:?}", face.get_color()[1]);
+        println!("{:?}", face.get_color()[2]);
+    }
+
     fn make_cross_of_down_face(&mut self) {
+        print!("\n________MAKE_CROSS_OF_DOWN_FACE________");
         self.put_edges_of_up_face_down();
+        self.println_all_faces();
     }
 
     fn put_edges_of_up_face_down(&mut self) {
@@ -924,8 +952,11 @@ impl Cube {
     }
 
     fn make_first_layer(&mut self) {
+        print!("\n________MAKE_FIRST_LAYER________");
         self.put_corners_of_down_face_up();
+        self.println_all_faces();
         self.put_corners_of_up_face_down();
+        self.println_all_faces();
     }
 
     fn put_corners_of_down_face_up(&mut self) {
@@ -1115,8 +1146,11 @@ impl Cube {
     }
 
     fn make_second_layer(&mut self) {
+        print!("\n________MAKE_SECOND_LAYER________");
         self.put_edges_of_second_layer_up();
+        self.println_all_faces();
         self.put_edges_of_second_layer_in_place();
+        self.println_all_faces();
     }
 
     fn put_edges_of_second_layer_up(&mut self) {
@@ -1179,14 +1213,14 @@ impl Cube {
     }
 
     fn put_edges_of_second_layer_in_place(&mut self) {
-        for _ in 0..4 {
+        for _ in 0..2 {
             for _ in 0..2 {
                 let command_to_put_edge_in_place = self.check_edges_of_up_face_1();
                 if !command_to_put_edge_in_place.is_empty() {
                     self.execute_command(command_to_put_edge_in_place);
                 }
             }
-            self.execute_command("Y'".to_string());
+            self.execute_command("Y2".to_string());
         }
     }
 
@@ -1194,7 +1228,6 @@ impl Cube {
         let mut command_to_put_edge_in_place = String::new();
 
         let color_of_center_of_front_face = self.get_front().get_color()[1][1].clone();
-        let color_of_center_of_up_face = self.get_up().get_color()[1][1].clone();
         let color_of_center_of_left_face = self.get_left().get_color()[1][1].clone();
         let color_of_center_of_right_face = self.get_right().get_color()[1][1].clone();
 
@@ -1203,38 +1236,85 @@ impl Cube {
         let left_edge_of_up_face = self.get_up().get_color()[1][0].clone();
         let right_edge_of_up_face = self.get_up().get_color()[1][2].clone();
 
-        if &upper_edge_of_up_face[0..1] == color_of_center_of_front_face.as_str()
-            && &upper_edge_of_up_face[1..2] != color_of_center_of_up_face.as_str()
+        if upper_edge_of_up_face.contains(color_of_center_of_front_face.as_str())
+            && upper_edge_of_up_face.contains(color_of_center_of_left_face.as_str())
         {
-            if &upper_edge_of_up_face[1..2] == color_of_center_of_left_face.as_str() {
+            if &upper_edge_of_up_face[0..1] == color_of_center_of_front_face.as_str()
+                && &upper_edge_of_up_face[1..2] == color_of_center_of_left_face.as_str()
+            {
                 command_to_put_edge_in_place += "Y'RUR'U'YL'U'LU";
-            } else if &upper_edge_of_up_face[1..2] == color_of_center_of_right_face.as_str() {
+            } else {
+                command_to_put_edge_in_place += "UL'U'LUY'RUR'U'Y";
+            }
+        } else if upper_edge_of_up_face.contains(color_of_center_of_front_face.as_str())
+            && upper_edge_of_up_face.contains(color_of_center_of_right_face.as_str())
+        {
+            if &upper_edge_of_up_face[0..1] == color_of_center_of_front_face.as_str()
+                && &upper_edge_of_up_face[1..2] == color_of_center_of_right_face.as_str()
+            {
                 command_to_put_edge_in_place += "YL'U'LUY'RUR'U'";
+            } else {
+                command_to_put_edge_in_place += "U'RUR'U'YL'U'LUY'";
             }
-        } else if &left_edge_of_up_face[0..1] == color_of_center_of_front_face.as_str()
-            && &left_edge_of_up_face[1..2] != color_of_center_of_up_face.as_str()
+        } else if left_edge_of_up_face.contains(color_of_center_of_front_face.as_str())
+            && left_edge_of_up_face.contains(color_of_center_of_left_face.as_str())
         {
-            if &left_edge_of_up_face[1..2] == color_of_center_of_left_face.as_str() {
-                command_to_put_edge_in_place += "Y'URUR'U'YL'U'LU";
-            } else if &left_edge_of_up_face[1..2] == color_of_center_of_right_face.as_str() {
-                command_to_put_edge_in_place += "U2YU'L'U'LUY'RUR'U'";
+            if &left_edge_of_up_face[0..1] == color_of_center_of_front_face.as_str()
+                && &left_edge_of_up_face[1..2] == color_of_center_of_left_face.as_str()
+            {
+                command_to_put_edge_in_place += "UY'RUR'U'YL'U'LU";
+            } else {
+                command_to_put_edge_in_place += "U2L'U'LUY'RUR'U'Y";
             }
-        } else if &right_edge_of_up_face[0..1] == color_of_center_of_front_face.as_str()
-            && &right_edge_of_up_face[1..2] != color_of_center_of_up_face.as_str()
+        } else if left_edge_of_up_face.contains(color_of_center_of_front_face.as_str())
+            && left_edge_of_up_face.contains(color_of_center_of_right_face.as_str())
         {
-            if &right_edge_of_up_face[1..2] == color_of_center_of_right_face.as_str() {
-                command_to_put_edge_in_place += "YU'L'U'LUY'RUR'U'";
-            } else if &right_edge_of_up_face[1..2] == color_of_center_of_left_face.as_str() {
-                command_to_put_edge_in_place += "U2Y'URUR'U'YL'U'LU";
+            if &left_edge_of_up_face[0..1] == color_of_center_of_front_face.as_str()
+                && &left_edge_of_up_face[1..2] == color_of_center_of_right_face.as_str()
+            {
+                command_to_put_edge_in_place += "UYL'U'LUY'RUR'U'";
+            } else {
+                command_to_put_edge_in_place += "RUR'U'YL'U'LUY'";
             }
-        } else if &lower_edge_of_up_face[0..1] == color_of_center_of_front_face.as_str()
-            && &lower_edge_of_up_face[1..2] != color_of_center_of_up_face.as_str()
+        } else if lower_edge_of_up_face.contains(color_of_center_of_front_face.as_str())
+            && lower_edge_of_up_face.contains(color_of_center_of_left_face.as_str())
         {
-            command_to_put_edge_in_place += "U2";
-            if &lower_edge_of_up_face[1..2] == color_of_center_of_left_face.as_str() {
-                command_to_put_edge_in_place += "Y'RUR'U'YL'U'LU";
-            } else if &upper_edge_of_up_face[1..2] == color_of_center_of_right_face.as_str() {
-                command_to_put_edge_in_place += "YL'U'LUY'RUR'U'";
+            if &lower_edge_of_up_face[0..1] == color_of_center_of_front_face.as_str()
+                && &lower_edge_of_up_face[1..2] == color_of_center_of_left_face.as_str()
+            {
+                command_to_put_edge_in_place += "U2Y'RUR'U'YL'U'LU";
+            } else {
+                command_to_put_edge_in_place += "U'L'U'LUY'RUR'U'Y";
+            }
+        } else if lower_edge_of_up_face.contains(color_of_center_of_front_face.as_str())
+            && lower_edge_of_up_face.contains(color_of_center_of_right_face.as_str())
+        {
+            if &lower_edge_of_up_face[0..1] == color_of_center_of_front_face.as_str()
+                && &lower_edge_of_up_face[1..2] == color_of_center_of_right_face.as_str()
+            {
+                command_to_put_edge_in_place += "U2YL'U'LUY'RUR'U'";
+            } else {
+                command_to_put_edge_in_place += "URUR'U'YL'U'LUY'";
+            }
+        } else if right_edge_of_up_face.contains(color_of_center_of_front_face.as_str())
+            && right_edge_of_up_face.contains(color_of_center_of_left_face.as_str())
+        {
+            if &right_edge_of_up_face[0..1] == color_of_center_of_front_face.as_str()
+                && &right_edge_of_up_face[1..2] == color_of_center_of_left_face.as_str()
+            {
+                command_to_put_edge_in_place += "U'Y'RUR'U'YL'U'LU";
+            } else {
+                command_to_put_edge_in_place += "L'U'LUY'RUR'U'Y";
+            }
+        } else if right_edge_of_up_face.contains(color_of_center_of_front_face.as_str())
+            && right_edge_of_up_face.contains(color_of_center_of_right_face.as_str())
+        {
+            if &right_edge_of_up_face[0..1] == color_of_center_of_front_face.as_str()
+                && &right_edge_of_up_face[1..2] == color_of_center_of_right_face.as_str()
+            {
+                command_to_put_edge_in_place += "U'YL'U'LUY'RUR'U'";
+            } else {
+                command_to_put_edge_in_place += "U2RUR'U'YL'U'LUY'";
             }
         }
 
@@ -1242,8 +1322,11 @@ impl Cube {
     }
 
     fn make_cross_of_up_face(&mut self) {
+        print!("\n________MAKE_CROSS_OF_UP_FACE________");
         self.put_edges_of_up_face_in_cross();
+        self.println_all_faces();
         self.put_edges_of_up_face_in_place();
+        self.println_all_faces();
     }
 
     fn put_edges_of_up_face_in_cross(&mut self) {
@@ -1295,11 +1378,15 @@ impl Cube {
     }
 
     fn put_edges_of_up_face_in_place(&mut self) {
-        for _ in 0..2 {
+        loop {
             let command_to_put_edges_in_place = self.check_edges_of_up_face_3();
             if !command_to_put_edges_in_place.is_empty() {
                 self.execute_command(command_to_put_edges_in_place);
             }
+            if self.check_edges_of_up_face_4() {
+                break;
+            }
+            self.execute_command("U".to_string());
         }
     }
 
@@ -1321,10 +1408,10 @@ impl Cube {
                 if &lower_edge_of_up_face[1..2] != color_of_center_of_front_face.as_str()
                     && &left_edge_of_up_face[1..2] != color_of_center_of_left_face.as_str()
                 {
-                    command_to_make_cross += "RUR'URU2R'";
+                    command_to_make_cross += "RUR'URU2R'U";
                 }
             } else if &left_edge_of_up_face[1..2] == color_of_center_of_left_face.as_str() {
-                command_to_make_cross += "URUR'URU2R'";
+                command_to_make_cross += "URUR'URU2R'U";
             } else if &lower_edge_of_up_face[1..2] == color_of_center_of_front_face.as_str() {
                 command_to_make_cross += "RUR'URU2R'";
             }
@@ -1332,19 +1419,38 @@ impl Cube {
             if &right_edge_of_up_face[1..2] == color_of_center_of_right_face.as_str() {
                 command_to_make_cross += "URUR'URU2R'";
             } else if &lower_edge_of_up_face[1..2] == color_of_center_of_front_face.as_str() {
-                command_to_make_cross += "U2RUR'URU2R'";
+                command_to_make_cross += "U2RUR'URU2R'U";
             }
         } else if &lower_edge_of_up_face[1..2] == color_of_center_of_front_face.as_str() {
             if &right_edge_of_up_face[1..2] == color_of_center_of_right_face.as_str() {
-                command_to_make_cross += "U'RUR'URU2R'";
+                command_to_make_cross += "U'RUR'URU2R'U";
             }
         }
 
         command_to_make_cross
     }
 
+    fn check_edges_of_up_face_4(&mut self) -> bool {
+        let upper_edge_of_up_face = self.get_up().get_color()[0][1].clone();
+        let lower_edge_of_up_face = self.get_up().get_color()[2][1].clone();
+        let left_edge_of_up_face = self.get_up().get_color()[1][0].clone();
+        let right_edge_of_up_face = self.get_up().get_color()[1][2].clone();
+
+        let color_of_center_of_front_face = self.get_front().get_color()[1][1].clone();
+        let color_of_center_of_back_face = self.get_back().get_color()[1][1].clone();
+        let color_of_center_of_left_face = self.get_left().get_color()[1][1].clone();
+        let color_of_center_of_right_face = self.get_right().get_color()[1][1].clone();
+
+        &upper_edge_of_up_face[1..2] == color_of_center_of_back_face.as_str()
+            && &right_edge_of_up_face[1..2] == color_of_center_of_right_face.as_str()
+            && &lower_edge_of_up_face[1..2] == color_of_center_of_front_face.as_str()
+            && &left_edge_of_up_face[1..2] == color_of_center_of_left_face.as_str()
+    }
+
     fn make_corners_of_up_face(&mut self) {
+        print!("\n________MAKE_CORNERS_OF_UP_FACE________");
         self.put_corners_of_up_face_in_place();
+        self.println_all_faces();
     }
 
     fn put_corners_of_up_face_in_place(&mut self) {
@@ -1429,7 +1535,7 @@ impl Cube {
             {
                 command_to_put_corners_in_place += "U2RU'L'UR'U'LU";
             }
-        }else{
+        } else {
             command_to_put_corners_in_place += "RU'L'UR'U'LU";
         }
 
@@ -1457,13 +1563,13 @@ impl Cube {
     }
 
     fn make_third_layer(&mut self) {
+        print!("\n________MAKE_THIRD_LAYER________");
         self.put_corners_of_up_face_correctly();
+        self.println_all_faces();
     }
 
     fn put_corners_of_up_face_correctly(&mut self) {
-        for _ in 0..2 {
-            self.set_front(self.get_down());
-        }
+        self.execute_command("X2".to_string());
         for _ in 0..4 {
             let command_to_put_corners_correctly = self.check_corners_of_up_face_3();
             if !command_to_put_corners_correctly.is_empty() {
@@ -2146,7 +2252,7 @@ mod tests {
 
         let actual_color_of_front = cube.get_front().get_color();
         let expected_color_of_front = [
-            ["RBY".to_string(), "YR".to_string(), "GYO".to_string()],
+            ["RBY".to_string(), "YO".to_string(), "YBO".to_string()],
             ["OG".to_string(), "O".to_string(), "OB".to_string()],
             ["OWG".to_string(), "OW".to_string(), "OBW".to_string()],
         ];
@@ -2154,9 +2260,9 @@ mod tests {
 
         let actual_color_of_up = cube.get_up().get_color();
         let expected_color_of_up = [
-            ["YBO".to_string(), "YB".to_string(), "YGR".to_string()],
-            ["YO".to_string(), "Y".to_string(), "GY".to_string()],
-            ["YRB".to_string(), "RY".to_string(), "YOG".to_string()],
+            ["RYG".to_string(), "YG".to_string(), "YOG".to_string()],
+            ["YR".to_string(), "Y".to_string(), "BY".to_string()],
+            ["YRB".to_string(), "OY".to_string(), "BOY".to_string()],
         ];
         assert_eq!(actual_color_of_up, expected_color_of_up);
     }
@@ -2174,7 +2280,7 @@ mod tests {
 
         let actual_color_of_front = cube.get_front().get_color();
         let expected_color_of_front = [
-            ["GRY".to_string(), "GY".to_string(), "OYB".to_string()],
+            ["YBO".to_string(), "OY".to_string(), "GYO".to_string()],
             ["OG".to_string(), "O".to_string(), "OB".to_string()],
             ["OWG".to_string(), "OW".to_string(), "OBW".to_string()],
         ];
@@ -2182,9 +2288,9 @@ mod tests {
 
         let actual_color_of_up = cube.get_up().get_color();
         let expected_color_of_up = [
-            ["OGY".to_string(), "YB".to_string(), "BYR".to_string()],
-            ["YR".to_string(), "Y".to_string(), "YO".to_string()],
-            ["YGR".to_string(), "YG".to_string(), "YBO".to_string()],
+            ["BYR".to_string(), "YR".to_string(), "RYG".to_string()],
+            ["YG".to_string(), "Y".to_string(), "YB".to_string()],
+            ["OYB".to_string(), "YO".to_string(), "YOG".to_string()],
         ];
         assert_eq!(actual_color_of_up, expected_color_of_up);
     }
@@ -2203,7 +2309,7 @@ mod tests {
 
         let actual_color_of_front = cube.get_front().get_color();
         let expected_color_of_front = [
-            ["OGY".to_string(), "OY".to_string(), "BOY".to_string()],
+            ["GYO".to_string(), "OY".to_string(), "YBO".to_string()],
             ["OG".to_string(), "O".to_string(), "OB".to_string()],
             ["OWG".to_string(), "OW".to_string(), "OBW".to_string()],
         ];
@@ -2211,9 +2317,9 @@ mod tests {
 
         let actual_color_of_up = cube.get_up().get_color();
         let expected_color_of_up = [
-            ["YGR".to_string(), "YR".to_string(), "RBY".to_string()],
+            ["GRY".to_string(), "YR".to_string(), "YRB".to_string()],
             ["YG".to_string(), "Y".to_string(), "YB".to_string()],
-            ["YOG".to_string(), "YO".to_string(), "OYB".to_string()],
+            ["OGY".to_string(), "YO".to_string(), "BOY".to_string()],
         ];
         assert_eq!(actual_color_of_up, expected_color_of_up);
     }
@@ -2360,9 +2466,9 @@ mod tests {
 
         let actual_color_of_up = cube.get_up().get_color();
         let expected_color_of_up = [
-            ["GRY".to_string(), "YG".to_string(), "OYB".to_string()],
-            ["YO".to_string(), "Y".to_string(), "YR".to_string()],
-            ["YOG".to_string(), "YB".to_string(), "YRB".to_string()],
+            ["OYB".to_string(), "YR".to_string(), "YRB".to_string()],
+            ["YG".to_string(), "Y".to_string(), "YB".to_string()],
+            ["GRY".to_string(), "YO".to_string(), "YOG".to_string()],
         ];
         assert_eq!(actual_color_of_up, expected_color_of_up);
     }
@@ -2411,6 +2517,75 @@ mod tests {
             ["WGO".to_string(), "WO".to_string(), "WOB".to_string()],
             ["WG".to_string(), "W".to_string(), "WB".to_string()],
             ["WRG".to_string(), "WR".to_string(), "WBR".to_string()],
+        ];
+        assert_eq!(actual_color_of_up, expected_color_of_up);
+    }
+
+    #[test]
+    fn test_solve_random() {
+        let orange = [
+            ["RWB".to_string(), "GW".to_string(), "BYR".to_string()],
+            ["BW".to_string(), "O".to_string(), "YB".to_string()],
+            ["BOY".to_string(), "OB".to_string(), "OWG".to_string()],
+        ];
+        let red = [
+            ["GWR".to_string(), "YO".to_string(), "OBW".to_string()],
+            ["WR".to_string(), "R".to_string(), "RG".to_string()],
+            ["GYO".to_string(), "YR".to_string(), "YGR".to_string()],
+        ];
+        let yellow = [
+            ["BWO".to_string(), "OY".to_string(), "RGW".to_string()],
+            ["YG".to_string(), "Y".to_string(), "RB".to_string()],
+            ["BRW".to_string(), "WG".to_string(), "YRB".to_string()],
+        ];
+        let white = [
+            ["OYB".to_string(), "BO".to_string(), "GOW".to_string()],
+            ["OW".to_string(), "W".to_string(), "GO".to_string()],
+            ["RYG".to_string(), "RY".to_string(), "YOG".to_string()],
+        ];
+        let green = [
+            ["WOB".to_string(), "GY".to_string(), "WBR".to_string()],
+            ["GR".to_string(), "G".to_string(), "WB".to_string()],
+            ["GRY".to_string(), "WO".to_string(), "YBO".to_string()],
+        ];
+        let blue = [
+            ["RBY".to_string(), "BR".to_string(), "WRG".to_string()],
+            ["BY".to_string(), "B".to_string(), "RW".to_string()],
+            ["WGO".to_string(), "OG".to_string(), "OGY".to_string()],
+        ];
+
+        let colors = vec![orange, red, yellow, white, green, blue];
+        let mut cube = Cube::new(colors);
+
+        cube.solve();
+
+        // let actual_color_of_front = cube.get_front().get_color();
+        // let expected_color_of_front = [
+        //     ["RGW".to_string(), "RW".to_string(), "RWB".to_string()],
+        //     ["RG".to_string(), "R".to_string(), "RB".to_string()],
+        //     ["RYG".to_string(), "RY".to_string(), "RBY".to_string()],
+        // ];
+        // assert_eq!(actual_color_of_front, expected_color_of_front);
+
+        // let actual_color_of_up = cube.get_up().get_color();
+        // let expected_color_of_up = [
+        //     ["WGO".to_string(), "WO".to_string(), "WOB".to_string()],
+        //     ["WG".to_string(), "W".to_string(), "WB".to_string()],
+        //     ["WRG".to_string(), "WR".to_string(), "WBR".to_string()],
+        // ];
+        let actual_color_of_front = cube.get_front().get_color();
+        let expected_color_of_front = [
+            ["GOW".to_string(), "GW".to_string(), "GWR".to_string()],
+            ["GO".to_string(), "G".to_string(), "GR".to_string()],
+            ["GYO".to_string(), "GY".to_string(), "GRY".to_string()],
+        ];
+        assert_eq!(actual_color_of_front, expected_color_of_front);
+
+        let actual_color_of_up = cube.get_up().get_color();
+        let expected_color_of_up = [
+            ["WOB".to_string(), "WB".to_string(), "WBR".to_string()],
+            ["WO".to_string(), "W".to_string(), "WR".to_string()],
+            ["WGO".to_string(), "WG".to_string(), "WRG".to_string()],
         ];
         assert_eq!(actual_color_of_up, expected_color_of_up);
     }
