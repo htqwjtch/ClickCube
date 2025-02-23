@@ -2559,20 +2559,6 @@ mod tests {
 
         cube.solve();
 
-        // let actual_color_of_front = cube.get_front().get_color();
-        // let expected_color_of_front = [
-        //     ["RGW".to_string(), "RW".to_string(), "RWB".to_string()],
-        //     ["RG".to_string(), "R".to_string(), "RB".to_string()],
-        //     ["RYG".to_string(), "RY".to_string(), "RBY".to_string()],
-        // ];
-        // assert_eq!(actual_color_of_front, expected_color_of_front);
-
-        // let actual_color_of_up = cube.get_up().get_color();
-        // let expected_color_of_up = [
-        //     ["WGO".to_string(), "WO".to_string(), "WOB".to_string()],
-        //     ["WG".to_string(), "W".to_string(), "WB".to_string()],
-        //     ["WRG".to_string(), "WR".to_string(), "WBR".to_string()],
-        // ];
         let actual_color_of_front = cube.get_front().get_color();
         let expected_color_of_front = [
             ["GOW".to_string(), "GW".to_string(), "GWR".to_string()],

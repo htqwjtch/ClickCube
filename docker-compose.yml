@@ -1,0 +1,5 @@
+services:
+  back:
+    build: ./back
+    volumes:
+      - ./back:/usr/src/back

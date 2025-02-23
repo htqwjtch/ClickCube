@@ -1,0 +1,17 @@
+{
+  "name": "Rust Development Environment",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "back",
+  "workspaceFolder": "/usr/src/back",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rust-lang.rust-analyzer",
+        "ms-vscode.cpptools"
+      ],
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+      }
+    }
+  }
+}
