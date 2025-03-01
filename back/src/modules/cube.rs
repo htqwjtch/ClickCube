@@ -1,4 +1,4 @@
-use crate::cube::face::face::Face;
+use face::Face;
 
 pub struct Cube {
     front: Face,

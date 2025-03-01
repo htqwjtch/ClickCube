@@ -1,3 +1,3 @@
 pub mod cube;
 
-pub mod face;
+pub mod click;
