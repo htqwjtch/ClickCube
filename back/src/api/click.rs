@@ -1,23 +1,18 @@
-use crate::controllers::click;
-use crate::models::response::Response;
-
-use axum::{http::StatusCode, response::IntoResponse, Json};
-use axum_extra::extract::Multipart;
+use axum::{extract::Multipart, http::StatusCode, response::IntoResponse, Json};
 use tokio::{fs::File, io::AsyncWriteExt};
+
+use crate::schemas::response::Response;
 
 #[utoipa::path(
     post,
-    path = "/upload_images",
+    path = "/upload",
     request_body(
         content = String,
         description = "Multipart form-data containing an image file",
-        content_type = "multi-part/form-data"
+        content_type = "image/png, image/jpeg, image/webp"
     ),
     responses(
-            (status = 200, description = "File uploaded successfully", body = Response),
-            (status = 415, description = "Unsupported file type", body = Response),
-            (status = 500, description = "Internal server error", body = Response)
-        
+        (status = 200, description = "Upload images", body = Response)
     )
 )]
 pub async fn upload_images(mut multipart: Multipart) -> impl IntoResponse {
@@ -55,19 +50,7 @@ pub async fn upload_images(mut multipart: Multipart) -> impl IntoResponse {
 
     Json(Response {
         code: StatusCode::OK.as_u16(),
-        message: StatusCode::OK.to_string(),
+        message: "Image has been uploaded successfully".to_string(),
         data: Some("Image has been uploaded successfully".to_string()),
     })
-}
-
-#[utoipa::path(
-    get,
-    path = "/detect_colors",
-    responses(
-        (status = 200, description = "Detect colors", body = Vec<Vec<String>>)
-    )
-)]
-pub async fn detect_colors() -> Json<Vec<Vec<String>>> {
-    let images = Vec::new();
-    Json(click::ClickController::detect_colors(images))
 }

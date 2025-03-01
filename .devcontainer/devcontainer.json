@@ -7,7 +7,11 @@
     "vscode": {
       "extensions": [
         "rust-lang.rust-analyzer",
-        "ms-vscode.cpptools"
+        "ms-vscode.cpptools",
+        "belfz.search-crates-io",
+        "tamasfe.even-better-toml",
+        "docore.docore-rust-pack",
+        "fill-labs.dependi"
       ],
       "settings": {
         "terminal.integrated.shell.linux": "/bin/bash"

@@ -1,4 +1,4 @@
-use face::Face;
+use crate::modules::face::Face;
 
 pub struct Cube {
     front: Face,
@@ -259,12 +259,13 @@ impl Cube {
         self.make_cross_of_up_face();
         self.make_corners_of_up_face();
         self.make_third_layer();
+
+        self.println_all_faces();
     }
 
     fn make_daisy(&mut self) {
         print!("\n________MAKE_DAISY________");
         self.put_edges_of_down_face_up();
-        self.println_all_faces();
     }
 
     fn put_edges_of_down_face_up(&mut self) {
@@ -904,7 +905,6 @@ impl Cube {
     fn make_cross_of_down_face(&mut self) {
         print!("\n________MAKE_CROSS_OF_DOWN_FACE________");
         self.put_edges_of_up_face_down();
-        self.println_all_faces();
     }
 
     fn put_edges_of_up_face_down(&mut self) {
@@ -954,9 +954,9 @@ impl Cube {
     fn make_first_layer(&mut self) {
         print!("\n________MAKE_FIRST_LAYER________");
         self.put_corners_of_down_face_up();
-        self.println_all_faces();
+       
         self.put_corners_of_up_face_down();
-        self.println_all_faces();
+        
     }
 
     fn put_corners_of_down_face_up(&mut self) {
@@ -1148,9 +1148,9 @@ impl Cube {
     fn make_second_layer(&mut self) {
         print!("\n________MAKE_SECOND_LAYER________");
         self.put_edges_of_second_layer_up();
-        self.println_all_faces();
+        
         self.put_edges_of_second_layer_in_place();
-        self.println_all_faces();
+        
     }
 
     fn put_edges_of_second_layer_up(&mut self) {
@@ -1324,9 +1324,9 @@ impl Cube {
     fn make_cross_of_up_face(&mut self) {
         print!("\n________MAKE_CROSS_OF_UP_FACE________");
         self.put_edges_of_up_face_in_cross();
-        self.println_all_faces();
+        
         self.put_edges_of_up_face_in_place();
-        self.println_all_faces();
+        
     }
 
     fn put_edges_of_up_face_in_cross(&mut self) {
@@ -1450,7 +1450,6 @@ impl Cube {
     fn make_corners_of_up_face(&mut self) {
         print!("\n________MAKE_CORNERS_OF_UP_FACE________");
         self.put_corners_of_up_face_in_place();
-        self.println_all_faces();
     }
 
     fn put_corners_of_up_face_in_place(&mut self) {
@@ -1565,7 +1564,6 @@ impl Cube {
     fn make_third_layer(&mut self) {
         print!("\n________MAKE_THIRD_LAYER________");
         self.put_corners_of_up_face_correctly();
-        self.println_all_faces();
     }
 
     fn put_corners_of_up_face_correctly(&mut self) {
