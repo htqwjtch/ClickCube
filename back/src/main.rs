@@ -1,4 +1,5 @@
 use axum::Router;
+use tower_http::cors::{Any, CorsLayer};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
@@ -9,14 +10,27 @@ mod modules;
 mod schemas;
 
 #[derive(OpenApi)]
-#[openapi(paths(api::cube::resolve_cube, api::click::upload_images))]
+#[openapi(paths(api::click::upload_images, api::click::detect_colors, api::cube::solve))]
 struct ApiDoc;
 
 #[tokio::main]
 async fn main() {
+    let cors = CorsLayer::new()
+        .allow_origin(Any) // Allow requests from any domains
+        .allow_methods(Any) // Allow any methods (POST, GET, etc.)
+        .allow_headers(Any); // Allow any headers
+
     let app = Router::new()
-        .route("/upload", axum::routing::post(api::click::upload_images))
-        .route("/resolve_cube", axum::routing::get(api::cube::resolve_cube))
+        .route(
+            "/upload-images",
+            axum::routing::post(api::click::upload_images),
+        )
+        .route(
+            "/detect-colors",
+            axum::routing::get(api::click::detect_colors),
+        )
+        .route("/solve", axum::routing::get(api::cube::solve))
+        .layer(cors)
         .merge(SwaggerUi::new("/docs").url("/api-docs/openapi.json", ApiDoc::openapi()));
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8013").await.unwrap();

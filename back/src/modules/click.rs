@@ -2,7 +2,7 @@ use image::GenericImageView;
 use std::collections::HashMap;
 use std::path::Path;
 
-const CENTER_COLORS: [&str; 6] = ["O", "R", "Y", "W", "G", "B"];
+const CENTER_COLORS: [&str; 6] = ["B", "G", "O", "R", "W", "Y"];
 
 fn rgb_to_hsv(r: u8, g: u8, b: u8) -> (u8, u8, u8) {
     let r = r as f32 / 255.0;
@@ -88,17 +88,14 @@ fn compare_colors(
     for (i, hsv_vector) in hsv_vectors.iter().enumerate() {
         let mut face_matched_colors = Vec::new();
         for (k, &(h_current, s_current, _)) in hsv_vector.iter().enumerate() {
+            let mut matched_color = "".to_string();
+
             if k == 4 {
-                println!(
-                    "Color area {} on image {}: {} ({:?})",
-                    k + 1,
-                    i + 1,
-                    CENTER_COLORS[i],
-                    hsv_vector[k]
-                );
+                matched_color = CENTER_COLORS[i].to_string();
+                face_matched_colors.push(matched_color);
                 continue;
             }
-            let mut matched_color = "".to_string();
+            
             let mut min_difference = 200;
             let mut best_match_index = 0;
 
@@ -131,7 +128,7 @@ fn compare_colors(
 }
 
 pub fn detect_colors() -> Vec<Vec<String>> {
-    let folder_path = "assets";
+    let folder_path = "./assets";
     let (hsv_vectors, fifth_area_colors) = process_images_from_folder(folder_path);
     compare_colors(&hsv_vectors, &fifth_area_colors)
 }

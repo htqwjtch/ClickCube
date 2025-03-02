@@ -1,56 +1,37 @@
-use axum::{extract::Multipart, http::StatusCode, response::IntoResponse, Json};
-use tokio::{fs::File, io::AsyncWriteExt};
+use axum::{extract::Multipart, response::IntoResponse, Json};
 
-use crate::schemas::response::Response;
+use crate::{
+    controllers::click,
+    schemas::{response::Response, upload_files::UploadFiles},
+};
 
 #[utoipa::path(
     post,
-    path = "/upload",
+    path = "/upload-images",
+    description = "Upload cube images on server",
     request_body(
-        content = String,
+        content = UploadFiles,
         description = "Multipart form-data containing an image file",
-        content_type = "image/png, image/jpeg, image/webp"
+        content_type = "multipart/form-data"
     ),
     responses(
-        (status = 200, description = "Upload images", body = Response)
+        (status = 200, description = "Images have been uploaded successfully!", body = Response),
+        (status = 415, description = "Unsupported file type", body = Response),
+        (status = 500, description = "Internal server error", body = Response)
     )
 )]
-pub async fn upload_images(mut multipart: Multipart) -> impl IntoResponse {
-    while let Ok(Some(field)) = multipart.next_field().await {
-        let content_type = field.content_type().unwrap_or("unknown").to_string();
+pub async fn upload_images(multipart: Multipart) -> impl IntoResponse {
+    click::ClickController::upload_images(multipart).await
+}
 
-        // Разрешенные типы файлов
-        let allowed_types = ["image/png", "image/jpeg", "image/webp"];
-        if !allowed_types.contains(&content_type.as_str()) {
-            return Json(Response {
-                code: StatusCode::UNSUPPORTED_MEDIA_TYPE.as_u16(),
-                message: "Unsupported file type".to_string(),
-                data: None,
-            });
-        }
-
-        let filename = field.file_name().unwrap_or("uploaded_image").to_string();
-        let filepath = format!("./assets/{}", filename);
-
-        let mut file = File::create(filepath)
-            .await
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
-            .unwrap();
-
-        let data = field
-            .bytes()
-            .await
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
-            .unwrap();
-        file.write_all(&data)
-            .await
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
-            .unwrap();
-    }
-
-    Json(Response {
-        code: StatusCode::OK.as_u16(),
-        message: "Image has been uploaded successfully".to_string(),
-        data: Some("Image has been uploaded successfully".to_string()),
-    })
+#[utoipa::path(
+    get,
+    path = "/detect-colors",
+    description = "Detect colors of cube elements on uploaded images",
+    responses(
+        (status = 200, description = "Detected colors", body = Vec<Vec<String>>),
+    )
+)]
+pub async fn detect_colors() -> Json<Vec<Vec<String>>> {
+    Json(click::ClickController::detect_colors())
 }
