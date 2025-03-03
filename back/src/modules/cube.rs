@@ -116,7 +116,7 @@ impl Cube {
         self.front.clone()
     }
 
-    fn set_back(&mut self, back: Face) {
+    pub fn set_back(&mut self, back: Face) {
         self.back = back;
     }
 
@@ -124,7 +124,7 @@ impl Cube {
         self.back.clone()
     }
 
-    fn set_up(&mut self, up: Face) {
+    pub fn set_up(&mut self, up: Face) {
         self.up = up;
     }
 
@@ -132,7 +132,7 @@ impl Cube {
         self.up.clone()
     }
 
-    fn set_down(&mut self, down: Face) {
+    pub fn set_down(&mut self, down: Face) {
         self.down = down;
     }
 
@@ -140,7 +140,7 @@ impl Cube {
         self.down.clone()
     }
 
-    fn set_left(&mut self, left: Face) {
+    pub fn set_left(&mut self, left: Face) {
         self.left = left;
     }
 
@@ -148,7 +148,7 @@ impl Cube {
         self.left.clone()
     }
 
-    fn set_right(&mut self, right: Face) {
+    pub fn set_right(&mut self, right: Face) {
         self.right = right;
     }
 
@@ -156,7 +156,7 @@ impl Cube {
         self.right.clone()
     }
 
-    pub fn rotate_front_clockwise(&mut self) {
+    fn rotate_front_clockwise(&mut self) {
         let color_of_up_face = self.up.get_color();
         let color_of_left_face = self.left.get_color();
         let color_of_down_face = self.down.get_color();
@@ -236,7 +236,7 @@ impl Cube {
         Face::new(new_color)
     }
 
-    pub fn rotate_front_counterclockwise(&mut self) {
+    fn rotate_front_counterclockwise(&mut self) {
         for _ in 0..3 {
             self.rotate_front_clockwise();
         }
@@ -954,9 +954,9 @@ impl Cube {
     fn make_first_layer(&mut self) {
         print!("\n________MAKE_FIRST_LAYER________");
         self.put_corners_of_down_face_up();
-       
+
         self.put_corners_of_up_face_down();
-        
+
     }
 
     fn put_corners_of_down_face_up(&mut self) {
@@ -1148,9 +1148,9 @@ impl Cube {
     fn make_second_layer(&mut self) {
         print!("\n________MAKE_SECOND_LAYER________");
         self.put_edges_of_second_layer_up();
-        
+
         self.put_edges_of_second_layer_in_place();
-        
+
     }
 
     fn put_edges_of_second_layer_up(&mut self) {
@@ -1324,7 +1324,7 @@ impl Cube {
     fn make_cross_of_up_face(&mut self) {
         print!("\n________MAKE_CROSS_OF_UP_FACE________");
         self.put_edges_of_up_face_in_cross();
-        
+
         self.put_edges_of_up_face_in_place();
         
     }

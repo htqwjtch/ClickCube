@@ -2,7 +2,7 @@ use image::GenericImageView;
 use std::collections::HashMap;
 use std::path::Path;
 
-const CENTER_COLORS: [&str; 6] = ["B", "G", "O", "R", "W", "Y"];
+const CENTER_COLORS: [&str; 6] = ["O", "R", "Y", "W", "G", "B"];
 
 fn rgb_to_hsv(r: u8, g: u8, b: u8) -> (u8, u8, u8) {
     let r = r as f32 / 255.0;

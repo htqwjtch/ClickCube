@@ -1,9 +1,10 @@
-use crate::modules::cube::Cube;
+use crate::modules::{adapter::Adapter, cube::Cube};
 
 pub struct CubeClient {}
 
 impl CubeClient {
-    pub fn solve(colors: Vec<[[String; 3]; 3]>) -> Vec<[[String; 3]; 3]> {
+    pub fn solve() -> Vec<[[String; 3]; 3]> {
+        let colors = Adapter::get_adapted_colors();
         let mut cube = Cube::new(colors);
         cube.solve();
 

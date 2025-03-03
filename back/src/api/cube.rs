@@ -11,6 +11,5 @@ use crate::controllers::cube;
     )
 )]
 pub async fn solve() -> Json<Vec<[[String; 3]; 3]>> {
-    let colors = Vec::new();
-    Json(cube::CubeController::solve(colors))
+    Json(cube::CubeController::solve())
 }

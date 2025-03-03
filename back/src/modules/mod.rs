@@ -1,3 +1,5 @@
+pub mod adapter;
+
 pub mod click;
 
 pub mod cube;
