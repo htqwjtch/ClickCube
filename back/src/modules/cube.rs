@@ -269,7 +269,7 @@ impl Cube {
     }
 
     fn put_edges_of_down_face_up(&mut self) {
-        for _ in 0..4 {
+        loop {
             let mut command_to_put_edge_up = self.check_edges_of_down_face();
             if !command_to_put_edge_up.is_empty() {
                 self.execute_command(command_to_put_edge_up + "Y'");
@@ -293,6 +293,8 @@ impl Cube {
                 self.execute_command(command_to_put_edge_up + "Y'");
                 continue;
             }
+
+            break;
         }
     }
 
@@ -1148,9 +1150,7 @@ impl Cube {
     fn make_second_layer(&mut self) {
         print!("\n________MAKE_SECOND_LAYER________");
         self.put_edges_of_second_layer_up();
-
         self.put_edges_of_second_layer_in_place();
-
     }
 
     fn put_edges_of_second_layer_up(&mut self) {
@@ -1326,7 +1326,6 @@ impl Cube {
         self.put_edges_of_up_face_in_cross();
 
         self.put_edges_of_up_face_in_place();
-        
     }
 
     fn put_edges_of_up_face_in_cross(&mut self) {

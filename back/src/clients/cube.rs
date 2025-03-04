@@ -5,7 +5,7 @@ pub struct CubeClient {}
 impl CubeClient {
     pub fn solve() -> Vec<[[String; 3]; 3]> {
         let colors = Adapter::get_adapted_colors();
-        let mut cube = Cube::new(colors);
+        let mut cube = Cube::new(colors.clone());
         cube.solve();
 
         vec![
