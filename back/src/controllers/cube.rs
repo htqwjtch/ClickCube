@@ -1,9 +1,9 @@
-use crate::clients::cube;
+use crate::clients::cube::CubeClient;
 
 pub struct CubeController {}
 
 impl CubeController {
-    pub fn solve() -> Vec<[[String; 3]; 3]> {
-        cube::CubeClient::solve()
+    pub fn solve() -> Vec<String> {
+        CubeClient::solve()
     }
 }

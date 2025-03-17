@@ -10,7 +10,12 @@ mod modules;
 mod schemas;
 
 #[derive(OpenApi)]
-#[openapi(paths(api::click::upload_images, api::click::detect_colors, api::cube::solve))]
+#[openapi(paths(
+    api::click::upload_images,
+    api::click::detect_colors,
+    api::paint::upload_colors,
+    api::cube::solve,
+))]
 struct ApiDoc;
 
 #[tokio::main]
@@ -28,6 +33,10 @@ async fn main() {
         .route(
             "/detect-colors",
             axum::routing::get(api::click::detect_colors),
+        )
+        .route(
+            "/upload-colors",
+            axum::routing::post(api::paint::upload_colors),
         )
         .route("/solve", axum::routing::get(api::cube::solve))
         .layer(cors)

@@ -1,13 +1,13 @@
 use axum::{extract::Multipart, http::StatusCode, response::IntoResponse, Json};
 
-use crate::clients::click;
+use crate::clients::click::ClickClient;
 use crate::schemas::response::Response;
 
 pub struct ClickController {}
 
 impl ClickController {
     pub async fn upload_images(multipart: Multipart) -> impl IntoResponse {
-        return match click::ClickClient::upload_images(multipart).await {
+        return match ClickClient::upload_images(multipart).await {
             Ok(num) => Json(Response {
                 code: StatusCode::OK.as_u16(),
                 message: StatusCode::OK.to_string(),
@@ -43,6 +43,6 @@ impl ClickController {
     }
 
     pub fn detect_colors() -> Vec<Vec<String>> {
-        click::ClickClient::detect_colors()
+        ClickClient::detect_colors()
     }
 }
