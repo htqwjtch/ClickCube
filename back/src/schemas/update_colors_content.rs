@@ -2,7 +2,7 @@ use serde::Deserialize;
 use utoipa::ToSchema;
 
 #[derive(Deserialize, ToSchema, Debug)]
-pub struct UploadColors {
+pub struct UpdateColorsContent {
     pub _front: Option<Vec<String>>,
 
     pub _back: Option<Vec<String>>,

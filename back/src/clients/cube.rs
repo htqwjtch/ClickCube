@@ -1,27 +1,25 @@
-use crate::modules::{adapter::Adapter, cube::Cube};
+use crate::modules::{color_adapter::ColorAdapter, cube::Cube, cube_face::CubeFace};
 
 pub struct CubeClient {}
 
 impl CubeClient {
     pub fn solve() -> Vec<String> {
-        let colors = Adapter::get_adapted_colors();
-        let mut cube = Cube::new(CubeClient::convert(colors.clone()));
+        let colors = ColorAdapter::transmit_adapted_colors();
+        let cube_faces = colors
+            .iter()
+            .map(|color| CubeFace::new(CubeClient::convert(color.clone())))
+            .collect();
+        let mut cube = Cube::new(cube_faces);
         cube.solve();
 
         vec![String::new()]
     }
 
-    fn convert(vec: Vec<Vec<String>>) -> Vec<[[String; 3]; 3]> {
-        vec.into_iter()
-            .map(|flat_vec| {
-                let arr: [[String; 3]; 3] = flat_vec
-                    .chunks_exact(3)
-                    .map(|chunk| [chunk[0].clone(), chunk[1].clone(), chunk[2].clone()])
-                    .collect::<Vec<_>>()
-                    .try_into()
-                    .expect("Each inner Vec must have exactly 9 elements");
-                arr
-            })
-            .collect()
+    fn convert(vec: Vec<String>) -> [[String; 3]; 3] {
+        vec.chunks_exact(3)
+            .map(|chunk| [chunk[0].clone(), chunk[1].clone(), chunk[2].clone()])
+            .collect::<Vec<_>>()
+            .try_into()
+            .expect("Each inner Vec must have exactly 9 elements")
     }
 }

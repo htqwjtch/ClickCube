@@ -1,4 +1,4 @@
-use axum::Json;
+use axum::{response::IntoResponse, Json};
 
 use crate::controllers::cube::CubeController;
 
@@ -10,6 +10,6 @@ use crate::controllers::cube::CubeController;
         (status = 200, description = "Cube has been solved successfully!", body = Vec<String>)
     )
 )]
-pub async fn solve() -> Json<Vec<String>> {
+pub async fn solve() -> impl IntoResponse {
     Json(CubeController::solve())
 }

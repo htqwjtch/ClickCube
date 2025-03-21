@@ -1,18 +1,47 @@
-use image::GenericImageView;
+use image::{GenericImageView, ImageReader, DynamicImage, ImageFormat};
 use std::collections::HashMap;
 use std::path::Path;
 
 const CENTER_COLORS: [&str; 6] = ["O", "R", "Y", "W", "G", "B"];
 
+fn open_image(image_path: &str) -> DynamicImage {
+    let reader = ImageReader::open(image_path)
+        .expect("Failed to open file")
+        .with_guessed_format()
+        .expect("Failed to guess image format");
+    reader.decode().expect("Failed to decode image")
+}
+
+fn ensure_jpeg_format(image_path: &str) -> String {
+    let path = Path::new(image_path);
+    
+    if let Some(ext) = path.extension() {
+        if ext.eq_ignore_ascii_case("jpg") || ext.eq_ignore_ascii_case("jpeg") {
+            return image_path.to_string();
+        }
+    }
+
+    let img = open_image(image_path);
+    let new_path = format!("{}.jpg", path.with_extension("").display());
+
+    img.to_rgb8()
+        .save_with_format(&new_path, ImageFormat::Jpeg)
+        .expect("Failed to save as JPEG");
+    
+    new_path
+}
+
+
+
 fn rgb_to_hsv(r: u8, g: u8, b: u8) -> (u8, u8, u8) {
     let r = r as f32 / 255.0;
     let g = g as f32 / 255.0;
     let b = b as f32 / 255.0;
-
+    
     let max = r.max(g).max(b);
     let min = r.min(g).min(b);
     let delta = max - min;
-
+    
     let mut h = if delta == 0.0 {
         0.0
     } else if max == r {
@@ -25,19 +54,16 @@ fn rgb_to_hsv(r: u8, g: u8, b: u8) -> (u8, u8, u8) {
     if h < 0.0 {
         h += 360.0;
     }
-
+    
     let s = if max == 0.0 { 0.0 } else { delta / max };
     let v = max;
-
-    (
-        (h / 360.0 * 179.0) as u8,
-        (s * 255.0) as u8,
-        (v * 255.0) as u8,
-    )
+    
+    ((h / 360.0 * 179.0) as u8, (s * 255.0) as u8, (v * 255.0) as u8)
 }
 
 fn process_image(image_path: &str) -> Vec<(u8, u8, u8)> {
-    let img = image::open(image_path).expect("Failed to open image");
+    let image_path = ensure_jpeg_format(image_path);
+    let img = open_image(&image_path);
     let (width, height) = img.dimensions();
 
     let part_width = width / 3;
@@ -58,11 +84,11 @@ fn process_image(image_path: &str) -> Vec<(u8, u8, u8)> {
             hsv_vector.push(*most_common);
         }
     }
-
     hsv_vector
 }
 
-fn process_images_from_folder(folder_path: &str) -> (Vec<Vec<(u8, u8, u8)>>, Vec<(u8, u8, u8)>) {
+pub fn detect_colors() -> Vec<Vec<String>> {
+    let folder_path = "./assets";
     let mut hsv_vectors = Vec::new();
     let mut fifth_area_colors = Vec::new();
 
@@ -77,19 +103,15 @@ fn process_images_from_folder(folder_path: &str) -> (Vec<Vec<(u8, u8, u8)>>, Vec
             println!("File {} not found.", image_name);
         }
     }
-    (hsv_vectors, fifth_area_colors)
+    compare_colors(&hsv_vectors, &fifth_area_colors)
 }
 
-fn compare_colors(
-    hsv_vectors: &Vec<Vec<(u8, u8, u8)>>,
-    fifth_area_colors: &Vec<(u8, u8, u8)>,
-) -> Vec<Vec<String>> {
+fn compare_colors(hsv_vectors: &Vec<Vec<(u8, u8, u8)>>, fifth_area_colors: &Vec<(u8, u8, u8)>) -> Vec<Vec<String>> {
     let mut all_matched_colors = Vec::new();
     for (i, hsv_vector) in hsv_vectors.iter().enumerate() {
         let mut face_matched_colors = Vec::new();
         for (k, &(h_current, s_current, _)) in hsv_vector.iter().enumerate() {
             let mut matched_color = "".to_string();
-
             if k == 4 {
                 matched_color = CENTER_COLORS[i].to_string();
                 face_matched_colors.push(matched_color);
@@ -119,16 +141,9 @@ fn compare_colors(
             if matched_color.is_empty() {
                 matched_color = CENTER_COLORS[best_match_index].to_string();
             }
-
             face_matched_colors.push(matched_color);
         }
         all_matched_colors.push(face_matched_colors);
     }
     all_matched_colors
-}
-
-pub fn detect_colors() -> Vec<Vec<String>> {
-    let folder_path = "./assets";
-    let (hsv_vectors, fifth_area_colors) = process_images_from_folder(folder_path);
-    compare_colors(&hsv_vectors, &fifth_area_colors)
 }

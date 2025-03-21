@@ -1,11 +1,11 @@
 #[derive(Clone)]
-pub struct Face {
+pub struct CubeFace {
     color: [[String; 3]; 3],
 }
 
-impl Face {
+impl CubeFace {
     pub fn new(color: [[String; 3]; 3]) -> Self {
-        Face { color }
+        CubeFace { color }
     }
 
     pub fn get_color(&self) -> [[String; 3]; 3] {
@@ -24,7 +24,7 @@ mod tests {
             ["OG".to_string(), "O".to_string(), "OB".to_string()],
             ["OWG".to_string(), "OW".to_string(), "OBW".to_string()],
         ];
-        let actual_face = Face::new(correct_orange.clone());
+        let actual_face = CubeFace::new(correct_orange.clone());
 
         let expected_face = correct_orange;
 
@@ -35,7 +35,7 @@ mod tests {
             ["OG".to_string(), "O".to_string(), "OB".to_string()],
             ["OWG".to_string(), "OW".to_string(), "OBW".to_string()],
         ];
-        let actual_face = Face::new(incorrect_orange);
+        let actual_face = CubeFace::new(incorrect_orange);
 
         assert_ne!(actual_face.get_color(), expected_face);
     }

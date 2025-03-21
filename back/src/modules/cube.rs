@@ -1,73 +1,72 @@
-use crate::modules::face::Face;
+use crate::modules::cube_face::CubeFace;
 
 pub struct Cube {
-    front: Face,
-    back: Face,
-    up: Face,
-    down: Face,
-    left: Face,
-    right: Face,
+    front: CubeFace,
+    back: CubeFace,
+    up: CubeFace,
+    down: CubeFace,
+    left: CubeFace,
+    right: CubeFace,
 }
 
 impl Cube {
-    pub fn new(colors: Vec<[[String; 3]; 3]>) -> Self {
+    pub fn new(mut cube_faces: Vec<CubeFace>) -> Self {
         let orange;
         let red;
         let yellow;
         let white;
         let green;
         let blue;
-        if !colors.is_empty() {
-            orange = colors[0].clone();
-            red = colors[1].clone();
-            yellow = colors[2].clone();
-            white = colors[3].clone();
-            green = colors[4].clone();
-            blue = colors[5].clone();
-        } else {
+        if cube_faces.is_empty() {
             orange = [
                 ["OGY".to_string(), "OY".to_string(), "OYB".to_string()],
                 ["OG".to_string(), "O".to_string(), "OB".to_string()],
                 ["OWG".to_string(), "OW".to_string(), "OBW".to_string()],
             ];
+            cube_faces.push(CubeFace::new(orange));
             red = [
                 ["RBY".to_string(), "RY".to_string(), "RYG".to_string()],
                 ["RB".to_string(), "R".to_string(), "RG".to_string()],
                 ["RWB".to_string(), "RW".to_string(), "RGW".to_string()],
             ];
+            cube_faces.push(CubeFace::new(red));
             yellow = [
                 ["YGR".to_string(), "YR".to_string(), "YRB".to_string()],
                 ["YG".to_string(), "Y".to_string(), "YB".to_string()],
                 ["YOG".to_string(), "YO".to_string(), "YBO".to_string()],
             ];
+            cube_faces.push(CubeFace::new(yellow));
             white = [
                 ["WGO".to_string(), "WO".to_string(), "WOB".to_string()],
                 ["WG".to_string(), "W".to_string(), "WB".to_string()],
                 ["WRG".to_string(), "WR".to_string(), "WBR".to_string()],
             ];
+            cube_faces.push(CubeFace::new(white));
             green = [
                 ["GRY".to_string(), "GY".to_string(), "GYO".to_string()],
                 ["GR".to_string(), "G".to_string(), "GO".to_string()],
                 ["GWR".to_string(), "GW".to_string(), "GOW".to_string()],
             ];
+            cube_faces.push(CubeFace::new(green));
             blue = [
                 ["BOY".to_string(), "BY".to_string(), "BYR".to_string()],
                 ["BO".to_string(), "B".to_string(), "BR".to_string()],
                 ["BWO".to_string(), "BW".to_string(), "BRW".to_string()],
             ];
+            cube_faces.push(CubeFace::new(blue));
         }
 
         Cube {
-            front: Face::new(orange),
-            back: Face::new(red),
-            up: Face::new(yellow),
-            down: Face::new(white),
-            left: Face::new(green),
-            right: Face::new(blue),
+            front: cube_faces[0].clone(),
+            back: cube_faces[1].clone(),
+            up: cube_faces[2].clone(),
+            down: cube_faces[3].clone(),
+            left: cube_faces[4].clone(),
+            right: cube_faces[5].clone(),
         }
     }
 
-    pub fn set_front(&mut self, front: Face) {
+    pub fn set_front(&mut self, front: CubeFace) {
         if front.get_color() == self.back.get_color() {
             self.up = self.rotate_face_clockwise(self.rotate_face_clockwise(self.up.clone()));
             self.down = self.rotate_face_clockwise(self.rotate_face_clockwise(self.down.clone()));
@@ -112,47 +111,47 @@ impl Cube {
         self.front = front;
     }
 
-    pub fn get_front(&self) -> Face {
+    pub fn get_front(&self) -> CubeFace {
         self.front.clone()
     }
 
-    pub fn set_back(&mut self, back: Face) {
+    pub fn set_back(&mut self, back: CubeFace) {
         self.back = back;
     }
 
-    pub fn get_back(&self) -> Face {
+    pub fn get_back(&self) -> CubeFace {
         self.back.clone()
     }
 
-    pub fn set_up(&mut self, up: Face) {
+    pub fn set_up(&mut self, up: CubeFace) {
         self.up = up;
     }
 
-    pub fn get_up(&self) -> Face {
+    pub fn get_up(&self) -> CubeFace {
         self.up.clone()
     }
 
-    pub fn set_down(&mut self, down: Face) {
+    pub fn set_down(&mut self, down: CubeFace) {
         self.down = down;
     }
 
-    pub fn get_down(&self) -> Face {
+    pub fn get_down(&self) -> CubeFace {
         self.down.clone()
     }
 
-    pub fn set_left(&mut self, left: Face) {
+    pub fn set_left(&mut self, left: CubeFace) {
         self.left = left;
     }
 
-    pub fn get_left(&self) -> Face {
+    pub fn get_left(&self) -> CubeFace {
         self.left.clone()
     }
 
-    pub fn set_right(&mut self, right: Face) {
+    pub fn set_right(&mut self, right: CubeFace) {
         self.right = right;
     }
 
-    pub fn get_right(&self) -> Face {
+    pub fn get_right(&self) -> CubeFace {
         self.right.clone()
     }
 
@@ -171,7 +170,7 @@ impl Cube {
                 color_of_left_face[0][2].clone(),
             ],
         ];
-        self.set_up(Face::new(new_color_of_up_face));
+        self.set_up(CubeFace::new(new_color_of_up_face));
 
         let new_color_of_left_face = [
             [
@@ -190,7 +189,7 @@ impl Cube {
                 color_of_down_face[0][2].clone(),
             ],
         ];
-        self.set_left(Face::new(new_color_of_left_face));
+        self.set_left(CubeFace::new(new_color_of_left_face));
 
         let new_color_of_down_face = [
             [
@@ -201,7 +200,7 @@ impl Cube {
             color_of_down_face[1].clone(),
             color_of_down_face[2].clone(),
         ];
-        self.set_down(Face::new(new_color_of_down_face));
+        self.set_down(CubeFace::new(new_color_of_down_face));
 
         let new_color_of_right_face = [
             [
@@ -220,20 +219,20 @@ impl Cube {
                 color_of_right_face[2][2].clone(),
             ],
         ];
-        self.set_right(Face::new(new_color_of_right_face));
+        self.set_right(CubeFace::new(new_color_of_right_face));
 
         self.set_front(self.rotate_face_clockwise(self.front.clone()));
     }
 
-    fn rotate_face_clockwise(&self, face: Face) -> Face {
-        let mut new_color = face.get_color().clone();
+    fn rotate_face_clockwise(&self, cube_face: CubeFace) -> CubeFace {
+        let mut new_color = cube_face.get_color().clone();
         let n = new_color.len();
         for i in 0..n {
             for j in 0..n {
-                new_color[j][n - i - 1] = face.get_color()[i][j].clone();
+                new_color[j][n - i - 1] = cube_face.get_color()[i][j].clone();
             }
         }
-        Face::new(new_color)
+        CubeFace::new(new_color)
     }
 
     fn rotate_front_counterclockwise(&mut self) {
@@ -242,8 +241,8 @@ impl Cube {
         }
     }
 
-    fn rotate_face_counterclockwise(&self, face: Face) -> Face {
-        let mut new_face = face;
+    fn rotate_face_counterclockwise(&self, cube_face: CubeFace) -> CubeFace {
+        let mut new_face = cube_face;
         for _ in 0..3 {
             new_face = self.rotate_face_clockwise(new_face.clone());
         }
@@ -743,7 +742,7 @@ impl Cube {
         command_to_put_edge_up
     }
 
-    fn execute_command(&mut self, command: String) {
+    pub fn execute_command(&mut self, command: String) {
         println!("\n{}", command);
         let mut i = 0;
         while i < command.len() {
@@ -898,10 +897,10 @@ impl Cube {
         self.println_face(&(self.get_right()));
     }
 
-    fn println_face(&mut self, face: &Face) {
-        println!("{:?}", face.get_color()[0]);
-        println!("{:?}", face.get_color()[1]);
-        println!("{:?}", face.get_color()[2]);
+    fn println_face(&mut self, cube_face: &CubeFace) {
+        println!("{:?}", cube_face.get_color()[0]);
+        println!("{:?}", cube_face.get_color()[1]);
+        println!("{:?}", cube_face.get_color()[2]);
     }
 
     fn make_cross_of_down_face(&mut self) {
@@ -958,7 +957,6 @@ impl Cube {
         self.put_corners_of_down_face_up();
 
         self.put_corners_of_up_face_down();
-
     }
 
     fn put_corners_of_down_face_up(&mut self) {
@@ -1630,7 +1628,7 @@ mod tests {
             ["OG".to_string(), "O".to_string(), "OB".to_string()],
             ["OWG".to_string(), "OW".to_string(), "OBW".to_string()],
         ];
-        let expected_front = Face::new(orange).get_color();
+        let expected_front = CubeFace::new(orange).get_color();
         assert_eq!(actual_front, expected_front);
 
         cube.set_front(cube.get_right());
@@ -1640,7 +1638,7 @@ mod tests {
             ["BO".to_string(), "B".to_string(), "BR".to_string()],
             ["BWO".to_string(), "BW".to_string(), "BRW".to_string()],
         ];
-        let expected_right = Face::new(blue).get_color();
+        let expected_right = CubeFace::new(blue).get_color();
         assert_eq!(actual_right, expected_right);
 
         cube.set_front(cube.get_down());
@@ -1650,7 +1648,7 @@ mod tests {
             ["WO".to_string(), "W".to_string(), "WR".to_string()],
             ["WGO".to_string(), "WG".to_string(), "WRG".to_string()],
         ];
-        let expected_back = Face::new(red).get_color();
+        let expected_back = CubeFace::new(red).get_color();
         assert_eq!(actual_back, expected_back);
 
         cube.set_front(cube.get_back());
@@ -1660,7 +1658,7 @@ mod tests {
             ["YR".to_string(), "Y".to_string(), "YO".to_string()],
             ["YGR".to_string(), "YG".to_string(), "YOG".to_string()],
         ];
-        let expected_left = Face::new(green).get_color();
+        let expected_left = CubeFace::new(green).get_color();
         assert_eq!(actual_left, expected_left);
 
         cube.set_front(cube.get_back());
@@ -1670,7 +1668,7 @@ mod tests {
             ["WO".to_string(), "W".to_string(), "WR".to_string()],
             ["WGO".to_string(), "WG".to_string(), "WRG".to_string()],
         ];
-        let expected_back = Face::new(red).get_color();
+        let expected_back = CubeFace::new(red).get_color();
         assert_eq!(actual_back, expected_back);
 
         cube.set_front(cube.get_back());
@@ -1680,7 +1678,7 @@ mod tests {
             ["YR".to_string(), "Y".to_string(), "YO".to_string()],
             ["YGR".to_string(), "YG".to_string(), "YOG".to_string()],
         ];
-        let expected_left = Face::new(green).get_color();
+        let expected_left = CubeFace::new(green).get_color();
         assert_eq!(actual_left, expected_left);
 
         cube.set_front(cube.get_up());
@@ -1690,7 +1688,7 @@ mod tests {
             ["BR".to_string(), "B".to_string(), "BO".to_string()],
             ["BYR".to_string(), "BY".to_string(), "BOY".to_string()],
         ];
-        let expected_up = Face::new(yellow).get_color();
+        let expected_up = CubeFace::new(yellow).get_color();
         assert_eq!(actual_up, expected_up);
 
         cube.set_front(cube.get_left());
@@ -1700,7 +1698,7 @@ mod tests {
             ["RG".to_string(), "R".to_string(), "RB".to_string()],
             ["RYG".to_string(), "RY".to_string(), "RBY".to_string()],
         ];
-        let expected_down = Face::new(white).get_color();
+        let expected_down = CubeFace::new(white).get_color();
         assert_eq!(actual_down, expected_down);
     }
 
@@ -2552,7 +2550,11 @@ mod tests {
         ];
 
         let colors = vec![orange, red, yellow, white, green, blue];
-        let mut cube = Cube::new(colors);
+        let cube_faces = colors
+            .iter()
+            .map(|color| CubeFace::new(color.clone()))
+            .collect();
+        let mut cube = Cube::new(cube_faces);
 
         cube.solve();
 

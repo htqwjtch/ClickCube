@@ -2,7 +2,7 @@ use axum::{extract::Multipart, response::IntoResponse, Json};
 
 use crate::{
     controllers::click,
-    schemas::{response::Response, upload_files::UploadFiles},
+    schemas::{response::Response, upload_files_content::UploadFilesContent},
 };
 
 #[utoipa::path(
@@ -10,7 +10,7 @@ use crate::{
     path = "/upload-images",
     description = "Upload cube images on server",
     request_body(
-        content = UploadFiles,
+        content = UploadFilesContent,
         description = "Multipart form-data containing an image file",
         content_type = "multipart/form-data"
     ),
@@ -32,6 +32,6 @@ pub async fn upload_images(multipart: Multipart) -> impl IntoResponse {
         (status = 200, description = "Detected colors", body = Vec<Vec<String>>),
     )
 )]
-pub async fn detect_colors() -> Json<Vec<Vec<String>>> {
+pub async fn detect_colors() -> impl IntoResponse {
     Json(click::ClickController::detect_colors())
 }

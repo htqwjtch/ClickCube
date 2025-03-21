@@ -1,9 +1,13 @@
-pub mod adapter;
+pub mod color_adapter;
 
 pub mod click;
 
 pub mod cube;
 
-pub mod face;
+pub mod cube_face;
 
-pub mod paint;
+pub mod handmade;
+
+pub mod opticourier;
+
+pub mod painter;

@@ -1,7 +1,7 @@
 pub struct Paint;
 
 impl Paint {
-    pub fn upload_colors(
+    pub fn update_colors(
         current_colors: Vec<Vec<String>>,
         colors_to_upload: Vec<Option<Vec<String>>>,
     ) -> Vec<Vec<String>> {

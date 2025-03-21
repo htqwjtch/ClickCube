@@ -1,15 +1,15 @@
 use std::sync::{OnceLock, RwLock};
 
-pub struct Adapter;
+pub struct ColorAdapter;
 
 static RAW_COLORS: OnceLock<RwLock<Vec<Vec<String>>>> = OnceLock::new();
 static ADAPTED_COLORS: OnceLock<RwLock<Vec<Vec<String>>>> = OnceLock::new();
 
-impl Adapter {
+impl ColorAdapter {
     pub fn set_raw_colors(raw_colors: Vec<Vec<String>>) {
         let mut colors = Vec::new();
         for k in 0..6 {
-            let color = Adapter::adapt_color(raw_colors.clone(), k);
+            let color = ColorAdapter::adapt_color(raw_colors.clone(), k);
             colors.push(color);
         }
 
@@ -23,10 +23,10 @@ impl Adapter {
         data.clone() // return data copy, not move
     }
 
-    pub fn adapt_raw_colors(raw_colors: Vec<Vec<String>>) {
+    pub fn receive_raw_colors(raw_colors: Vec<Vec<String>>) {
         let mut colors = Vec::new();
         for k in 0..6 {
-            let color = Adapter::adapt_color(raw_colors.clone(), k);
+            let color = ColorAdapter::adapt_color(raw_colors.clone(), k);
             colors.push(color);
         }
 
@@ -119,7 +119,7 @@ impl Adapter {
         };
     }
 
-    pub fn get_adapted_colors() -> Vec<Vec<String>> {
+    pub fn transmit_adapted_colors() -> Vec<Vec<String>> {
         let lock = ADAPTED_COLORS.get().expect("Data not set");
         let data = lock.read().unwrap();
         data.clone() // return data copy, not move

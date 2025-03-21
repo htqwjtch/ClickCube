@@ -2,4 +2,6 @@ pub mod cube;
 
 pub mod click;
 
-pub mod paint;
+pub mod handmade;
+
+pub mod painter;

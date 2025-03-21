@@ -2,7 +2,7 @@ use axum::extract::Multipart;
 use std::{fs, path::Path};
 use tokio::{fs::File, io::AsyncWriteExt};
 
-use crate::modules::{adapter::Adapter, click};
+use crate::modules::{color_adapter::ColorAdapter, click};
 
 pub struct ClickClient {}
 
@@ -53,8 +53,8 @@ impl ClickClient {
 
     pub fn detect_colors() -> Vec<Vec<String>> {
         let detected_colors = click::detect_colors();
-        Adapter::set_raw_colors(detected_colors.clone());
-        Adapter::adapt_raw_colors(detected_colors.clone());
+        ColorAdapter::set_raw_colors(detected_colors.clone());
+        ColorAdapter::receive_raw_colors(detected_colors.clone());
         
         detected_colors
     }

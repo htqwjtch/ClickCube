@@ -13,8 +13,9 @@ mod schemas;
 #[openapi(paths(
     api::click::upload_images,
     api::click::detect_colors,
-    api::paint::upload_colors,
+    api::painter::update_colors,
     api::cube::solve,
+    api::handmade::turn_cube_face
 ))]
 struct ApiDoc;
 
@@ -27,6 +28,10 @@ async fn main() {
 
     let app = Router::new()
         .route(
+            "/turn-cube-face",
+            axum::routing::post(api::handmade::turn_cube_face),
+        )
+        .route(
             "/upload-images",
             axum::routing::post(api::click::upload_images),
         )
@@ -35,13 +40,13 @@ async fn main() {
             axum::routing::get(api::click::detect_colors),
         )
         .route(
-            "/upload-colors",
-            axum::routing::post(api::paint::upload_colors),
+            "/update-colors",
+            axum::routing::post(api::painter::update_colors),
         )
         .route("/solve", axum::routing::get(api::cube::solve))
         .layer(cors)
         .merge(SwaggerUi::new("/docs").url("/api-docs/openapi.json", ApiDoc::openapi()));
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:8013").await.unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8014").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
