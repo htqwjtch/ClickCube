@@ -1,4 +1,6 @@
-use crate::modules::{color_adapter::ColorAdapter, cube::Cube, cube_face::CubeFace};
+use crate::modules::{
+    color_adapter::ColorAdapter, cube::Cube, cube_face::CubeFace, opticourier::OptiCourier,
+};
 
 pub struct CubeClient {}
 
@@ -12,7 +14,7 @@ impl CubeClient {
         let mut cube = Cube::new(cube_faces);
         cube.solve();
 
-        vec![String::new()]
+        OptiCourier::transmit_optimized_instructions()
     }
 
     fn convert(vec: Vec<String>) -> [[String; 3]; 3] {

@@ -1,4 +1,4 @@
-use crate::modules::cube_face::CubeFace;
+use crate::modules::{cube_face::CubeFace, opticourier::OptiCourier};
 
 pub struct Cube {
     front: CubeFace,
@@ -262,39 +262,70 @@ impl Cube {
         self.println_all_faces();
     }
 
-    fn make_daisy(&mut self) {
-        print!("\n________MAKE_DAISY________");
-        self.put_edges_of_down_face_up();
+    fn println_all_faces(&mut self) {
+        println!("\nFRONT:");
+        self.println_face(&(self.get_front()));
+        println!("\nBACK:");
+        self.println_face(&(self.get_back()));
+
+        println!("\nUP:");
+        self.println_face(&(self.get_up()));
+        println!("\nDOWN:");
+        self.println_face(&(self.get_down()));
+
+        println!("\nLEFT:");
+        self.println_face(&(self.get_left()));
+        println!("\nRIGHT:");
+        self.println_face(&(self.get_right()));
+        println!("");
     }
 
-    fn put_edges_of_down_face_up(&mut self) {
+    fn println_face(&mut self, cube_face: &CubeFace) {
+        println!("{:?}", cube_face.get_color()[0]);
+        println!("{:?}", cube_face.get_color()[1]);
+        println!("{:?}", cube_face.get_color()[2]);
+    }
+
+    fn make_daisy(&mut self) {
+        let raw_instruction = self.put_edges_of_down_face_up();
+        OptiCourier::receive_raw_instruction(raw_instruction);
+    }
+
+    fn put_edges_of_down_face_up(&mut self) -> String {
+        let mut instruction = String::new();
         loop {
             let mut command_to_put_edge_up = self.check_edges_of_down_face();
             if !command_to_put_edge_up.is_empty() {
+                instruction = instruction + command_to_put_edge_up.as_str() + "Y'";
                 self.execute_command(command_to_put_edge_up + "Y'");
                 continue;
             }
 
             command_to_put_edge_up = self.check_edges_of_first_layer();
             if !command_to_put_edge_up.is_empty() {
+                instruction = instruction + command_to_put_edge_up.as_str() + "Y'";
                 self.execute_command(command_to_put_edge_up + "Y'");
                 continue;
             }
 
             command_to_put_edge_up = self.check_edges_of_second_layer();
             if !command_to_put_edge_up.is_empty() {
+                instruction = instruction + command_to_put_edge_up.as_str() + "Y'";
                 self.execute_command(command_to_put_edge_up + "Y'");
                 continue;
             }
 
             command_to_put_edge_up = self.check_edges_of_third_layer();
             if !command_to_put_edge_up.is_empty() {
+                instruction = instruction + command_to_put_edge_up.as_str() + "Y'";
                 self.execute_command(command_to_put_edge_up + "Y'");
                 continue;
             }
 
             break;
         }
+
+        instruction
     }
 
     fn check_edges_of_down_face(&mut self) -> String {
@@ -743,7 +774,6 @@ impl Cube {
     }
 
     pub fn execute_command(&mut self, command: String) {
-        println!("\n{}", command);
         let mut i = 0;
         while i < command.len() {
             if &command[i..i + 1] == "F" {
@@ -880,35 +910,13 @@ impl Cube {
         }
     }
 
-    fn println_all_faces(&mut self) {
-        println!("FRONT:");
-        self.println_face(&(self.get_front()));
-        println!("\nBACK:");
-        self.println_face(&(self.get_back()));
-
-        println!("\nUP:");
-        self.println_face(&(self.get_up()));
-        println!("\nDOWN:");
-        self.println_face(&(self.get_down()));
-
-        println!("\nLEFT:");
-        self.println_face(&(self.get_left()));
-        println!("\nRIGHT:");
-        self.println_face(&(self.get_right()));
-    }
-
-    fn println_face(&mut self, cube_face: &CubeFace) {
-        println!("{:?}", cube_face.get_color()[0]);
-        println!("{:?}", cube_face.get_color()[1]);
-        println!("{:?}", cube_face.get_color()[2]);
-    }
-
     fn make_cross_of_down_face(&mut self) {
-        print!("\n________MAKE_CROSS_OF_DOWN_FACE________");
-        self.put_edges_of_up_face_down();
+        let raw_instruction = self.put_edges_of_up_face_down();
+        OptiCourier::receive_raw_instruction(raw_instruction);
     }
 
-    fn put_edges_of_up_face_down(&mut self) {
+    fn put_edges_of_up_face_down(&mut self) -> String {
+        let mut instruction = String::new();
         for _ in 0..4 {
             for _ in 0..4 {
                 //TO CHECK MOMENT WHEN ARE SOME FACES ALREADY READY
@@ -916,14 +924,18 @@ impl Cube {
                     && self.get_front().get_color()[0][1][0..1]
                         == self.get_front().get_color()[1][1][0..1]
                 {
+                    instruction += "F2";
                     self.execute_command("F2".to_string());
                 }
+                instruction += "Y'";
                 self.execute_command("Y'".to_string());
             }
             let command_to_put_lower_edge_of_up_face_down =
                 self.check_same_center_and_upper_edge_of_front_face();
+            instruction = instruction + command_to_put_lower_edge_of_up_face_down.as_str() + "Y'";
             self.execute_command(command_to_put_lower_edge_of_up_face_down + "Y'");
         }
+        instruction
     }
 
     fn check_same_center_and_upper_edge_of_front_face(&mut self) -> String {
@@ -953,22 +965,27 @@ impl Cube {
     }
 
     fn make_first_layer(&mut self) {
-        print!("\n________MAKE_FIRST_LAYER________");
-        self.put_corners_of_down_face_up();
+        let instruction_1 = self.put_corners_of_down_face_up();
+        let instruction_2 = self.put_corners_of_up_face_down();
 
-        self.put_corners_of_up_face_down();
+        let raw_instruction = instruction_1 + instruction_2.as_str();
+        OptiCourier::receive_raw_instruction(raw_instruction);
     }
 
-    fn put_corners_of_down_face_up(&mut self) {
+    fn put_corners_of_down_face_up(&mut self) -> String {
+        let mut instruction = String::new();
         for _ in 0..2 {
             for _ in 0..2 {
                 let command_to_put_corner_up = self.check_corners_of_down_face();
                 if !command_to_put_corner_up.is_empty() {
+                    instruction += command_to_put_corner_up.as_str();
                     self.execute_command(command_to_put_corner_up);
                 }
             }
+            instruction += "Y2";
             self.execute_command("Y2".to_string());
         }
+        instruction
     }
 
     fn check_corners_of_down_face(&mut self) -> String {
@@ -1027,16 +1044,20 @@ impl Cube {
         command_to_put_corner_up
     }
 
-    fn put_corners_of_up_face_down(&mut self) {
+    fn put_corners_of_up_face_down(&mut self) -> String {
+        let mut instruction = String::new();
         for _ in 0..2 {
             for _ in 0..2 {
                 let command_to_put_corner_down = self.check_corners_of_up_face_1();
                 if !command_to_put_corner_down.is_empty() {
+                    instruction += command_to_put_corner_down.as_str();
                     self.execute_command(command_to_put_corner_down);
                 }
             }
+            instruction += "Y2";
             self.execute_command("Y2".to_string());
         }
+        instruction
     }
 
     fn check_corners_of_up_face_1(&mut self) -> String {
@@ -1146,21 +1167,27 @@ impl Cube {
     }
 
     fn make_second_layer(&mut self) {
-        print!("\n________MAKE_SECOND_LAYER________");
-        self.put_edges_of_second_layer_up();
-        self.put_edges_of_second_layer_in_place();
+        let instruction_1 = self.put_edges_of_second_layer_up();
+        let instruction_2 = self.put_edges_of_second_layer_in_place();
+
+        let raw_instruction = instruction_1 + instruction_2.as_str();
+        OptiCourier::receive_raw_instruction(raw_instruction);
     }
 
-    fn put_edges_of_second_layer_up(&mut self) {
+    fn put_edges_of_second_layer_up(&mut self) -> String {
+        let mut instruction = String::new();
         for _ in 0..2 {
             for _ in 0..2 {
                 let command_to_put_edge_up = self.check_edges_of_second_layer_of_front_face();
                 if !command_to_put_edge_up.is_empty() {
+                    instruction += command_to_put_edge_up.as_str();
                     self.execute_command(command_to_put_edge_up);
                 }
             }
+            instruction += "Y2";
             self.execute_command("Y2".to_string());
         }
+        instruction
     }
 
     fn check_edges_of_second_layer_of_front_face(&mut self) -> String {
@@ -1210,16 +1237,20 @@ impl Cube {
         command_to_put_edge_up
     }
 
-    fn put_edges_of_second_layer_in_place(&mut self) {
+    fn put_edges_of_second_layer_in_place(&mut self) -> String {
+        let mut instruction = String::new();
         for _ in 0..2 {
             for _ in 0..2 {
                 let command_to_put_edge_in_place = self.check_edges_of_up_face_1();
                 if !command_to_put_edge_in_place.is_empty() {
+                    instruction += command_to_put_edge_in_place.as_str();
                     self.execute_command(command_to_put_edge_in_place);
                 }
             }
+            instruction += "Y2";
             self.execute_command("Y2".to_string());
         }
+        instruction
     }
 
     fn check_edges_of_up_face_1(&mut self) -> String {
@@ -1320,19 +1351,23 @@ impl Cube {
     }
 
     fn make_cross_of_up_face(&mut self) {
-        print!("\n________MAKE_CROSS_OF_UP_FACE________");
-        self.put_edges_of_up_face_in_cross();
+        let instruction_1 = self.put_edges_of_up_face_in_cross();
+        let instruction_2 = self.put_edges_of_up_face_in_place();
 
-        self.put_edges_of_up_face_in_place();
+        let raw_instruction = instruction_1 + instruction_2.as_str();
+        OptiCourier::receive_raw_instruction(raw_instruction);
     }
 
-    fn put_edges_of_up_face_in_cross(&mut self) {
+    fn put_edges_of_up_face_in_cross(&mut self) -> String {
+        let mut instruction = String::new();
         for _ in 0..3 {
             let command_to_make_cross = self.check_edges_of_up_face_2();
             if !command_to_make_cross.is_empty() {
+                instruction += command_to_make_cross.as_str();
                 self.execute_command(command_to_make_cross);
             }
         }
+        instruction
     }
 
     fn check_edges_of_up_face_2(&mut self) -> String {
@@ -1374,17 +1409,21 @@ impl Cube {
         command_to_make_cross
     }
 
-    fn put_edges_of_up_face_in_place(&mut self) {
+    fn put_edges_of_up_face_in_place(&mut self) -> String {
+        let mut instruction = String::new();
         loop {
             let command_to_put_edges_in_place = self.check_edges_of_up_face_3();
             if !command_to_put_edges_in_place.is_empty() {
+                instruction += command_to_put_edges_in_place.as_str();
                 self.execute_command(command_to_put_edges_in_place);
             }
             if self.check_edges_of_up_face_4() {
                 break;
             }
+            instruction += "U";
             self.execute_command("U".to_string());
         }
+        instruction
     }
 
     fn check_edges_of_up_face_3(&mut self) -> String {
@@ -1445,25 +1484,27 @@ impl Cube {
     }
 
     fn make_corners_of_up_face(&mut self) {
-        print!("\n________MAKE_CORNERS_OF_UP_FACE________");
-        self.put_corners_of_up_face_in_place();
+        let raw_instruction = self.put_corners_of_up_face_in_place();
+        OptiCourier::receive_raw_instruction(raw_instruction);
     }
 
-    fn put_corners_of_up_face_in_place(&mut self) {
-        let mut command_to_put_corners_in_place = String::new();
+    fn put_corners_of_up_face_in_place(&mut self) -> String {
+        let mut instruction = String::new();
         loop {
-            let subcommand = self.check_corners_of_up_face_2();
-            if !subcommand.is_empty() {
-                command_to_put_corners_in_place += subcommand.as_str();
-                self.execute_command(subcommand);
+            let command_to_put_corners_in_place = self.check_corners_of_up_face_2();
+            if !command_to_put_corners_in_place.is_empty() {
+                instruction += command_to_put_corners_in_place.as_str();
+                self.execute_command(command_to_put_corners_in_place);
             } else {
                 break;
             }
         }
         let command_to_put_up_face_correctly = self.check_center_and_upper_edge_of_front_face();
         if !command_to_put_up_face_correctly.is_empty() {
+            instruction += command_to_put_up_face_correctly.as_str();
             self.execute_command(command_to_put_up_face_correctly);
         }
+        instruction
     }
 
     fn check_corners_of_up_face_2(&mut self) -> String {
@@ -1559,22 +1600,26 @@ impl Cube {
     }
 
     fn make_third_layer(&mut self) {
-        print!("\n________MAKE_THIRD_LAYER________");
-        self.put_corners_of_up_face_correctly();
+        let raw_instruction = self.put_corners_of_up_face_correctly();
+        OptiCourier::receive_raw_instruction(raw_instruction);
     }
 
-    fn put_corners_of_up_face_correctly(&mut self) {
+    fn put_corners_of_up_face_correctly(&mut self) -> String {
+        let mut instruction = String::from("X2");
         self.execute_command("X2".to_string());
         for _ in 0..4 {
             let command_to_put_corners_correctly = self.check_corners_of_up_face_3();
             if !command_to_put_corners_correctly.is_empty() {
+                instruction += command_to_put_corners_correctly.as_str();
                 self.execute_command(command_to_put_corners_correctly);
             }
         }
         let command_to_put_down_face_correctly = self.check_center_and_lower_edge_of_front_face();
         if !command_to_put_down_face_correctly.is_empty() {
+            instruction += command_to_put_down_face_correctly.as_str();
             self.execute_command(command_to_put_down_face_correctly);
         }
+        instruction
     }
 
     fn check_corners_of_up_face_3(&mut self) -> String {

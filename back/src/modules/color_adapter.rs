@@ -120,8 +120,8 @@ impl ColorAdapter {
     }
 
     pub fn transmit_adapted_colors() -> Vec<Vec<String>> {
-        let lock = ADAPTED_COLORS.get().expect("Data not set");
-        let data = lock.read().unwrap();
-        data.clone() // return data copy, not move
+        ADAPTED_COLORS
+            .get()
+            .map_or_else(|| vec![], |lock| lock.read().unwrap().clone())
     }
 }
