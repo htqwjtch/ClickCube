@@ -13,3 +13,4 @@ utoipa-axum = "0.2.0"
 utoipa-swagger-ui = { version = "9.0.0", features = ["axum"] }
 serde = { version = "1.0.218", features = ["derive"] }
 image = "0.25.5"
+zip = "=2.4.0"

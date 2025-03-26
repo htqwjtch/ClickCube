@@ -6,4 +6,10 @@ services:
     ports:
       - "8013:8013"
       - "8014:8014"
-     
+  front:
+    build: ./front
+    volumes:
+      - ./front:/usr/src/front
+    ports:
+      - "3000:3000"
+      - "3001:3001"
