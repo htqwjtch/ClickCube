@@ -22,3 +22,11 @@ COPY . .
 RUN cargo fetch
 
 CMD [ "cargo", "run" ]
+
+
+# "rust-lang.rust-analyzer",
+# "ms-vscode.cpptools",
+# "belfz.search-crates-io",
+# "tamasfe.even-better-toml",
+# "docore.docore-rust-pack",
+# "fill-labs.dependi"

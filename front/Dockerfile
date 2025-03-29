@@ -8,8 +8,11 @@ RUN apt update && apt install -y curl && \
 
 WORKDIR /usr/src/front
 
-RUN npm init -y && npm install express && npm install -g eslint
+RUN npm init -y && npm install express && npm install -g eslint && npm install axios
 
 COPY . .
 
 CMD ["npm", "start"]
+
+
+# "dbaeumer.vscode-eslint"

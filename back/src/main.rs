@@ -15,7 +15,7 @@ mod schemas;
     api::click::detect_colors,
     api::painter::update_colors,
     api::cube::solve,
-    api::handmade::turn_cube_face
+    api::handmade::turn_cube_face,
 ))]
 struct ApiDoc;
 

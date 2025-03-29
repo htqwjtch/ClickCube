@@ -1,38 +1,169 @@
-.App {
-  text-align: center;
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-image: url('../public/background.jpeg'); /* Путь к вашему изображению */
+  background-size: cover; /* Фон будет растянут, чтобы покрыть весь экран */
+  background-position: center; /* Центрируем изображение */
+  background-repeat: no-repeat; /* Запрещаем повторение изображения */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  position: relative; /* Это нужно, чтобы управлять позиционированием контейнера */
+  z-index: 1; /* Устанавливаем z-index для контейнера, чтобы текст был сверху */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.main-content {
+  width: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  overflow-y: auto;
+  z-index: 2; /* Ставим на передний план контент */
+  background-color: rgba(255, 255, 255, 0.4); /* Немного затемняем фон контента для лучшего контраста */
+  border-radius: 10px; /* Края контейнера будут с округлыми углами */
+}
+
+.upload-area {
+  width: 100%;
+  max-width: 400px;
+  height: 220px;
+  border: 2px dashed #4CAF50;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.8); /* Полупрозрачный белый фон */
+  position: relative;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.upload-area:hover {
+  background-color: rgba(240, 255, 240, 0.8); /* Полупрозрачный фон при наведении */
+  border-color: #45a049;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.upload-area.drag-active {
+  border-color: #4CAF50;
+  background-color: #e8f5e9;
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+}
+
+.upload-area p {
+  margin: 5px 0;
+  color: #333;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.file-input {
+  display: none;
+}
+
+.preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  margin-top: 20px;
+  min-height: 120px;
+}
+
+.image-preview {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.image-preview:hover {
+  transform: scale(1.05);
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 24px;
+  height: 24px;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: 14px;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.remove-btn:hover {
+  opacity: 1;
+}
+
+/* Кнопка с более квадратными углами */
+.btn {
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  background: linear-gradient(145deg, #4CAF50, #45a049); /* Градиент */
   color: white;
+  border: none;
+  border-radius: 10px; /* Немного скругленные углы */
+  transition: all 0.3s ease; /* Плавные переходы для всех свойств */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Легкая тень */
 }
 
-.App-link {
-  color: #61dafb;
+.btn:hover {
+  background: linear-gradient(145deg, #388E3C, #2C6F2F); /* Темный градиент при наведении */
+  transform: scale(1.05); /* Увеличение кнопки при наведении */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* Увеличение тени при наведении */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.btn:active {
+  transform: scale(1); /* Нормальный размер кнопки при нажатии */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Сильная тень при нажатии */
+}
+
+.btn:disabled {
+  background: linear-gradient(145deg, #cccccc, #aaaaaa); /* Серая кнопка */
+  cursor: not-allowed; /* Курсор недоступности */
+  box-shadow: none; /* Убираем тень для отключенной кнопки */
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
   }
-  to {
-    transform: rotate(360deg);
+  
+  .main-content {
+    width: 100%;
+    height: auto;
   }
 }

@@ -11,5 +11,5 @@ services:
     volumes:
       - ./front:/usr/src/front
     ports:
-      - "3000:3000"
-      - "3001:3001"
+      - "3013:3013"
+      - "3014:3014"
