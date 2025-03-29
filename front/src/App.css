@@ -1,19 +1,26 @@
-body, html {
+body,
+html {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-image: url('../public/background.jpeg'); /* Путь к вашему изображению */
-  background-size: cover; /* Фон будет растянут, чтобы покрыть весь экран */
-  background-position: center; /* Центрируем изображение */
-  background-repeat: no-repeat; /* Запрещаем повторение изображения */
+  background-image: url('../public/background.jpeg');
+  /* Путь к вашему изображению */
+  background-size: cover;
+  /* Фон будет растянут, чтобы покрыть весь экран */
+  background-position: center;
+  /* Центрируем изображение */
+  background-repeat: no-repeat;
+  /* Запрещаем повторение изображения */
 }
 
 .container {
   display: flex;
   height: 100vh;
   width: 100vw;
-  position: relative; /* Это нужно, чтобы управлять позиционированием контейнера */
-  z-index: 1; /* Устанавливаем z-index для контейнера, чтобы текст был сверху */
+  position: relative;
+  /* Это нужно, чтобы управлять позиционированием контейнера */
+  z-index: 1;
+  /* Устанавливаем z-index для контейнера, чтобы текст был сверху */
 }
 
 .main-content {
@@ -25,15 +32,32 @@ body, html {
   gap: 20px;
   padding: 20px;
   overflow-y: auto;
-  z-index: 2; /* Ставим на передний план контент */
-  background-color: rgba(255, 255, 255, 0.4); /* Немного затемняем фон контента для лучшего контраста */
-  border-radius: 10px; /* Края контейнера будут с округлыми углами */
+  z-index: 2;
+  /* Ставим на передний план контент */
+  background-color: rgba(255, 255, 255, 0.4);
+  /* Немного затемняем фон контента для лучшего контраста */
+  border-radius: 10px;
+  /* Края контейнера будут с округлыми углами */
+}
+
+.upload-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  /* 3 столбца */
+  grid-template-rows: repeat(3, 1fr);
+  /* 4 строки */
+  gap: 15px;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+  /* Ширина сетки */
+  margin-top: 20px;
 }
 
 .upload-area {
-  width: 100%;
-  max-width: 400px;
-  height: 220px;
+  width: 100px;
+  height: 100px;
+  /* Высота зоны загрузки */
   border: 2px dashed #4CAF50;
   border-radius: 12px;
   display: flex;
@@ -43,14 +67,16 @@ body, html {
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  background-color: rgba(255, 255, 255, 0.8); /* Полупрозрачный белый фон */
+  background-color: rgba(255, 255, 255, 0.8);
+  /* Полупрозрачный фон */
   position: relative;
   padding: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .upload-area:hover {
-  background-color: rgba(240, 255, 240, 0.8); /* Полупрозрачный фон при наведении */
+  background-color: rgba(240, 255, 240, 0.8);
+  /* Полупрозрачный фон при наведении */
   border-color: #45a049;
   box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
 }
@@ -89,7 +115,7 @@ body, html {
   height: 100px;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
 }
 
@@ -127,41 +153,52 @@ body, html {
   opacity: 1;
 }
 
-/* Кнопка с более квадратными углами */
-.btn {
+.upload-btn {
   padding: 12px 24px;
   font-size: 16px;
   cursor: pointer;
-  background: linear-gradient(145deg, #4CAF50, #45a049); /* Градиент */
+  background: linear-gradient(145deg, #4CAF50, #45a049);
+  /* Градиент */
   color: white;
   border: none;
-  border-radius: 10px; /* Немного скругленные углы */
-  transition: all 0.3s ease; /* Плавные переходы для всех свойств */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Легкая тень */
+  border-radius: 10px;
+  /* Немного скругленные углы */
+  transition: all 0.3s ease;
+  /* Плавные переходы для всех свойств */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  /* Легкая тень */
 }
 
-.btn:hover {
-  background: linear-gradient(145deg, #388E3C, #2C6F2F); /* Темный градиент при наведении */
-  transform: scale(1.05); /* Увеличение кнопки при наведении */
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* Увеличение тени при наведении */
+.upload-btn:hover {
+  background: linear-gradient(145deg, #388E3C, #2C6F2F);
+  /* Темный градиент при наведении */
+  transform: scale(1.05);
+  /* Увеличение кнопки при наведении */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  /* Увеличение тени при наведении */
 }
 
-.btn:active {
-  transform: scale(1); /* Нормальный размер кнопки при нажатии */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Сильная тень при нажатии */
+.upload-btn:active {
+  transform: scale(1);
+  /* Нормальный размер кнопки при нажатии */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  /* Сильная тень при нажатии */
 }
 
-.btn:disabled {
-  background: linear-gradient(145deg, #cccccc, #aaaaaa); /* Серая кнопка */
-  cursor: not-allowed; /* Курсор недоступности */
-  box-shadow: none; /* Убираем тень для отключенной кнопки */
+.upload-btn:disabled {
+  background: linear-gradient(145deg, #cccccc, #aaaaaa);
+  /* Серая кнопка */
+  cursor: not-allowed;
+  /* Курсор недоступности */
+  box-shadow: none;
+  /* Убираем тень для отключенной кнопки */
 }
 
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
   }
-  
+
   .main-content {
     width: 100%;
     height: auto;

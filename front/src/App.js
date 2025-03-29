@@ -5,9 +5,14 @@ import "./App.css";
 
 function App() {
   const [dragActive, setDragActive] = useState(false);
-  const [selectedImages, setSelectedImages] = useState([]);
-  const [notifications, setNotifications] = useState([]); // Состояние для уведомлений
-  const inputRef = useRef(null);
+  const [selectedImages, setSelectedImages] = useState(Array(12).fill(null)); // State to hold images for each zone
+  const [notifications, setNotifications] = useState([]); // Уведомления
+
+  // Массив рефов для каждого input
+  const inputRefs = useRef(Array(12).fill(null));
+
+  // Массив активных зон (индексы зон, которые нужно оставить)
+  const activeZones = [1, 4, 5, 6, 7, 9];
 
   // Функция для добавления уведомлений
   const addNotification = (message, type = 'success') => {
@@ -25,24 +30,25 @@ function App() {
   };
 
   // Функция обработки файлов
-  const processFiles = useCallback((files) => {
-    if (selectedImages.length >= 6) {
-      addNotification("Максимум 6 изображений", "warning");
+  const processFiles = useCallback((files, index) => {
+    if (files.length > 1) {
+      addNotification("Пожалуйста, загружайте только одно изображение за раз", "warning");
       return;
     }
 
-    files.forEach((file) => {
-      if (!file.type.match('image.*')) {
-        addNotification("Пожалуйста, загружайте только изображения", "warning");
-        return;
-      }
+    const file = files[0];
+    if (!file.type.match('image.*')) {
+      addNotification("Пожалуйста, загружайте только изображения", "warning");
+      return;
+    }
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setSelectedImages(prev => [...prev, e.target.result]);
-      };
-      reader.readAsDataURL(file);
-    });
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const newImages = [...selectedImages];
+      newImages[index] = e.target.result; // Assign the image to the specific zone
+      setSelectedImages(newImages);
+    };
+    reader.readAsDataURL(file);
   }, [selectedImages]);
 
   // Обработчики drag and drop
@@ -56,54 +62,62 @@ function App() {
     }
   }, []);
 
-  const handleDrop = useCallback((e) => {
+  const handleDrop = useCallback((e, index) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       const files = Array.from(e.dataTransfer.files);
-
-      if (selectedImages.length + files.length > 6) {
-        addNotification("Можно загрузить максимум 6 изображений.", "warning");
+      if (selectedImages[index]) {
+        addNotification("Эта зона уже занята, выберите другую", "warning");
         return;
       }
 
-      processFiles(files);
+      processFiles(files, index);
     }
   }, [selectedImages, processFiles]);
 
   // Обработчик выбора файла через клик
-  const handleChange = (e) => {
+  const handleChange = (e, index) => {
     if (e.target.files && e.target.files.length > 0) {
-      processFiles(Array.from(e.target.files));
-      e.target.value = "";
+      processFiles(Array.from(e.target.files), index);
+      e.target.value = ""; // Clear input value to allow re-uploading
     }
   };
 
-  const onButtonClick = () => {
-    inputRef.current.click();
+  const onButtonClick = (index) => {
+    inputRefs.current[index].click(); // Вызываем click для конкретного input
   };
 
   const removeImage = (index) => {
-    setSelectedImages(prev => prev.filter((_, i) => i !== index));
+    const newImages = [...selectedImages];
+    newImages[index] = null; // Remove image from the specific zone
+    setSelectedImages(newImages);
   };
 
   // Функция загрузки файлов на сервер
   const handleUpload = async () => {
-    if (selectedImages.length === 0) {
+    if (selectedImages.every((img) => img === null)) {
       addNotification("Нет изображений для загрузки", "error");
       return;
     }
-
+  
+    // Zone order: Front, Back, Up, Down, Left, Right
+    const zoneOrder = [5, 7, 1, 9, 4, 6]; // Active zones in the required upload order
+    
+    // Rearrange selected images based on the zoneOrder
+    const imagesToUpload = zoneOrder.map((zoneIndex) => selectedImages[zoneIndex]);
+  
     const formData = new FormData();
-
-    // Преобразуем dataURL обратно в Blob (файл)
-    selectedImages.forEach((image, index) => {
-      const blob = dataURLToBlob(image);
-      formData.append("images", blob, `image_${index}.png`);
+  
+    imagesToUpload.forEach((image, index) => {
+      if (image) {
+        const blob = dataURLToBlob(image);
+        formData.append("images", blob, `image_${index}.png`);
+      }
     });
-
+  
     try {
       await axios.post("http://localhost:8013/upload-images", formData, {
         headers: {
@@ -111,7 +125,7 @@ function App() {
         },
       });
       addNotification("Изображения загружены успешно!", "success");
-      setSelectedImages([]); // Очищаем загруженные изображения
+      setSelectedImages(Array(12).fill(null)); // Очищаем загруженные изображения
     } catch (error) {
       console.error("Ошибка загрузки", error);
       addNotification("Ошибка загрузки изображений", "error");
@@ -132,52 +146,77 @@ function App() {
     return new Blob([uint8Array], { type: mimeString });
   };
 
+  // Проверка, чтобы кнопка загрузки появлялась только при 6 изображениях
+  const isUploadButtonVisible = selectedImages.filter(image => image !== null).length === 6;
+
   return (
     <div className="app-container">
       <div className="container">
         <div className="main-content">
-          {/* Область загрузки */}
-          <div
-            className={`upload-area ${dragActive ? "drag-active" : ""}`}
-            onDragEnter={handleDrag}
-            onDragLeave={handleDrag}
-            onDragOver={handleDrag}
-            onDrop={handleDrop}
-            onClick={onButtonClick}
-          >
-            <input
-              type="file"
-              ref={inputRef}
-              onChange={handleChange}
-              className="file-input"
-              accept="image/*"
-              multiple={false}
-            />
-            <p>Кликните или перетащите изображение</p>
-            <p>Выбрано: {selectedImages.length}/6</p>
+          <div className="upload-grid">
+            {selectedImages.map((image, index) => {
+              // Заменяем текст на соответствующие значения для зон
+              let zoneLabel = `Зона ${index}`;
+              if (index === 1) zoneLabel = "Up";
+              if (index === 4) zoneLabel = "Left";
+              if (index === 5) zoneLabel = "Front";
+              if (index === 6) zoneLabel = "Right";
+              if (index === 7) zoneLabel = "Back";
+              if (index === 9) zoneLabel = "Down";
+
+              return (
+                <div
+                  key={index}
+                  className={`upload-area ${dragActive ? "drag-active" : ""}`}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={(e) => handleDrop(e, index)}
+                  onClick={() => onButtonClick(index)}
+                  style={{
+                    visibility: activeZones.includes(index) ? "visible" : "hidden", // Make non-active zones hidden
+                    pointerEvents: activeZones.includes(index) ? "auto" : "none"  // Disable pointer events on non-active zones
+                  }}
+                >
+                  <input
+                    type="file"
+                    ref={(el) => inputRefs.current[index] = el} // Ссылка на каждый input
+                    onChange={(e) => handleChange(e, index)}
+                    className="file-input"
+                    accept="image/*"
+                    multiple={false}
+                    id={`file-input-${index}`} // Уникальный id для каждого input
+                  />
+                  <p>Кликните или перетащите изображение</p>
+                  {image ? <p>Выбрано изображение</p> : <p>{zoneLabel}</p>} {/* Заменили текст на zoneLabel */}
+                </div>
+              );
+            })}
           </div>
 
           {/* Превью изображений */}
           <div className="preview-container">
             {selectedImages.map((img, index) => (
-              <div key={index} className="image-preview">
-                <img src={img} alt={`preview ${index}`} />
-                <button
-                  className="remove-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeImage(index);
-                  }}
-                >
-                  ×
-                </button>
-              </div>
+              img && (
+                <div key={index} className="image-preview">
+                  <img src={img} alt={`preview ${index}`} />
+                  <button
+                    className="remove-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeImage(index);
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              )
             ))}
           </div>
 
           {/* Кнопка загрузки */}
-          {selectedImages.length === 6 && (
-            <button className="btn" onClick={handleUpload}>
+          {isUploadButtonVisible && (
+            <button className="upload-btn" onClick={handleUpload}>
               Загрузить изображения
             </button>
           )}
