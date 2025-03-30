@@ -163,7 +163,21 @@ html {
   display: none;
 }
 
-.preview-container {
+.image-preview-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.7); /* Полупрозрачный фон */
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+/* .preview-container {
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
@@ -172,16 +186,23 @@ html {
   max-width: 400px;
   margin-top: 20px;
   min-height: 120px;
-}
+} */
 
-.image-preview {
-  position: relative;
+/* .image-preview {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100px;
   height: 100px;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
+} */
+
+.image-preview {
+  max-width: 150px;
+  max-height: 150px;
 }
 
 .image-preview:hover {

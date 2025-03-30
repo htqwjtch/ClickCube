@@ -74,22 +74,22 @@ function App() {
       addNotification("Нет изображений для загрузки", "error");
       return;
     }
-  
+
     // Zone order: Front, Back, Up, Down, Left, Right
     const zoneOrder = [5, 7, 1, 9, 4, 6]; // Active zones in the required upload order
-    
+
     // Rearrange selected images based on the zoneOrder
     const imagesToUpload = zoneOrder.map((zoneIndex) => selectedImages[zoneIndex]);
-  
+
     const formData = new FormData();
-  
+
     imagesToUpload.forEach((image, index) => {
       if (image) {
         const blob = dataURLToBlob(image);
         formData.append("images", blob, `image_${index}.png`);
       }
     });
-  
+
     try {
       await axios.post("http://localhost:8013/upload-images", formData, {
         headers: {
@@ -155,30 +155,25 @@ function App() {
                     multiple={false}
                     id={`file-input-${index}`} // Уникальный id для каждого input
                   />
-                  {image ? <p>Выбрано изображение</p> : <p>{zoneLabel}</p>} {/* Заменили текст на zoneLabel */}
+                  {image ? (
+                    <div className="image-preview-container">
+                      <img src={image} alt={`preview ${index}`} className="image-preview" />
+                      <button
+                        className="remove-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeImage(index);
+                        }}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ) : (
+                    <p>{zoneLabel}</p>
+                  )}
                 </div>
               );
             })}
-          </div>
-
-          {/* Превью изображений */}
-          <div className="preview-container">
-            {selectedImages.map((img, index) => (
-              img && (
-                <div key={index} className="image-preview">
-                  <img src={img} alt={`preview ${index}`} />
-                  <button
-                    className="remove-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeImage(index);
-                    }}
-                  >
-                    ×
-                  </button>
-                </div>
-              )
-            ))}
           </div>
 
           {/* Кнопка загрузки */}
