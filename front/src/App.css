@@ -2,134 +2,155 @@ body,
 html {
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  /* overflow: hidden; */
   background-image: url('../public/background.jpeg');
-  /* Путь к вашему изображению */
   background-size: cover;
-  /* Фон будет растянут, чтобы покрыть весь экран */
   background-position: center;
-  /* Центрируем изображение */
-  background-repeat: no-repeat;
-  /* Запрещаем повторение изображения */
 }
 
 .container {
-  display: flex;
   height: 100vh;
   width: 100vw;
-  position: relative;
-  /* Это нужно, чтобы управлять позиционированием контейнера */
-  z-index: 1;
-  /* Устанавливаем z-index для контейнера, чтобы текст был сверху */
-}
-
-.main-content {
-  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 20px;
-  padding: 20px;
-  overflow-y: auto;
-  z-index: 2;
-  /* Ставим на передний план контент */
-  background-color: rgba(255, 255, 255, 0.4);
-  /* Немного затемняем фон контента для лучшего контраста */
+}
+
+.main-content {
+  width: 25%;
+  height: 30%;
   border-radius: 10px;
-  /* Края контейнера будут с округлыми углами */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4%;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.main-content.solve-by-photo-mode {
+  width: 87%;
+  height: 85%;
+  justify-content: flex-start;
+  gap: 2%;
+}
+
+.solve-by-photo-btn {
+  width: 50%;
+  height: 20%;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  color: white;
+  transition: all 0.3s ease;
+  background-color: #45a049;
+}
+
+.solve-by-photo-btn:hover {
+  transform: scale(1.05);
+  background-color: #2C6F2F;
+}
+
+.solve-by-photo-btn:active {
+  transform: scale(1);
+}
+
+.solve-by-photo-btn:disabled {
+  cursor: not-allowed;
+  box-shadow: none;
+  background-color: #aaaaaa;
+}
+
+.click-container {
+  height: 80%;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .upload-grid {
+  border-radius: 10px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  /* 3 столбца */
   grid-template-rows: repeat(3, 1fr);
-  /* 4 строки */
-  gap: 15px;
   justify-content: center;
-  width: 100%;
-  max-width: 600px;
-  /* Ширина сетки */
-  margin-top: 20px;
+  align-items: center;
+  gap: 10px;
 }
 
 .upload-grid .upload-area:nth-child(2) {
   border: 2px dashed yellow;
-  border-radius: 12px;
+  border-radius: 10px;
+}
+
+.upload-grid .upload-area:nth-child(2):hover {
+  border-color: yellow;
+  transform: scale(1.05);
+  background-color: rgba(255, 255, 0, 0.9);
 }
 
 .upload-grid .upload-area:nth-child(5) {
   border: 2px dashed green;
-  border-radius: 12px;
+  border-radius: 10px;
+}
+
+.upload-grid .upload-area:nth-child(5):hover {
+  border-color: green;
+  transform: scale(1.05);
+  background-color: rgba(76, 175, 80, 0.9);
 }
 
 .upload-grid .upload-area:nth-child(6) {
   border: 2px dashed orange;
-  border-radius: 12px;
+  border-radius: 10px;
+}
+
+.upload-grid .upload-area:nth-child(6):hover {
+  border-color: orange;
+  transform: scale(1.05);
+  background-color: rgba(255, 165, 0, 0.9);
 }
 
 .upload-grid .upload-area:nth-child(7) {
   border: 2px dashed blue;
-  border-radius: 12px;
+  border-radius: 10px;
+}
+
+.upload-grid .upload-area:nth-child(7):hover {
+  border-color: blue;
+  transform: scale(1.05);
+  background-color: rgba(33, 150, 243, 0.9);
 }
 
 .upload-grid .upload-area:nth-child(8) {
   border: 2px dashed red;
-  border-radius: 12px;
+  border-radius: 10px;
+}
+
+.upload-grid .upload-area:nth-child(8):hover {
+  border-color: red;
+  transform: scale(1.05);
+  background-color: rgba(244, 67, 54, 0.9);
 }
 
 .upload-grid .upload-area:nth-child(10) {
   border: 2px dashed white;
-  border-radius: 12px;
-}
-
-.upload-grid .upload-area:nth-child(2):hover {
-  background-color: rgba(255, 255, 0, 0.9); /* Яркий желтый фон при наведении */
-  border-color: yellow;
-  box-shadow: 0 4px 15px rgba(255, 255, 0, 0.3);
-  transform: scale(1.05); /* Легкое увеличение при наведении */
-}
-
-.upload-grid .upload-area:nth-child(5):hover {
-  background-color: rgba(76, 175, 80, 0.9); /* Яркий зеленый фон при наведении */
-  border-color: green;
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-  transform: scale(1.05); /* Легкое увеличение при наведении */
-}
-
-.upload-grid .upload-area:nth-child(6):hover {
-  background-color: rgba(255, 165, 0, 0.9); /* Яркий оранжевый фон при наведении */
-  border-color: orange;
-  box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
-  transform: scale(1.05); /* Легкое увеличение при наведении */
-}
-
-.upload-grid .upload-area:nth-child(7):hover {
-  background-color: rgba(33, 150, 243, 0.9); /* Яркий синий фон при наведении */
-  border-color: blue;
-  box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
-  transform: scale(1.05); /* Легкое увеличение при наведении */
-}
-
-.upload-grid .upload-area:nth-child(8):hover {
-  background-color: rgba(244, 67, 54, 0.9); /* Яркий красный фон при наведении */
-  border-color: red;
-  box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
-  transform: scale(1.05); /* Легкое увеличение при наведении */
+  border-radius: 10px;
 }
 
 .upload-grid .upload-area:nth-child(10):hover {
-  background-color: rgba(255, 255, 255, 0.9); /* Яркий белый фон при наведении */
   border-color: white;
-  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
-  transform: scale(1.05); /* Легкое увеличение при наведении */
+  transform: scale(1.05);
+  background-color: rgba(255, 255, 255, 0.9);
 }
 
 .upload-area {
-  width: 100px;
-  height: 100px;
-  /* Высота зоны загрузки */
+  width: 150px;
+  height: 150px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -138,25 +159,47 @@ html {
   cursor: pointer;
   transition: all 0.3s ease;
   background-color: rgba(217, 221, 220, 0.8);
-  /* Полупрозрачный фон */
-  position: relative;
-  padding: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .upload-area:hover {
-  background-color: rgba(76, 175, 80, 0.9); /* Увеличиваем яркость фона */
-  /* Яркий фон при наведении */
   border-color: #45a049;
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-  transform: scale(1.05); /* Легкое увеличение при наведении */
+  transform: scale(1.05);
+  background-color: rgba(76, 175, 80, 0.9);
 }
 
-.upload-area p {
-  margin: 5px 0;
-  color: #333;
-  font-weight: 500;
+.detect-colors-btn-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  display: flex;
+  justify-content: end;
+}
+
+.detect-colors-btn {
+  width: 25%;
+  height: 50%;
+  border: none;
+  border-radius: 10px;
   font-size: 16px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #45a049;
+}
+
+.detect-colors-btn:hover {
+  transform: scale(1.05);
+  background-color: #2C6F2F;
+}
+
+.detect-colors-btn:active {
+  transform: scale(1);
+}
+
+.detect-colors-btn:disabled {
+  cursor: not-allowed;
+  box-shadow: none;
+  background-color: #aaaaaa;
 }
 
 .file-input {
@@ -164,22 +207,18 @@ html {
 }
 
 .image-preview-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
+  border-radius: 10px;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(255, 255, 255, 0.7); /* Полупрозрачный фон */
-  border-radius: 5px;
-  overflow: hidden;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
 .image-preview {
-  max-width: 150px;
-  max-height: 150px;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
 }
 
 .image-preview:hover {
@@ -198,64 +237,81 @@ html {
   right: 5px;
   width: 24px;
   height: 24px;
-  background-color: #ff4444;
-  color: white;
   border: none;
   border-radius: 50%;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 14px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
   opacity: 0.8;
   transition: opacity 0.2s;
+  background-color: #ff4444;
 }
 
 .remove-btn:hover {
   opacity: 1;
 }
 
-.upload-btn {
-  padding: 12px 24px;
-  font-size: 16px;
-  cursor: pointer;
-  background: linear-gradient(145deg, #4CAF50, #45a049);
-  /* Градиент */
-  color: white;
+.back-btn-container {
+  width: 100%;
+  height: 10%;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.back-btn {
+  position: relative;
+  margin-top: 10px;
+  margin-left: 20px;
+  width: 100px;
+  height: 40px;
   border: none;
   border-radius: 10px;
-  /* Немного скругленные углы */
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
   transition: all 0.3s ease;
-  /* Плавные переходы для всех свойств */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  /* Легкая тень */
+  background-color: #C70039;
 }
 
-.upload-btn:hover {
-  background: linear-gradient(145deg, #388E3C, #2C6F2F);
-  /* Темный градиент при наведении */
+.back-btn:hover {
   transform: scale(1.05);
-  /* Увеличение кнопки при наведении */
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  /* Увеличение тени при наведении */
+  background-color: #a1002e;
 }
 
-.upload-btn:active {
+.back-btn:active {
   transform: scale(1);
-  /* Нормальный размер кнопки при нажатии */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  /* Сильная тень при нажатии */
 }
 
-.upload-btn:disabled {
-  background: linear-gradient(145deg, #cccccc, #aaaaaa);
-  /* Серая кнопка */
-  cursor: not-allowed;
-  /* Курсор недоступности */
-  box-shadow: none;
-  /* Убираем тень для отключенной кнопки */
+.main-content.chaos-mode {
+  width: 87%;
+  height: 85%;
+  justify-content: flex-start;
+  gap: 2%;
 }
+
+.chaos-mode-btn {
+  width: 50%;
+  height: 20%;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  color: white;
+  transition: all 0.3s ease;
+  background-color: #e64a19;
+}
+
+.chaos-mode-btn:hover {
+  transform: scale(1.05);
+  background-color: #d32f2f;
+}
+
+.chaos-mode-btn:active {
+  transform: scale(1);
+}
+
 
 @media (max-width: 768px) {
   .container {

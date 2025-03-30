@@ -6,6 +6,8 @@ import "./App.css";
 function App() {
   const [selectedImages, setSelectedImages] = useState(Array(12).fill(null)); // State to hold images for each zone
   const [notifications, setNotifications] = useState([]); // Уведомления
+  const [isSolveByPhotoMode, setIsSolveByPhotoMode] = useState(false); // Tracks if assembly mode is active
+  const [isChaosMode, setIsChaosMode] = useState(false); // Tracks if chaos mode is active
 
   // Массив рефов для каждого input
   const inputRefs = useRef(Array(12).fill(null));
@@ -31,13 +33,13 @@ function App() {
   // Функция обработки файлов
   const processFiles = (files, index) => {
     if (files.length > 1) {
-      addNotification("Пожалуйста, загружайте только одно изображение за раз", "warning");
+      addNotification("Please upload only one image", "warning");
       return;
     }
 
     const file = files[0];
     if (!file.type.match('image.*')) {
-      addNotification("Пожалуйста, загружайте только изображения", "warning");
+      addNotification("Please upload only images", "warning");
       return;
     }
 
@@ -71,7 +73,7 @@ function App() {
   // Функция загрузки файлов на сервер
   const handleUpload = async () => {
     if (selectedImages.every((img) => img === null)) {
-      addNotification("Нет изображений для загрузки", "error");
+      addNotification("There are no images to upload", "error");
       return;
     }
 
@@ -96,11 +98,11 @@ function App() {
           "Content-Type": "multipart/form-data",
         },
       });
-      addNotification("Изображения загружены успешно!", "success");
+      addNotification("Images have been uploaded successfully!", "success");
       setSelectedImages(Array(12).fill(null)); // Очищаем загруженные изображения
     } catch (error) {
-      console.error("Ошибка загрузки", error);
-      addNotification("Ошибка загрузки изображений", "error");
+      console.error("Failed to upload images!", error);
+      addNotification("Failed to upload images!", "error");
     }
   };
 
@@ -124,68 +126,120 @@ function App() {
   return (
     <div className="app-container">
       <div className="container">
-        <div className="main-content">
-          <div className="upload-grid">
-            {selectedImages.map((image, index) => {
-              // Заменяем текст на соответствующие значения для зон
-              let zoneLabel = `Зона ${index}`;
-              if (index === 1) zoneLabel = "Up";
-              if (index === 4) zoneLabel = "Left";
-              if (index === 5) zoneLabel = "Front";
-              if (index === 6) zoneLabel = "Right";
-              if (index === 7) zoneLabel = "Back";
-              if (index === 9) zoneLabel = "Down";
+        <div
+          className={`main-content ${isSolveByPhotoMode ? 'solve-by-photo-mode' : ''} ${isChaosMode ? 'chaos-mode' : ''}`}
+        >
+          {/* Main Button to start assembly */}
+          {(!isSolveByPhotoMode && !isChaosMode) && (
+            <>
+              <button
+                className="solve-by-photo-btn"
+                onClick={() => setIsSolveByPhotoMode(true)}
+              >
+                Solve by photo
+              </button>
 
-              return (
-                <div
-                  key={index}
-                  className="upload-area"
-                  onClick={() => onButtonClick(index)} // Только клик по зоне
-                  style={{
-                    visibility: activeZones.includes(index) ? "visible" : "hidden", // Make non-active zones hidden
-                    pointerEvents: activeZones.includes(index) ? "auto" : "none"  // Disable pointer events on non-active zones
-                  }}
-                >
-                  <input
-                    type="file"
-                    ref={(el) => inputRefs.current[index] = el} // Ссылка на каждый input
-                    onChange={(e) => handleChange(e, index)}
-                    className="file-input"
-                    accept="image/*"
-                    multiple={false}
-                    id={`file-input-${index}`} // Уникальный id для каждого input
-                  />
-                  {image ? (
-                    <div className="image-preview-container">
-                      <img src={image} alt={`preview ${index}`} className="image-preview" />
-                      <button
-                        className="remove-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeImage(index);
-                        }}
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ) : (
-                    <p>{zoneLabel}</p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Кнопка загрузки */}
-          {isUploadButtonVisible && (
-            <button className="upload-btn" onClick={handleUpload}>
-              Загрузить изображения
-            </button>
+              {/* New Chaos Mode Button */}
+              <button
+                className="chaos-mode-btn"
+                onClick={() => setIsChaosMode(true)}
+              >
+                Chaos Mode
+              </button>
+            </>
           )}
+
+          {/* Go back button */}
+          {isSolveByPhotoMode && (
+            <div className="back-btn-container">
+              <button
+                className="back-btn"
+                onClick={() => setIsSolveByPhotoMode(false)}
+              >
+                Back
+              </button>
+            </div>
+          )}
+
+          {/* Go back button */}
+          {isChaosMode && (
+            <div className="back-btn-container">
+              <button
+                className="back-btn"
+                onClick={() => setIsChaosMode(false)}
+              >
+                Back
+              </button>
+            </div>
+          )}
+
+          {/* Zones and upload button only show in assembly mode */}
+          {isSolveByPhotoMode && (
+            <div className="click-container">
+              <div className="upload-grid">
+                {selectedImages.map((image, index) => {
+                  let zoneLabel = `Зона ${index}`;
+                  if (index === 1) zoneLabel = "Up";
+                  if (index === 4) zoneLabel = "Left";
+                  if (index === 5) zoneLabel = "Front";
+                  if (index === 6) zoneLabel = "Right";
+                  if (index === 7) zoneLabel = "Back";
+                  if (index === 9) zoneLabel = "Down";
+
+                  return (
+                    <div
+                      key={index}
+                      className="upload-area"
+                      onClick={() => onButtonClick(index)}
+                      style={{
+                        visibility: activeZones.includes(index) ? "visible" : "hidden",
+                        pointerEvents: activeZones.includes(index) ? "auto" : "none",
+                      }}
+                    >
+                      <input
+                        type="file"
+                        ref={(el) => (inputRefs.current[index] = el)}
+                        onChange={(e) => handleChange(e, index)}
+                        className="file-input"
+                        accept="image/*"
+                        multiple={false}
+                        id={`file-input-${index}`}
+                      />
+                      {image ? (
+                        <div className="image-preview-container">
+                          <img src={image} alt={`preview ${index}`} className="image-preview" />
+                          <button className="remove-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeImage(index);
+                            }}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ) : (
+                        <p>{zoneLabel}</p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Upload button only visible when 6 images are selected */}
+              {isUploadButtonVisible && (
+                <div className="detect-colors-btn-container">
+                  <button className="detect-colors-btn" onClick={handleUpload}>
+                    Detect colors
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
         </div>
       </div>
 
-      {/* Уведомления */}
+      {/* Notifications */}
       <div className="notifications-container">
         {notifications.map(({ id, message, type }) => (
           <Notification
@@ -196,8 +250,9 @@ function App() {
           />
         ))}
       </div>
-    </div>
+    </div >
   );
+
 }
 
 export default App;
