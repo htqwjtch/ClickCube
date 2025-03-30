@@ -1,10 +1,9 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef } from "react";
 import axios from "axios";
 import Notification from "./components/Notification"; // Импортируем компонент уведомлений
 import "./App.css";
 
 function App() {
-  const [dragActive, setDragActive] = useState(false);
   const [selectedImages, setSelectedImages] = useState(Array(12).fill(null)); // State to hold images for each zone
   const [notifications, setNotifications] = useState([]); // Уведомления
 
@@ -30,7 +29,7 @@ function App() {
   };
 
   // Функция обработки файлов
-  const processFiles = useCallback((files, index) => {
+  const processFiles = (files, index) => {
     if (files.length > 1) {
       addNotification("Пожалуйста, загружайте только одно изображение за раз", "warning");
       return;
@@ -49,34 +48,7 @@ function App() {
       setSelectedImages(newImages);
     };
     reader.readAsDataURL(file);
-  }, [selectedImages]);
-
-  // Обработчики drag and drop
-  const handleDrag = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
-  }, []);
-
-  const handleDrop = useCallback((e, index) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const files = Array.from(e.dataTransfer.files);
-      if (selectedImages[index]) {
-        addNotification("Эта зона уже занята, выберите другую", "warning");
-        return;
-      }
-
-      processFiles(files, index);
-    }
-  }, [selectedImages, processFiles]);
+  };
 
   // Обработчик выбора файла через клик
   const handleChange = (e, index) => {
@@ -167,12 +139,8 @@ function App() {
               return (
                 <div
                   key={index}
-                  className={`upload-area ${dragActive ? "drag-active" : ""}`}
-                  onDragEnter={handleDrag}
-                  onDragLeave={handleDrag}
-                  onDragOver={handleDrag}
-                  onDrop={(e) => handleDrop(e, index)}
-                  onClick={() => onButtonClick(index)}
+                  className="upload-area"
+                  onClick={() => onButtonClick(index)} // Только клик по зоне
                   style={{
                     visibility: activeZones.includes(index) ? "visible" : "hidden", // Make non-active zones hidden
                     pointerEvents: activeZones.includes(index) ? "auto" : "none"  // Disable pointer events on non-active zones
@@ -187,7 +155,6 @@ function App() {
                     multiple={false}
                     id={`file-input-${index}`} // Уникальный id для каждого input
                   />
-                  <p>Кликните или перетащите изображение</p>
                   {image ? <p>Выбрано изображение</p> : <p>{zoneLabel}</p>} {/* Заменили текст на zoneLabel */}
                 </div>
               );

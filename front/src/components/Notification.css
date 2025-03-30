@@ -4,25 +4,38 @@
   right: 20px;
   background-color: white;
   color: black;
-  padding: 10px 20px;
+  padding: 15px 30px 15px 50px; /* Увеличенный левый отступ под иконку */
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   margin-bottom: 10px;
   z-index: 1000;
   animation: fadeIn 0.5s, fadeOut 0.5s 3s forwards;
-  border: 2px solid transparent; /* Прозрачная обводка, чтобы она менялась */
+  border: 2px solid transparent;
+  max-width: 400px;
+  word-wrap: break-word;
+  display: flex;
+  align-items: center;
+}
+
+.notification img {
+  width: 24px; /* Размер иконки */
+  height: 24px;
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .success {
-  border-color: #4caf50; /* Зеленая обводка для успешных уведомлений */
+  border-color: #4caf50;
 }
 
 .warning {
-  border-color: #ffeb3b; /* Желтая обводка для предупреждений */
+  border-color: #ffeb3b;
 }
 
 .error {
-  border-color: #f44336; /* Красная обводка для ошибок */
+  border-color: #f44336;
 }
 
 .close-btn {
