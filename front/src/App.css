@@ -137,7 +137,7 @@ html {
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(217, 221, 220, 0.8);
   /* Полупрозрачный фон */
   position: relative;
   padding: 20px;
@@ -176,29 +176,6 @@ html {
   border-radius: 5px;
   overflow: hidden;
 }
-
-/* .preview-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  justify-content: center;
-  width: 100%;
-  max-width: 400px;
-  margin-top: 20px;
-  min-height: 120px;
-} */
-
-/* .image-preview {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100px;
-  height: 100px;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
-} */
 
 .image-preview {
   max-width: 150px;
