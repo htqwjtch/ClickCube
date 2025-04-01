@@ -2,7 +2,7 @@ use axum::{extract::Multipart, response::IntoResponse, Json};
 
 use crate::{
     controllers::click,
-    schemas::{response::Response, upload_files_content::UploadFilesContent},
+    schemas::{response::Response, upload_images_content::UploadImagesContent},
 };
 
 #[utoipa::path(
@@ -10,18 +10,18 @@ use crate::{
     path = "/upload-images",
     description = "Upload cube images on server",
     request_body(
-        content = UploadFilesContent,
+        content = UploadImagesContent,
         description = "Multipart form-data containing an image file",
         content_type = "multipart/form-data"
     ),
     responses(
-        (status = 200, description = "Images have been uploaded successfully!", body = Response),
-        (status = 415, description = "Unsupported file type", body = Response),
-        (status = 500, description = "Internal server error", body = Response)
+        (status = 200, description = "Images have been uploaded successfully!", body = Response<String>),
+        (status = 415, description = "Unsupported file type", body = Response<String>),
+        (status = 500, description = "Internal server error", body = Response<String>)
     )
 )]
 pub async fn upload_images(multipart: Multipart) -> impl IntoResponse {
-    click::ClickController::upload_images(multipart).await
+    Json(click::ClickController::upload_images(multipart).await)
 }
 
 #[utoipa::path(

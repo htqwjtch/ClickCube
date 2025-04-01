@@ -2,13 +2,12 @@ body,
 html {
   width: 100%;
   height: 100%;
-  /* overflow: hidden; */
   background-image: url('../public/background.jpeg');
   background-size: cover;
   background-position: center;
 }
 
-.container {
+.main-container {
   height: 100vh;
   width: 100vw;
   display: flex;
@@ -32,8 +31,7 @@ html {
 .main-content.solve-by-photo-mode {
   width: 87%;
   height: 85%;
-  justify-content: flex-start;
-  gap: 2%;
+  justify-content: center;
 }
 
 .solve-by-photo-btn {
@@ -63,16 +61,35 @@ html {
   background-color: #aaaaaa;
 }
 
-.click-container {
+.page-container {
+  width: 100%;
   height: 80%;
   border-radius: 10px;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
+  background-color: lightblue;
 }
 
-.upload-grid {
+.central-element {
+  width: 80%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: lightgreen;
+}
+
+.side-element {
+  width: 10%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: lightcoral;
+}
+
+.image-grid {
   border-radius: 10px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -82,73 +99,73 @@ html {
   gap: 10px;
 }
 
-.upload-grid .upload-area:nth-child(2) {
+.image-grid .grid-area:nth-child(2) {
   border: 2px dashed yellow;
   border-radius: 10px;
 }
 
-.upload-grid .upload-area:nth-child(2):hover {
+.image-grid .grid-area:nth-child(2):hover {
   border-color: yellow;
   transform: scale(1.05);
   background-color: rgba(255, 255, 0, 0.9);
 }
 
-.upload-grid .upload-area:nth-child(5) {
+.image-grid .grid-area:nth-child(5) {
   border: 2px dashed green;
   border-radius: 10px;
 }
 
-.upload-grid .upload-area:nth-child(5):hover {
+.image-grid .grid-area:nth-child(5):hover {
   border-color: green;
   transform: scale(1.05);
   background-color: rgba(76, 175, 80, 0.9);
 }
 
-.upload-grid .upload-area:nth-child(6) {
+.image-grid .grid-area:nth-child(6) {
   border: 2px dashed orange;
   border-radius: 10px;
 }
 
-.upload-grid .upload-area:nth-child(6):hover {
+.image-grid .grid-area:nth-child(6):hover {
   border-color: orange;
   transform: scale(1.05);
   background-color: rgba(255, 165, 0, 0.9);
 }
 
-.upload-grid .upload-area:nth-child(7) {
+.image-grid .grid-area:nth-child(7) {
   border: 2px dashed blue;
   border-radius: 10px;
 }
 
-.upload-grid .upload-area:nth-child(7):hover {
+.image-grid .grid-area:nth-child(7):hover {
   border-color: blue;
   transform: scale(1.05);
   background-color: rgba(33, 150, 243, 0.9);
 }
 
-.upload-grid .upload-area:nth-child(8) {
+.image-grid .grid-area:nth-child(8) {
   border: 2px dashed red;
   border-radius: 10px;
 }
 
-.upload-grid .upload-area:nth-child(8):hover {
+.image-grid .grid-area:nth-child(8):hover {
   border-color: red;
   transform: scale(1.05);
   background-color: rgba(244, 67, 54, 0.9);
 }
 
-.upload-grid .upload-area:nth-child(10) {
+.image-grid .grid-area:nth-child(10) {
   border: 2px dashed white;
   border-radius: 10px;
 }
 
-.upload-grid .upload-area:nth-child(10):hover {
+.image-grid .grid-area:nth-child(10):hover {
   border-color: white;
   transform: scale(1.05);
   background-color: rgba(255, 255, 255, 0.9);
 }
 
-.upload-area {
+.grid-area {
   width: 150px;
   height: 150px;
   display: flex;
@@ -161,45 +178,10 @@ html {
   background-color: rgba(217, 221, 220, 0.8);
 }
 
-.upload-area:hover {
+.grid-area:hover {
   border-color: #45a049;
   transform: scale(1.05);
   background-color: rgba(76, 175, 80, 0.9);
-}
-
-.detect-colors-btn-container {
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
-  display: flex;
-  justify-content: end;
-}
-
-.detect-colors-btn {
-  width: 25%;
-  height: 50%;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background-color: #45a049;
-}
-
-.detect-colors-btn:hover {
-  transform: scale(1.05);
-  background-color: #2C6F2F;
-}
-
-.detect-colors-btn:active {
-  transform: scale(1);
-}
-
-.detect-colors-btn:disabled {
-  cursor: not-allowed;
-  box-shadow: none;
-  background-color: #aaaaaa;
 }
 
 .file-input {
@@ -252,18 +234,82 @@ html {
   opacity: 1;
 }
 
-.back-btn-container {
-  width: 100%;
-  height: 10%;
+.color-grid {
   border-radius: 10px;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  justify-content: center;
   align-items: center;
+  gap: 10px;
+}
+
+.color-grid .grid-element:nth-child(2) {
+  border: none;
+}
+
+.color-grid .grid-element:nth-child(2):hover {
+  transform: scale(1.05);
+}
+
+.color-grid .grid-element:nth-child(5) {
+  border: none;
+}
+
+.color-grid .grid-element:nth-child(5):hover {
+  transform: scale(1.05);
+}
+
+.color-grid .grid-element:nth-child(6) {
+  border: none;
+}
+
+.color-grid .grid-element:nth-child(6):hover {
+  transform: scale(1.05);
+}
+
+.color-grid .grid-element:nth-child(7) {
+  border: none;
+}
+
+.color-grid .grid-element:nth-child(7):hover {
+  transform: scale(1.05);
+}
+
+.color-grid .grid-element:nth-child(8) {
+  border: none;
+}
+
+.color-grid .grid-element:nth-child(8):hover {
+  transform: scale(1.05);
+}
+
+.color-grid .grid-element:nth-child(10) {
+  border: none;
+}
+
+.color-grid .grid-element:nth-child(10):hover {
+  transform: scale(1.05);
+}
+
+.grid-element {
+  display: grid;
+  grid-template-columns: repeat(3, 50px);
+  border: 1px solid black;
+}
+
+.element-cell {
+  width: 50px;
+  height: 50px;
+  border: 1px solid black;
+}
+
+.element-cell:disabled{
+  width: 50px;
+  height: 50px;
 }
 
 .back-btn {
-  position: relative;
-  margin-top: 10px;
-  margin-left: 20px;
   width: 100px;
   height: 40px;
   border: none;
@@ -282,6 +328,33 @@ html {
 
 .back-btn:active {
   transform: scale(1);
+}
+
+.next-btn {
+  width: 100px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #45a049;
+}
+
+.next-btn:hover {
+  transform: scale(1.05);
+  background-color: #2C6F2F;
+}
+
+.next-btn:active {
+  transform: scale(1);
+}
+
+.next-btn:disabled {
+  cursor: not-allowed;
+  box-shadow: none;
+  background-color: #aaaaaa;
 }
 
 .main-content.chaos-mode {

@@ -2,7 +2,7 @@ use serde::Deserialize;
 use utoipa::ToSchema;
 
 #[derive(Deserialize, ToSchema)]
-pub struct UploadFilesContent {
+pub struct UploadImagesContent {
     #[schema(value_type = String, format = Binary)]
     pub _image1: Option<Vec<u8>>,
 

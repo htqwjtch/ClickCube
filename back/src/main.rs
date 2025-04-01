@@ -47,6 +47,6 @@ async fn main() {
         .layer(cors)
         .merge(SwaggerUi::new("/docs").url("/api-docs/openapi.json", ApiDoc::openapi()));
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:8013").await.unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8014").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
