@@ -2,26 +2,26 @@ use std::sync::{OnceLock, RwLock};
 
 pub struct ColorAdapter;
 
-static RAW_COLORS: OnceLock<RwLock<Vec<Vec<String>>>> = OnceLock::new();
+//static RAW_COLORS: OnceLock<RwLock<Vec<Vec<String>>>> = OnceLock::new();
 static ADAPTED_COLORS: OnceLock<RwLock<Vec<Vec<String>>>> = OnceLock::new();
 
 impl ColorAdapter {
-    pub fn set_raw_colors(raw_colors: Vec<Vec<String>>) {
-        let mut colors = Vec::new();
-        for k in 0..6 {
-            let color = ColorAdapter::adapt_color(raw_colors.clone(), k);
-            colors.push(color);
-        }
+    // pub fn set_raw_colors(raw_colors: Vec<Vec<String>>) {
+    //     let mut colors = Vec::new();
+    //     for k in 0..6 {
+    //         let color = ColorAdapter::adapt_color(raw_colors.clone(), k);
+    //         colors.push(color);
+    //     }
 
-        let lock = RAW_COLORS.get_or_init(|| RwLock::new(vec![]));
-        *lock.write().unwrap() = raw_colors; // replace data, not clear
-    }
+    //     let lock = RAW_COLORS.get_or_init(|| RwLock::new(vec![]));
+    //     *lock.write().unwrap() = raw_colors; // replace data, not clear
+    // }
 
-    pub fn get_raw_colors() -> Vec<Vec<String>> {
-        let lock = RAW_COLORS.get().expect("Data not set");
-        let data = lock.read().unwrap();
-        data.clone() // return data copy, not move
-    }
+    // pub fn get_raw_colors() -> Vec<Vec<String>> {
+    //     let lock = RAW_COLORS.get().expect("Data not set");
+    //     let data = lock.read().unwrap();
+    //     data.clone() // return data copy, not move
+    // }
 
     pub fn receive_raw_colors(raw_colors: Vec<Vec<String>>) {
         let mut colors = Vec::new();

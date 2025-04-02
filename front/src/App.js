@@ -151,6 +151,42 @@ function App() {
     }
   };
 
+  const [solution, setSolution] = useState([]);
+
+  const handleUpdateAndSolve = async () => {
+    console.log("Отправка запроса...");
+    console.log("Данные для отправки:", colorData);
+
+    try {
+      const requestBody = {
+        _front: colorData[0],
+        _back: colorData[1],
+        _up: colorData[2],
+        _down: colorData[3],
+        _left: colorData[4],
+        _right: colorData[5]
+      };
+
+      const responseUpdate = await fetch("http://localhost:8014/update-colors", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!responseUpdate.ok) throw new Error("Ошибка при обновлении цветов");
+
+      const responseSolve = await fetch("http://localhost:8014/solve");
+      if (!responseSolve.ok) throw new Error("Ошибка при получении решения");
+
+      const solutionData = await responseSolve.json();
+      console.log("Решение:", solutionData);
+
+      setSolution(solutionData);
+    } catch (error) {
+      console.error("Ошибка:", error);
+    }
+  };
+
   const [isSolveByPhotoMode, setIsSolveByPhotoMode] = useState(false);
   const [isChaosMode, setIsChaosMode] = useState(false);
   const areAllImagesSelected = selectedImages.filter(image => image !== null).length === 6;
@@ -307,6 +343,17 @@ function App() {
                                 key={i}
                                 className="element-cell"
                                 style={{ backgroundColor: COLORS[color] || "gray" }}
+                                onClick={() => {
+                                  const colorKeys = Object.keys(COLORS); // ['O', 'B', 'G', 'R', 'W', 'Y']
+                                  const currentIndex = colorKeys.indexOf(color);
+                                  const nextIndex = (currentIndex + 1) % colorKeys.length;
+                                  const nextColor = colorKeys[nextIndex];
+
+                                  // Обновление состояния colorData
+                                  const newColorData = [...colorData];
+                                  newColorData[colorDataIndex][i] = nextColor;
+                                  setColorData(newColorData);
+                                }}
                               />
                             ))}
                           </div>
@@ -323,8 +370,7 @@ function App() {
                   <button
                     className="next-btn"
                     onClick={async () => {
-                      await handleUpload();
-                      await handleDetect();
+                      await handleUpdateAndSolve();
                       setIsImagePage(false);
                       setIsColorPage(false);
                       setIsSolvePage(true);
@@ -357,6 +403,16 @@ function App() {
                 </div>
 
                 <div className="central-element">
+                  <h2>Решение:</h2>
+                  {solution.length > 0 ? (
+                    <ul className="solution-list">
+                      {solution.map((step, index) => (
+                        <li key={index} className="solution-step">{step}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>Ожидание решения...</p>
+                  )}
                 </div>
 
                 <div className="side-element">

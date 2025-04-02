@@ -9,5 +9,3 @@ pub mod cube_face;
 pub mod handmade;
 
 pub mod opticourier;
-
-pub mod painter;

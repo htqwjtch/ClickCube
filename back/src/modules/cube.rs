@@ -251,6 +251,7 @@ impl Cube {
 
     pub fn solve(&mut self) {
         //what if some steps are already ready
+
         self.make_daisy();
         self.make_cross_of_down_face();
         self.make_first_layer();
@@ -288,7 +289,7 @@ impl Cube {
 
     fn make_daisy(&mut self) {
         let raw_instruction = self.put_edges_of_down_face_up();
-        OptiCourier::receive_raw_instruction(raw_instruction);
+        OptiCourier::receive_raw_instruction(raw_instruction.clone());
     }
 
     fn put_edges_of_down_face_up(&mut self) -> String {
@@ -912,7 +913,7 @@ impl Cube {
 
     fn make_cross_of_down_face(&mut self) {
         let raw_instruction = self.put_edges_of_up_face_down();
-        OptiCourier::receive_raw_instruction(raw_instruction);
+        OptiCourier::receive_raw_instruction(raw_instruction.clone());
     }
 
     fn put_edges_of_up_face_down(&mut self) -> String {
@@ -969,7 +970,7 @@ impl Cube {
         let instruction_2 = self.put_corners_of_up_face_down();
 
         let raw_instruction = instruction_1 + instruction_2.as_str();
-        OptiCourier::receive_raw_instruction(raw_instruction);
+        OptiCourier::receive_raw_instruction(raw_instruction.clone());
     }
 
     fn put_corners_of_down_face_up(&mut self) -> String {
@@ -1171,7 +1172,7 @@ impl Cube {
         let instruction_2 = self.put_edges_of_second_layer_in_place();
 
         let raw_instruction = instruction_1 + instruction_2.as_str();
-        OptiCourier::receive_raw_instruction(raw_instruction);
+        OptiCourier::receive_raw_instruction(raw_instruction.clone());
     }
 
     fn put_edges_of_second_layer_up(&mut self) -> String {
@@ -1355,14 +1356,31 @@ impl Cube {
         let instruction_2 = self.put_edges_of_up_face_in_place();
 
         let raw_instruction = instruction_1 + instruction_2.as_str();
-        OptiCourier::receive_raw_instruction(raw_instruction);
+        OptiCourier::receive_raw_instruction(raw_instruction.clone());
+       
     }
 
     fn put_edges_of_up_face_in_cross(&mut self) -> String {
         let mut instruction = String::new();
-        for _ in 0..3 {
+        for _ in 0..4 {
             let command_to_make_cross = self.check_edges_of_up_face_2();
             if !command_to_make_cross.is_empty() {
+                let upper_edge_of_up_face = self.get_up().get_color()[0][1].clone();
+                let lower_edge_of_up_face = self.get_up().get_color()[2][1].clone();
+                let left_edge_of_up_face = self.get_up().get_color()[1][0].clone();
+                let right_edge_of_up_face = self.get_up().get_color()[1][2].clone();
+
+                let color_of_center_of_up_face = self.get_up().get_color()[1][1].clone();
+
+                if &upper_edge_of_up_face[0..1] == color_of_center_of_up_face.as_str()
+                    && &left_edge_of_up_face[0..1] == color_of_center_of_up_face.as_str()
+                    && &lower_edge_of_up_face[0..1] == color_of_center_of_up_face.as_str()
+                    && &right_edge_of_up_face[0..1] == color_of_center_of_up_face.as_str()
+                {
+                    instruction += command_to_make_cross.as_str();
+                    self.execute_command(command_to_make_cross);
+                    break;
+                }
                 instruction += command_to_make_cross.as_str();
                 self.execute_command(command_to_make_cross);
             }
@@ -1486,6 +1504,7 @@ impl Cube {
     fn make_corners_of_up_face(&mut self) {
         let raw_instruction = self.put_corners_of_up_face_in_place();
         OptiCourier::receive_raw_instruction(raw_instruction);
+      
     }
 
     fn put_corners_of_up_face_in_place(&mut self) -> String {
@@ -1600,13 +1619,17 @@ impl Cube {
     }
 
     fn make_third_layer(&mut self) {
+        
         let raw_instruction = self.put_corners_of_up_face_correctly();
-        OptiCourier::receive_raw_instruction(raw_instruction);
+        OptiCourier::receive_raw_instruction(raw_instruction.clone());
+
+       
     }
 
     fn put_corners_of_up_face_correctly(&mut self) -> String {
         let mut instruction = String::from("X2");
         self.execute_command("X2".to_string());
+       
         for _ in 0..4 {
             let command_to_put_corners_correctly = self.check_corners_of_up_face_3();
             if !command_to_put_corners_correctly.is_empty() {

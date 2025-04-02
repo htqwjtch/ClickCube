@@ -53,7 +53,7 @@ impl ClickClient {
 
     pub fn detect_colors() -> Vec<Vec<String>> {
         let detected_colors = click::detect_colors();
-        ColorAdapter::set_raw_colors(detected_colors.clone());
+        //ColorAdapter::set_raw_colors(detected_colors.clone());
         ColorAdapter::receive_raw_colors(detected_colors.clone());
         
         detected_colors

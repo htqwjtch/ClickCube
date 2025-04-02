@@ -6,6 +6,7 @@ pub struct CubeClient {}
 
 impl CubeClient {
     pub fn solve() -> Vec<String> {
+        OptiCourier::clear();
         let colors = ColorAdapter::transmit_adapted_colors();
         let cube_faces = colors
             .iter()

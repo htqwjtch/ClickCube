@@ -1,13 +1,11 @@
-use crate::modules::{color_adapter::ColorAdapter, painter::Paint};
+use crate::modules::color_adapter::ColorAdapter;
 
-pub struct PaintClient {}
+pub struct PainterClient {}
 
-impl PaintClient {
-    pub fn update_colors(colors_to_upload: Vec<Option<Vec<String>>>) -> Vec<Vec<String>> {
-        let current_colors = ColorAdapter::get_raw_colors();
-        let all_colors = Paint::update_colors(current_colors, colors_to_upload);
-        ColorAdapter::set_raw_colors(all_colors.clone());
-        ColorAdapter::receive_raw_colors(all_colors.clone());
-        all_colors
+impl PainterClient {
+    pub fn update_colors(colors_to_upload: Vec<Vec<String>>) -> Vec<Vec<String>> {
+        ColorAdapter::receive_raw_colors(colors_to_upload.clone());
+        println!("{:?}", colors_to_upload);
+        colors_to_upload
     }
 }
