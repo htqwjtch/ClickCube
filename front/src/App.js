@@ -1,6 +1,8 @@
+import Notification from "./components/Notification"; // Импортируем компонент уведомлений
+import ChaosModeCube from "./components/ChaosModeCube"; // импорт компонента с кубом
+
 import { useState, useRef } from "react";
 import axios from "axios";
-import Notification from "./components/Notification"; // Импортируем компонент уведомлений
 import "./App.css";
 
 const COLORS = {
@@ -375,7 +377,6 @@ function App() {
                       setIsColorPage(false);
                       setIsSolvePage(true);
                     }}
-                    disabled={!areAllImagesSelected || isDetecting}
                   >
                     {buttonText}
                   </button>
@@ -428,7 +429,6 @@ function App() {
                       setSelectedImages(Array(12).fill(null));
                       setColorData([]);
                     }}
-                    disabled={!areAllImagesSelected || isDetecting}
                   >
                     {buttonText}
                   </button>
@@ -439,13 +439,22 @@ function App() {
           }
 
           {isChaosMode && (
-            <div className="back-btn-container">
-              <button
-                className="back-btn"
-                onClick={() => setIsChaosMode(false)}
-              >
-                Back
-              </button>
+            <div className="page-container">
+              <div className="side-element">
+                <button className="back-btn" onClick={() => setIsChaosMode(false)}>
+                  Back
+                </button>
+              </div>
+
+              <div className="central-element">
+                <ChaosModeCube /> {/* Куб в Chaos Mode */}
+              </div>
+
+              <div className="side-element">
+                <button className="next-btn" onClick={() => setIsChaosMode(false)}>
+                  Next
+                </button>
+              </div>
             </div>
           )}
 
