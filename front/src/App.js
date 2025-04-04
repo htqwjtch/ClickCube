@@ -1,4 +1,5 @@
 import Notification from "./components/Notification";
+import RubicsCube from "./components/RubicsCube";
 
 import { useState, useRef } from "react";
 import axios from "axios";
@@ -446,7 +447,7 @@ function App() {
               </div>
 
               <div className="central-element">
-                {/* Куб в Chaos Mode */}
+                <RubicsCube/>{/* Куб в Chaos Mode */}
               </div>
 
               <div className="side-element">
@@ -460,7 +461,6 @@ function App() {
         </div>
       </div>
 
-      {/* Notifications */}
       <div className="notifications-container">
         {notifications.map(({ id, message, type }) => (
           <Notification

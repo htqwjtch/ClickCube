@@ -15,7 +15,7 @@ RUN npx create-react-app front
 
 WORKDIR /usr/src/front
 
-RUN npm install express axios eslint
+RUN npm install express axios eslint @react-three/fiber @react-three/drei
 RUN npm install git+https://github.com/JithuTholoor/RubixCube.git
 
 RUN rm -rf public && mkdir public
