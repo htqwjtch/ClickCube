@@ -1,4 +1,4 @@
-import Notification from "./components/Notification"; // Импортируем компонент уведомлений
+import Notification from "./components/Notification";
 
 import { useState, useRef } from "react";
 import axios from "axios";
@@ -446,7 +446,7 @@ function App() {
               </div>
 
               <div className="central-element">
-              {/* Куб в Chaos Mode */}
+                {/* Куб в Chaos Mode */}
               </div>
 
               <div className="side-element">

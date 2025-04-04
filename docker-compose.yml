@@ -8,8 +8,6 @@ services:
       - "8014:8014"
   front:
     build: ./front
-    volumes:
-      - ./front:/usr/src/front
     ports:
       - "3013:3013"
       - "3014:3014"

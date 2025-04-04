@@ -1,20 +1,28 @@
 FROM ubuntu:24.04
 
 RUN apt update && \
-    apt install -y git-all && \
-    apt install -y curl && \
+    apt install -y git-all curl && \
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt install -y nodejs && \
     npm install -g npm@latest && \
     apt clean && rm -rf /var/lib/apt/lists/*
 
+WORKDIR /usr/src
+
+RUN rm -rf front
+
+RUN npx create-react-app front
+
 WORKDIR /usr/src/front
 
-COPY . .
-
-RUN npm install express && npm install axios && npm install eslint
-
+RUN npm install express axios eslint
 RUN npm install git+https://github.com/JithuTholoor/RubixCube.git
+
+RUN rm -rf public && mkdir public
+COPY public ./public
+RUN rm -rf src && mkdir src
+COPY src ./src
+COPY Dockerfile .
 
 CMD ["npm", "start"]
 
