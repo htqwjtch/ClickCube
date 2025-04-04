@@ -1,5 +1,6 @@
 import Notification from "./components/Notification";
-import RubicsCube from "./components/RubicsCube";
+import RubiksCube from "./components/RubicsCube";
+
 
 import { useState, useRef } from "react";
 import axios from "axios";
@@ -15,7 +16,6 @@ const COLORS = {
 };
 
 function App() {
-  // Массив рефов для каждого input
   const inputRefs = useRef(Array(12).fill(null));
 
   const [notifications, setNotifications] = useState([]);
@@ -51,7 +51,7 @@ function App() {
     const reader = new FileReader();
     reader.onload = (e) => {
       const newImages = [...selectedImages];
-      newImages[index] = e.target.result; // Assign the image to the specific zone
+      newImages[index] = e.target.result; 
       setSelectedImages(newImages);
     };
     reader.readAsDataURL(file);
@@ -61,19 +61,19 @@ function App() {
     if (e.target.files && e.target.files.length > 0) {
       setColorData([]);
       processFiles(Array.from(e.target.files), index);
-      e.target.value = ""; // Clear input value to allow re-uploading
+      e.target.value = "";
     }
   };
 
   const onButtonClick = (index) => {
     setColorData([]);
-    inputRefs.current[index].click(); // Вызываем click для конкретного input
+    inputRefs.current[index].click();
   };
 
   const removeImage = (index) => {
     setColorData([]);
     const newImages = [...selectedImages];
-    newImages[index] = null; // Remove image from the specific zone
+    newImages[index] = null;
     setSelectedImages(newImages);
   };
 
@@ -85,9 +85,8 @@ function App() {
       }
 
       // Zone order: Front, Back, Up, Down, Left, Right
-      const zoneOrder = [5, 7, 1, 9, 4, 6]; // Active zones in the required upload order
+      const zoneOrder = [5, 7, 1, 9, 4, 6];
 
-      // Rearrange selected images based on the zoneOrder
       const imagesToUpload = zoneOrder.map((zoneIndex) => selectedImages[zoneIndex]);
 
       const formData = new FormData();
@@ -106,7 +105,6 @@ function App() {
           },
         });
         addNotification("Images have been uploaded successfully!", "success");
-        //setSelectedImages(Array(12).fill(null)); // Очищаем загруженные изображения
       } catch (error) {
         console.error("Failed to upload images!", error);
         addNotification("Failed to upload images!", "error");
@@ -346,12 +344,11 @@ function App() {
                                 className="element-cell"
                                 style={{ backgroundColor: COLORS[color] || "gray" }}
                                 onClick={() => {
-                                  const colorKeys = Object.keys(COLORS); // ['O', 'B', 'G', 'R', 'W', 'Y']
+                                  const colorKeys = Object.keys(COLORS);
                                   const currentIndex = colorKeys.indexOf(color);
                                   const nextIndex = (currentIndex + 1) % colorKeys.length;
                                   const nextColor = colorKeys[nextIndex];
 
-                                  // Обновление состояния colorData
                                   const newColorData = [...colorData];
                                   newColorData[colorDataIndex][i] = nextColor;
                                   setColorData(newColorData);
@@ -440,20 +437,14 @@ function App() {
 
           {isChaosMode && (
             <div className="page-container">
-              <div className="side-element">
+              <div className="chaos-side-element">
                 <button className="back-btn" onClick={() => setIsChaosMode(false)}>
                   Back
                 </button>
               </div>
 
-              <div className="central-element">
-                <RubicsCube/>{/* Куб в Chaos Mode */}
-              </div>
-
-              <div className="side-element">
-                <button className="next-btn" onClick={() => setIsChaosMode(false)}>
-                  Next
-                </button>
+              <div className="chaos-central-element">
+                <RubiksCube />
               </div>
             </div>
           )}

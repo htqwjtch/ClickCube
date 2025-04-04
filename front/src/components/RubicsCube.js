@@ -20,81 +20,53 @@ const CubePiece = ({ position, colors }) => {
   return (
     <mesh position={position}>
       <boxGeometry args={[CUBE_SIZE, CUBE_SIZE, CUBE_SIZE]} />
-      <meshStandardMaterial 
-        attach="material-0" 
-        color={colors.right} 
-        emissive={colors.right}
-        emissiveIntensity={0.3}
-      />
-      <meshStandardMaterial 
-        attach="material-1" 
-        color={colors.left} 
-        emissive={colors.left}
-        emissiveIntensity={0.3}
-      />
-      <meshStandardMaterial 
-        attach="material-2" 
-        color={colors.top} 
-        emissive={colors.top}
-        emissiveIntensity={0.3}
-      />
-      <meshStandardMaterial 
-        attach="material-3" 
-        color={colors.bottom} 
-        emissive={colors.bottom}
-        emissiveIntensity={0.3}
-      />
-      <meshStandardMaterial 
-        attach="material-4" 
-        color={colors.front} 
-        emissive={colors.front}
-        emissiveIntensity={0.3}
-      />
-      <meshStandardMaterial 
-        attach="material-5" 
-        color={colors.back} 
-        emissive={colors.back}
-        emissiveIntensity={0.3}
-      />
+      <meshStandardMaterial attach="material-0" color={colors.right} />
+      <meshStandardMaterial attach="material-1" color={colors.left} />
+      <meshStandardMaterial attach="material-2" color={colors.top} />
+      <meshStandardMaterial attach="material-3" color={colors.bottom} />
+      <meshStandardMaterial attach="material-4" color={colors.front} />
+      <meshStandardMaterial attach="material-5" color={colors.back} />
     </mesh>
   );
 };
 
-const RotatingGroup = ({ 
-  cubes, 
-  rotatingFace, 
-  onRotationComplete 
+const RotatingGroup = ({
+  cubes,
+  rotatingFace,
+  rotationDirection,
+  onRotationComplete
 }) => {
   const groupRef = useRef();
   const [rotationProgress, setRotationProgress] = useState(0);
 
   useFrame(() => {
     if (!rotatingFace || !groupRef.current) return;
-    
+
     const speed = 0.05;
     const targetAngle = Math.PI / 2;
+    const direction = rotationDirection === "ccw" ? -1 : 1;
     const newProgress = Math.min(rotationProgress + speed, targetAngle);
-    
+
     setRotationProgress(newProgress);
 
     switch (rotatingFace) {
       case "front":
-        groupRef.current.rotation.z = -newProgress;
+        groupRef.current.rotation.z = -newProgress * direction;
         break;
       case "back":
-        groupRef.current.rotation.z = newProgress;
+        groupRef.current.rotation.z = newProgress * direction;
         break;
       case "right":
-        groupRef.current.rotation.x = -newProgress;
+        groupRef.current.rotation.x = -newProgress * direction;
         break;
       case "left":
-        groupRef.current.rotation.x = newProgress;
+        groupRef.current.rotation.x = newProgress * direction;
         break;
       case "top":
-        groupRef.current.rotation.y = -newProgress;
+        groupRef.current.rotation.y = -newProgress * direction;
         break;
       case "bottom":
-        groupRef.current.rotation.y = newProgress;
+        groupRef.current.rotation.y = newProgress * direction;
         break;
       default:
         break;
@@ -110,7 +82,7 @@ const RotatingGroup = ({
   return (
     <group ref={groupRef}>
       {cubes.map((cube, index) => {
-        const isPartOfFace = 
+        const isPartOfFace =
           (rotatingFace === "front" && cube.position[2] === 1) ||
           (rotatingFace === "back" && cube.position[2] === -1) ||
           (rotatingFace === "right" && cube.position[0] === 1) ||
@@ -133,7 +105,10 @@ const RotatingGroup = ({
 const RubiksCube = () => {
   const [cubes, setCubes] = useState([]);
   const [rotatingFace, setRotatingFace] = useState(null);
+  const [rotationDirection, setRotationDirection] = useState("cw");
   const [isRotating, setIsRotating] = useState(false);
+  const [isScrambling, setIsScrambling] = useState(false);
+  const scrambleQueue = useRef([]);
 
   useEffect(() => {
     const newCubes = [];
@@ -176,61 +151,61 @@ const RubiksCube = () => {
 
   const rotateColors = useCallback((colors, face, direction) => {
     const newColors = { ...colors };
-    
+
     if (face === "front" || face === "back") {
       const temp = newColors.top;
       if (direction === "cw") {
-        newColors.top = newColors.right;
-        newColors.right = newColors.bottom;
-        newColors.bottom = newColors.left;
-        newColors.left = temp;
-      } else {
         newColors.top = newColors.left;
         newColors.left = newColors.bottom;
         newColors.bottom = newColors.right;
         newColors.right = temp;
+      } else {
+        newColors.top = newColors.right;
+        newColors.right = newColors.bottom;
+        newColors.bottom = newColors.left;
+        newColors.left = temp;
       }
-    } 
+    }
     else if (face === "right" || face === "left") {
       const temp = newColors.top;
       if (direction === "cw") {
-        newColors.top = newColors.front;
-        newColors.front = newColors.bottom;
-        newColors.bottom = newColors.back;
-        newColors.back = temp;
-      } else {
         newColors.top = newColors.back;
         newColors.back = newColors.bottom;
         newColors.bottom = newColors.front;
         newColors.front = temp;
+      } else {
+        newColors.top = newColors.front;
+        newColors.front = newColors.bottom;
+        newColors.bottom = newColors.back;
+        newColors.back = temp;
       }
     }
     else if (face === "top" || face === "bottom") {
       const temp = newColors.front;
       if (direction === "cw") {
-        newColors.front = newColors.right;
-        newColors.right = newColors.back;
-        newColors.back = newColors.left;
-        newColors.left = temp;
-      } else {
         newColors.front = newColors.left;
         newColors.left = newColors.back;
         newColors.back = newColors.right;
         newColors.right = temp;
+      } else {
+        newColors.front = newColors.right;
+        newColors.right = newColors.back;
+        newColors.back = newColors.left;
+        newColors.left = temp;
       }
     }
 
     return newColors;
   }, []);
 
-  const updateCubePositionsAndColors = useCallback((face) => {
+  const updateCubePositionsAndColors = useCallback((face, direction) => {
     setCubes(prevCubes => {
       return prevCubes.map(cube => {
         const [x, y, z] = cube.position;
         let newPos = [x, y, z];
         let newColors = { ...cube.colors };
 
-        const shouldRotate = 
+        const shouldRotate =
           (face === "front" && z === 1) ||
           (face === "back" && z === -1) ||
           (face === "right" && x === 1) ||
@@ -241,28 +216,28 @@ const RubiksCube = () => {
         if (shouldRotate) {
           switch (face) {
             case "front":
-              newPos = [y, -x, z];
-              newColors = rotateColors(cube.colors, "front", "cw");
+              newPos = direction === "cw" ? [y, -x, z] : [-y, x, z];
+              newColors = rotateColors(cube.colors, "front", direction);
               break;
             case "back":
-              newPos = [-y, x, z];
-              newColors = rotateColors(cube.colors, "back", "cw");
+              newPos = direction === "cw" ? [-y, x, z] : [y, -x, z];
+              newColors = rotateColors(cube.colors, "back", direction);
               break;
             case "right":
-              newPos = [x, z, -y];
-              newColors = rotateColors(cube.colors, "right", "cw");
+              newPos = direction === "cw" ? [x, z, -y] : [x, -z, y];
+              newColors = rotateColors(cube.colors, "right", direction);
               break;
             case "left":
-              newPos = [x, -z, y];
-              newColors = rotateColors(cube.colors, "left", "cw");
+              newPos = direction === "cw" ? [x, -z, y] : [x, z, -y];
+              newColors = rotateColors(cube.colors, "left", direction);
               break;
             case "top":
-              newPos = [-z, y, x];
-              newColors = rotateColors(cube.colors, "top", "cw");
+              newPos = direction === "cw" ? [-z, y, x] : [z, y, -x];
+              newColors = rotateColors(cube.colors, "top", direction);
               break;
             case "bottom":
-              newPos = [z, y, -x];
-              newColors = rotateColors(cube.colors, "bottom", "cw");
+              newPos = direction === "cw" ? [z, y, -x] : [-z, y, x];
+              newColors = rotateColors(cube.colors, "bottom", direction);
               break;
             default:
               break;
@@ -275,37 +250,66 @@ const RubiksCube = () => {
   }, [rotateColors]);
 
   const handleRotationComplete = useCallback(() => {
-    updateCubePositionsAndColors(rotatingFace);
-    setRotatingFace(null);
-    setIsRotating(false);
-  }, [rotatingFace, updateCubePositionsAndColors]);
+    updateCubePositionsAndColors(rotatingFace, rotationDirection);
+    
+    if (scrambleQueue.current.length > 0) {
+      const [nextFace, nextDirection] = scrambleQueue.current[0];
+      scrambleQueue.current = scrambleQueue.current.slice(1);
+      setRotatingFace(nextFace);
+      setRotationDirection(nextDirection);
+      setIsRotating(true);
+    } else {
+      setIsRotating(false);
+      setIsScrambling(false);
+    }
+  }, [rotatingFace, rotationDirection, updateCubePositionsAndColors]);
 
-  const rotateFace = useCallback((face) => {
-    if (!isRotating) {
+  const rotateFace = useCallback((face, direction) => {
+    if (!isRotating && !isScrambling) {
       setRotatingFace(face);
+      setRotationDirection(direction);
       setIsRotating(true);
     }
-  }, [isRotating]);
+  }, [isRotating, isScrambling]);
+
+  const scrambleCube = useCallback(() => {
+    if (isRotating || isScrambling) return;
+    
+    const faces = ["front", "back", "right", "left", "top", "bottom"];
+    const directions = ["cw", "ccw"];
+    const moves = [];
+    
+    // Генерируем 20 случайных перемешивающих движений
+    for (let i = 0; i < 20; i++) {
+      const randomFace = faces[Math.floor(Math.random() * faces.length)];
+      const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+      moves.push([randomFace, randomDirection]);
+    }
+    
+    setIsScrambling(true);
+    scrambleQueue.current = moves;
+    
+    if (moves.length > 0) {
+      const [firstFace, firstDirection] = moves[0];
+      scrambleQueue.current = moves.slice(1);
+      setRotatingFace(firstFace);
+      setRotationDirection(firstDirection);
+      setIsRotating(true);
+    }
+  }, [isRotating, isScrambling]);
 
   return (
     <>
-      <Canvas style={{ width: "100vw", height: "100vh" }}>
+      <Canvas style={{ width: "70%", maxHeight: "100%" }}>
         <ambientLight intensity={1.2} />
-        <directionalLight 
-          position={[5, 5, 5]} 
-          intensity={0.8} 
-          castShadow={false}
-        />
-        <directionalLight 
-          position={[-5, -5, -5]} 
-          intensity={0.8} 
-          castShadow={false}
-        />
+        <directionalLight position={[5, 5, 5]} intensity={0.8} />
+        <directionalLight position={[-5, -5, -5]} intensity={0.8} />
         
         {isRotating && (
           <RotatingGroup
             cubes={cubes}
             rotatingFace={rotatingFace}
+            rotationDirection={rotationDirection}
             onRotationComplete={handleRotationComplete}
           />
         )}
@@ -334,17 +338,75 @@ const RubiksCube = () => {
         <OrbitControls />
       </Canvas>
 
-      <div style={{ 
-        position: "relative", 
-        display: 'flex',
-        gap: '8px'
+      <div style={{
+        position: "relative",
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px",
+        backgroundColor: "rgba(255, 255, 255, 0.7)",
+        padding: "10px",
+        borderRadius: "8px"
       }}>
-        <button onClick={() => rotateFace("front")}>Front (Orange)</button>
-        <button onClick={() => rotateFace("back")}>Back (Red)</button>
-        <button onClick={() => rotateFace("right")}>Right (Blue)</button>
-        <button onClick={() => rotateFace("left")}>Left (Green)</button>
-        <button onClick={() => rotateFace("top")}>Top (Yellow)</button>
-        <button onClick={() => rotateFace("bottom")}>Bottom (White)</button>
+        <button 
+          onClick={scrambleCube}
+          style={{ 
+            padding: "8px",
+            marginBottom: "10px",
+            backgroundColor: isScrambling ? "#ff8c8c" : "#ff6b6b",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: isRotating || isScrambling ? "not-allowed" : "pointer"
+          }}
+          disabled={isRotating || isScrambling}
+        >
+          {isScrambling ? "Scrambling..." : "Scramble Cube"}
+        </button>
+
+        {Object.entries({
+          front: "Orange",
+          back: "Red",
+          right: "Blue",
+          left: "Green",
+          top: "Yellow",
+          bottom: "White"
+        }).map(([face, color]) => (
+          <div key={face} style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+            <button 
+              onClick={() => rotateFace(face, "cw")}
+              style={{ 
+                width: "30px", 
+                height: "30px",
+                backgroundColor: isRotating || isScrambling ? "#ccc" : "#4CAF50",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: isRotating || isScrambling ? "not-allowed" : "pointer"
+              }}
+              disabled={isRotating || isScrambling}
+            >
+              ↻
+            </button>
+            <div style={{ minWidth: "120px", textAlign: "center" }}>
+              {face} ({color})
+            </div>
+            <button 
+              onClick={() => rotateFace(face, "ccw")}
+              style={{ 
+                width: "30px", 
+                height: "30px",
+                backgroundColor: isRotating || isScrambling ? "#ccc" : "#f44336",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: isRotating || isScrambling ? "not-allowed" : "pointer"
+              }}
+              disabled={isRotating || isScrambling}
+            >
+              ↺
+            </button>
+          </div>
+        ))}
       </div>
     </>
   );

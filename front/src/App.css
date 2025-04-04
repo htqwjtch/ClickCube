@@ -402,6 +402,24 @@ html {
   transform: scale(1);
 }
 
+.chaos-central-element {
+  width: 89%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: lightgreen;
+}
+
+.chaos-side-element {
+  width: 11%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: lightcoral;
+}
+
 
 @media (max-width: 768px) {
   .container {
