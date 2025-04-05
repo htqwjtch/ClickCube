@@ -1,7 +1,7 @@
 FROM ubuntu:24.04
 
 RUN apt update && \
-    apt install -y git-all curl && \
+    apt install -y curl && \
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt install -y nodejs && \
     npm install -g npm@latest && \
@@ -16,7 +16,6 @@ RUN npx create-react-app front
 WORKDIR /usr/src/front
 
 RUN npm install express axios eslint @react-three/fiber @react-three/drei
-RUN npm install git+https://github.com/JithuTholoor/RubixCube.git
 
 RUN rm -rf public && mkdir public
 COPY public ./public

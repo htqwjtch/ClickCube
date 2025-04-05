@@ -15,6 +15,17 @@ const COLORS = {
   Y: "yellow",
 };
 
+// const stepImages = {
+//   "F": "/images/F.png",
+//   "F'": "/images/F_prime.png",
+//   "R": "/images/R.png",
+//   "R'": "/images/R_prime.png",
+//   "U": "/images/U.png",
+//   "U'": "/images/U_prime.png",
+//   "U2": "/images/U2.png",
+//   // ... остальные шаги
+// };
+
 function App() {
   const inputRefs = useRef(Array(12).fill(null));
 
@@ -51,7 +62,7 @@ function App() {
     const reader = new FileReader();
     reader.onload = (e) => {
       const newImages = [...selectedImages];
-      newImages[index] = e.target.result; 
+      newImages[index] = e.target.result;
       setSelectedImages(newImages);
     };
     reader.readAsDataURL(file);
@@ -106,7 +117,6 @@ function App() {
         });
         addNotification("Images have been uploaded successfully!", "success");
       } catch (error) {
-        console.error("Failed to upload images!", error);
         addNotification("Failed to upload images!", "error");
       }
     }
@@ -142,7 +152,6 @@ function App() {
           throw new Error("Unexpected response status");
         }
       } catch (error) {
-        console.error("Failed to detect colors!", error);
         addNotification("Failed to detect colors!", "error");
       } finally {
         setIsDetecting(false);
@@ -154,8 +163,6 @@ function App() {
   const [solution, setSolution] = useState([]);
 
   const handleUpdateAndSolve = async () => {
-    console.log("Отправка запроса...");
-    console.log("Данные для отправки:", colorData);
 
     try {
       const requestBody = {
@@ -173,17 +180,17 @@ function App() {
         body: JSON.stringify(requestBody),
       });
 
-      if (!responseUpdate.ok) throw new Error("Ошибка при обновлении цветов");
+      if (!responseUpdate.ok) throw new Error("Upload colors error");
 
       const responseSolve = await fetch("http://localhost:8014/solve");
-      if (!responseSolve.ok) throw new Error("Ошибка при получении решения");
-
-      const solutionData = await responseSolve.json();
-      console.log("Решение:", solutionData);
-
-      setSolution(solutionData);
+      if (!responseSolve.ok) throw new Error("Trasmit solution error");
+      else {
+        const solutionData = await responseSolve.json();
+        setSolution(solutionData);
+        addNotification("Solution have been found!", "success");
+      }
     } catch (error) {
-      console.error("Ошибка:", error);
+      addNotification("Failed to solve!", "error");
     }
   };
 
@@ -400,8 +407,8 @@ function App() {
                   </button>
                 </div>
 
-                <div className="central-element">
-                  <h2>Решение:</h2>
+                <div className="solve-page-central-element">
+                  <h2>Solution:</h2>
                   {solution.length > 0 ? (
                     <ul className="solution-list">
                       {solution.map((step, index) => (
@@ -409,7 +416,7 @@ function App() {
                       ))}
                     </ul>
                   ) : (
-                    <p>Ожидание решения...</p>
+                    <p>Waiting for solution...</p>
                   )}
                 </div>
 

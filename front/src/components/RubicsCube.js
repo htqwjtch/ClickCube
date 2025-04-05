@@ -11,8 +11,8 @@ const faceColors = {
   back: "red",
   right: "blue",
   left: "green",
-  top: "yellow",
-  bottom: "white",
+  up: "yellow",
+  down: "white",
   inner: "#888888"
 };
 
@@ -22,8 +22,8 @@ const CubePiece = ({ position, colors }) => {
       <boxGeometry args={[CUBE_SIZE, CUBE_SIZE, CUBE_SIZE]} />
       <meshStandardMaterial attach="material-0" color={colors.right} />
       <meshStandardMaterial attach="material-1" color={colors.left} />
-      <meshStandardMaterial attach="material-2" color={colors.top} />
-      <meshStandardMaterial attach="material-3" color={colors.bottom} />
+      <meshStandardMaterial attach="material-2" color={colors.up} />
+      <meshStandardMaterial attach="material-3" color={colors.down} />
       <meshStandardMaterial attach="material-4" color={colors.front} />
       <meshStandardMaterial attach="material-5" color={colors.back} />
     </mesh>
@@ -62,10 +62,10 @@ const RotatingGroup = ({
       case "left":
         groupRef.current.rotation.x = newProgress * direction;
         break;
-      case "top":
+      case "up":
         groupRef.current.rotation.y = -newProgress * direction;
         break;
-      case "bottom":
+      case "down":
         groupRef.current.rotation.y = newProgress * direction;
         break;
       default:
@@ -87,8 +87,8 @@ const RotatingGroup = ({
           (rotatingFace === "back" && cube.position[2] === -1) ||
           (rotatingFace === "right" && cube.position[0] === 1) ||
           (rotatingFace === "left" && cube.position[0] === -1) ||
-          (rotatingFace === "top" && cube.position[1] === 1) ||
-          (rotatingFace === "bottom" && cube.position[1] === -1);
+          (rotatingFace === "up" && cube.position[1] === 1) ||
+          (rotatingFace === "down" && cube.position[1] === -1);
 
         return isPartOfFace ? (
           <CubePiece
@@ -122,8 +122,8 @@ const RubiksCube = () => {
             back: z === -1 ? faceColors.back : z === 1 ? faceColors.front : faceColors.inner,
             right: x === 1 ? faceColors.right : x === -1 ? faceColors.left : faceColors.inner,
             left: x === -1 ? faceColors.left : x === 1 ? faceColors.right : faceColors.inner,
-            top: y === 1 ? faceColors.top : y === -1 ? faceColors.bottom : faceColors.inner,
-            bottom: y === -1 ? faceColors.bottom : y === 1 ? faceColors.top : faceColors.inner
+            up: y === 1 ? faceColors.up : y === -1 ? faceColors.down : faceColors.inner,
+            down: y === -1 ? faceColors.down : y === 1 ? faceColors.up : faceColors.inner
           };
 
           if (x === 0) {
@@ -131,8 +131,8 @@ const RubiksCube = () => {
             colors.right = faceColors.right;
           }
           if (y === 0) {
-            colors.top = faceColors.top;
-            colors.bottom = faceColors.bottom;
+            colors.up = faceColors.up;
+            colors.down = faceColors.down;
           }
           if (z === 0) {
             colors.front = faceColors.front;
@@ -153,34 +153,34 @@ const RubiksCube = () => {
     const newColors = { ...colors };
 
     if (face === "front" || face === "back") {
-      const temp = newColors.top;
+      const temp = newColors.up;
       if (direction === "cw") {
-        newColors.top = newColors.left;
-        newColors.left = newColors.bottom;
-        newColors.bottom = newColors.right;
+        newColors.up = newColors.left;
+        newColors.left = newColors.down;
+        newColors.down = newColors.right;
         newColors.right = temp;
       } else {
-        newColors.top = newColors.right;
-        newColors.right = newColors.bottom;
-        newColors.bottom = newColors.left;
+        newColors.up = newColors.right;
+        newColors.right = newColors.down;
+        newColors.down = newColors.left;
         newColors.left = temp;
       }
     }
     else if (face === "right" || face === "left") {
-      const temp = newColors.top;
+      const temp = newColors.up;
       if (direction === "cw") {
-        newColors.top = newColors.back;
-        newColors.back = newColors.bottom;
-        newColors.bottom = newColors.front;
+        newColors.up = newColors.back;
+        newColors.back = newColors.down;
+        newColors.down = newColors.front;
         newColors.front = temp;
       } else {
-        newColors.top = newColors.front;
-        newColors.front = newColors.bottom;
-        newColors.bottom = newColors.back;
+        newColors.up = newColors.front;
+        newColors.front = newColors.down;
+        newColors.down = newColors.back;
         newColors.back = temp;
       }
     }
-    else if (face === "top" || face === "bottom") {
+    else if (face === "up" || face === "down") {
       const temp = newColors.front;
       if (direction === "cw") {
         newColors.front = newColors.left;
@@ -210,8 +210,8 @@ const RubiksCube = () => {
           (face === "back" && z === -1) ||
           (face === "right" && x === 1) ||
           (face === "left" && x === -1) ||
-          (face === "top" && y === 1) ||
-          (face === "bottom" && y === -1);
+          (face === "up" && y === 1) ||
+          (face === "down" && y === -1);
 
         if (shouldRotate) {
           switch (face) {
@@ -231,13 +231,13 @@ const RubiksCube = () => {
               newPos = direction === "cw" ? [x, -z, y] : [x, z, -y];
               newColors = rotateColors(cube.colors, "left", direction);
               break;
-            case "top":
+            case "up":
               newPos = direction === "cw" ? [-z, y, x] : [z, y, -x];
-              newColors = rotateColors(cube.colors, "top", direction);
+              newColors = rotateColors(cube.colors, "up", direction);
               break;
-            case "bottom":
+            case "down":
               newPos = direction === "cw" ? [z, y, -x] : [-z, y, x];
-              newColors = rotateColors(cube.colors, "bottom", direction);
+              newColors = rotateColors(cube.colors, "down", direction);
               break;
             default:
               break;
@@ -275,12 +275,11 @@ const RubiksCube = () => {
   const scrambleCube = useCallback(() => {
     if (isRotating || isScrambling) return;
     
-    const faces = ["front", "back", "right", "left", "top", "bottom"];
+    const faces = ["front", "back", "right", "left", "up", "down"];
     const directions = ["cw", "ccw"];
     const moves = [];
     
-    // Генерируем 20 случайных перемешивающих движений
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 40; i++) {
       const randomFace = faces[Math.floor(Math.random() * faces.length)];
       const randomDirection = directions[Math.floor(Math.random() * directions.length)];
       moves.push([randomFace, randomDirection]);
@@ -321,8 +320,8 @@ const RubiksCube = () => {
               (rotatingFace === "back" && cube.position[2] === -1) ||
               (rotatingFace === "right" && cube.position[0] === 1) ||
               (rotatingFace === "left" && cube.position[0] === -1) ||
-              (rotatingFace === "top" && cube.position[1] === 1) ||
-              (rotatingFace === "bottom" && cube.position[1] === -1)
+              (rotatingFace === "up" && cube.position[1] === 1) ||
+              (rotatingFace === "down" && cube.position[1] === -1)
             );
 
             return !isPartOfFace || !isRotating ? (
@@ -345,7 +344,8 @@ const RubiksCube = () => {
         gap: "8px",
         backgroundColor: "rgba(255, 255, 255, 0.7)",
         padding: "10px",
-        borderRadius: "8px"
+        borderRadius: "10px",
+        background: "lightgreen"
       }}>
         <button 
           onClick={scrambleCube}
@@ -360,7 +360,7 @@ const RubiksCube = () => {
           }}
           disabled={isRotating || isScrambling}
         >
-          {isScrambling ? "Scrambling..." : "Scramble Cube"}
+          {isScrambling ? "Scrambling..." : "Scramble"}
         </button>
 
         {Object.entries({
@@ -368,8 +368,8 @@ const RubiksCube = () => {
           back: "Red",
           right: "Blue",
           left: "Green",
-          top: "Yellow",
-          bottom: "White"
+          up: "Yellow",
+          down: "White"
         }).map(([face, color]) => (
           <div key={face} style={{ display: "flex", gap: "4px", alignItems: "center" }}>
             <button 
@@ -387,8 +387,8 @@ const RubiksCube = () => {
             >
               ↻
             </button>
-            <div style={{ minWidth: "120px", textAlign: "center" }}>
-              {face} ({color})
+            <div style={{ minWidth: "120px", textAlign: "center", color: color }}>
+              {face.charAt(0).toUpperCase() + face.slice(1)}
             </div>
             <button 
               onClick={() => rotateFace(face, "ccw")}
