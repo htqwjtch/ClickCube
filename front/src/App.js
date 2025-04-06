@@ -1,14 +1,5 @@
 import Notification from "./components/Notification";
 import RubiksCube from "./components/RubicsCube";
-import step1 from './assets/icons/solution-steps/1.png';
-import step2 from './assets/icons/solution-steps/2.png';
-import step3 from './assets/icons/solution-steps/3.png';
-import step4 from './assets/icons/solution-steps/4.png';
-import step5 from './assets/icons/solution-steps/5.png';
-import step6 from './assets/icons/solution-steps/6.png';
-import step7 from './assets/icons/solution-steps/7.png';
-import step8 from './assets/icons/solution-steps/8.png';
-
 
 import { useState, useRef } from "react";
 import axios from "axios";
@@ -23,7 +14,9 @@ const COLORS = {
   W: "#ffffff"
 };
 
-const stepImages = [step1, step2, step3, step4, step5, step6, step7, step8];
+const stepImgs = require.context('../public/assets/icons/solution-steps/', false, /\.png$/);
+
+const stepImages = stepImgs.keys().map(stepImgs);
 
 const stepTitles = [
   "Daisy",
@@ -221,6 +214,17 @@ function App() {
   const [isImagePage, setIsImagePage] = useState(false);
   const [isColorPage, setIsColorPage] = useState(false);
   const [isSolvePage, setIsSolvePage] = useState(false);
+  const [isSingMasterNotation, setIsSingMasterNotation] = useState(false);
+
+  const getNotationLabel = (index) => {
+    const labels = [
+      "F", "F'", "B", "B'",
+      "R", "R'", "L", "L'",
+      "U", "U'", "D", "D'",
+      "X", "X'", "Y", "Y'"
+    ];
+    return labels[index - 1] || `Move ${index}`;
+  };
 
   return (
     <div className="app-container">
@@ -411,89 +415,118 @@ function App() {
             ))
           }
 
-          {isSolveByPhotoMode && (
-            isSolvePage && (
-              <div className="page-container">
+          {isSolveByPhotoMode && isSolvePage && (
+            <div className="page-container">
+              <div className="side-element">
+                <button
+                  className="back-btn"
+                  onClick={() => {
+                    setIsImagePage(false);
+                    setIsColorPage(true);
+                    setIsSolvePage(false);
+                  }}
+                >
+                  Back
+                </button>
+              </div>
 
-                <div className="side-element">
-                  <button
-                    className="back-btn"
-                    onClick={() => {
-                      setIsImagePage(false);
-                      setIsColorPage(true);
-                      setIsSolvePage(false);
-                    }}
-                  >
-                    Back
-                  </button>
-                </div>
-
-                <div className="solve-page-central-element">
-                  <h2>Solution</h2>
-                  <button
-                    className="singmaster-notation-btn"
-                    onClick={() => {
-                      setIsImagePage(false);
-                      setIsColorPage(true);
-                      setIsSolvePage(false);
-                    }}
+              <div className="solve-page-central-element">
+                {/* Заменяем кнопку на выпадающий элемент */}
+                <div className={`dropdown-container ${isSingMasterNotation ? 'active' : ''}`}>
+                  <div
+                    className="dropdown-header"
+                    onClick={() => setIsSingMasterNotation(!isSingMasterNotation)}
                   >
                     Singmaster Notation
-                  </button>
-                  {solution.length > 0 ? (
-                    <ul className="solution-list">
-                      {solution.map((step, index) => (
-                        <div key={index} className="solution-step">
-                          <img
-                            src={stepImages[index]}
-                            alt={`Step ${index + 1}`}
-                            style={{
-                              width: "100px",
-                              height: "100px",
-                              padding: "8px",
-                              objectFit: "contain"
-                            }}
-                          />
-                          <div className="step-info">
-                            <div className="step-title">
-                              {stepTitles[index]}
-                            </div>
-                            <div className="step-notation">
-                              {step}
-                            </div>
-                            <div className="step-desc">
-                              {stepDescriptions[index]}
-                            </div>
+                    <span className="dropdown-arrow">
+                      {isSingMasterNotation ? '▲' : '▼'}
+                    </span>
+                  </div>
+
+                  <div className="dropdown-content">
+                    {isSingMasterNotation && (
+                      <div className="notation-table-container">
+                        <table className="notation-table">
+                          <tbody>
+                            {[...Array(4)].map((_, rowIndex) => (
+                              <tr key={rowIndex}>
+                                {[...Array(4)].map((_, colIndex) => {
+                                  const index = rowIndex * 4 + colIndex + 1;
+                                  return (
+                                    <td key={colIndex}>
+                                      <img
+                                        src={`/assets/icons/notation/${index}.gif`}
+                                        alt={`Notation ${index}`}
+                                        className="notation-gif"
+                                        onError={(e) => {
+                                          e.target.src = '/assets/icons/notation/default.gif'; // fallback если изображение не найдено
+                                        }}
+                                      />
+                                      <div className="notation-label">{getNotationLabel(index)}</div>
+                                    </td>
+                                  );
+                                })}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {solution.length > 0 ? (
+                  <ul className="solution-list">
+                    {solution.map((step, index) => (
+                      <div key={index} className="solution-step">
+                        <img
+                          src={stepImages[index]}
+                          alt={`Step ${index + 1}`}
+                          style={{
+                            width: "100px",
+                            height: "100px",
+                            padding: "8px",
+                            objectFit: "contain"
+                          }}
+                        />
+                        <div className="step-info">
+                          <div className="step-title">
+                            {stepTitles[index]}
+                          </div>
+                          <div className="step-notation">
+                            {step}
+                          </div>
+                          <div className="step-desc">
+                            {stepDescriptions[index]}
                           </div>
                         </div>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p>Waiting for solution...</p>
-                  )}
-                </div>
-
-                <div className="side-element">
-                  <button
-                    className="next-btn"
-                    onClick={async () => {
-                      await handleUpload();
-                      await handleDetect();
-                      setIsSolveByPhotoMode(false);
-                      setIsImagePage(false);
-                      setIsColorPage(false);
-                      setIsSolvePage(false);
-                      setSelectedImages(Array(12).fill(null));
-                      setColorData([]);
-                    }}
-                  >
-                    {buttonText}
-                  </button>
-                </div>
-
+                      </div>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>Waiting for solution...</p>
+                )}
               </div>
-            ))
-          }
+
+              <div className="side-element">
+                <button
+                  className="next-btn"
+                  onClick={async () => {
+                    await handleUpload();
+                    await handleDetect();
+                    setIsSolveByPhotoMode(false);
+                    setIsImagePage(false);
+                    setIsColorPage(false);
+                    setIsSolvePage(false);
+                    setSelectedImages(Array(12).fill(null));
+                    setColorData([]);
+                  }}
+                >
+                  {buttonText}
+                </button>
+              </div>
+            </div>
+          )}
 
           {isChaosMode && (
             <div className="page-container">

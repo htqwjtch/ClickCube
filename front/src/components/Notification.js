@@ -1,8 +1,11 @@
 import React, { useEffect } from "react";
 import "./Notification.css";
-import successIcon from "../assets/icons/notifications/success.png";  // Добавляем иконки
-import warningIcon from "../assets/icons/notifications/warning.png";
-import errorIcon from "../assets/icons/notifications/error.png";
+
+const notificationIcons = {
+  successIcon: '/assets/icons/notifications/success.png',
+  warningIcon: '/assets/icons/notifications/warning.png',
+  errorIcon: '/assets/icons/notifications/error.png'
+};
 
 const Notification = ({ message, type, onClose }) => {
   useEffect(() => {
@@ -15,13 +18,13 @@ const Notification = ({ message, type, onClose }) => {
 
   if (type === "success") {
     notificationClass += " success";
-    iconSrc = successIcon;
+    iconSrc = notificationIcons.successIcon;
   } else if (type === "warning") {
     notificationClass += " warning";
-    iconSrc = warningIcon;
+    iconSrc = notificationIcons.warningIcon;
   } else if (type === "error") {
     notificationClass += " error";
-    iconSrc = errorIcon;
+    iconSrc = notificationIcons.errorIcon;
   }
 
   return (
