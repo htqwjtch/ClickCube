@@ -257,6 +257,7 @@ impl Cube {
         self.make_first_layer();
         self.make_second_layer();
         self.make_cross_of_up_face();
+        self.make_right_cross_of_up_face();
         self.make_corners_of_up_face();
         self.make_third_layer();
 
@@ -1352,10 +1353,8 @@ impl Cube {
     }
 
     fn make_cross_of_up_face(&mut self) {
-        let instruction_1 = self.put_edges_of_up_face_in_cross();
-        let instruction_2 = self.put_edges_of_up_face_in_place();
+        let raw_instruction = self.put_edges_of_up_face_in_cross();
 
-        let raw_instruction = instruction_1 + instruction_2.as_str();
         OptiCourier::receive_raw_instruction(raw_instruction.clone());
        
     }
@@ -1425,6 +1424,12 @@ impl Cube {
         }
 
         command_to_make_cross
+    }
+
+    fn make_right_cross_of_up_face(&mut self) {
+        let raw_instruction = self.put_edges_of_up_face_in_place();
+
+        OptiCourier::receive_raw_instruction(raw_instruction.clone());
     }
 
     fn put_edges_of_up_face_in_place(&mut self) -> String {

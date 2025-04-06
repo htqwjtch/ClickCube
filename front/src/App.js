@@ -1,5 +1,13 @@
 import Notification from "./components/Notification";
 import RubiksCube from "./components/RubicsCube";
+import step1 from './assets/icons/solution-steps/1.png';
+import step2 from './assets/icons/solution-steps/2.png';
+import step3 from './assets/icons/solution-steps/3.png';
+import step4 from './assets/icons/solution-steps/4.png';
+import step5 from './assets/icons/solution-steps/5.png';
+import step6 from './assets/icons/solution-steps/6.png';
+import step7 from './assets/icons/solution-steps/7.png';
+import step8 from './assets/icons/solution-steps/8.png';
 
 
 import { useState, useRef } from "react";
@@ -15,16 +23,29 @@ const COLORS = {
   Y: "yellow",
 };
 
-// const stepImages = {
-//   "F": "/images/F.png",
-//   "F'": "/images/F_prime.png",
-//   "R": "/images/R.png",
-//   "R'": "/images/R_prime.png",
-//   "U": "/images/U.png",
-//   "U'": "/images/U_prime.png",
-//   "U2": "/images/U2.png",
-//   // ... остальные шаги
-// };
+const stepImages = [step1, step2, step3, step4, step5, step6, step7, step8];
+
+const stepTitles = [
+  "Daisy",
+  "Down Cross",
+  "First Layer",
+  "Second Layer",
+  "Up Cross",
+  "Right Up Cross",
+  "Up Corners",
+  "Third Layer"
+];
+
+const stepDescriptions = [
+  "To create a daisy, you need to find all 4 white edges and raise them to the yellow center.",
+  "You should look at the flower and pay attention to the color of the rib. Then select any of the edges, align it with the center of the same color and lower it down (make the F2 movement). This should be done alternately with all the edges.\n\nPlease note that the color of the edges in the cross must match the colors of the centers. If you get the wrong cross, you should try again!",
+  "Next, you should collect the corners (3 colors on the element), as a result, you should get the whole first layer.\n\nBut first you need to learn a very simple but effective formula called Pif-Paf. It consists of 4 movements R U R' U', and in simple words: up-left-down-right.",
+  "To make the second layer, you need to put the edges from the top layer to the middle one in turn. To do this, you need to learn Pif-Paf with your left hand L' U' L U or in other words, with your left hand you should perform up-right-down-left",
+  "At this stage, turn the cube yellow up again.\n\nThe sequence of creating the yellow cross is as follows:\nPoint → Floor of the cross (nine o'clock) → Stick → Cross\n\nA whole cross can already be assembled on the cube. But it's not always that lucky. Sometimes it still turns out to be one sad point that needs to be gradually transformed into a cross.\n\nWhatever the shape is, you should do F R U R' U' F'. Simply put, F (Pif-Paf) F'.\n\nPlease note that if there is a \"Floor of the cross\", then you need to hold it for 9 o'clock, so that one arrow looks to the left and the other up. And if it's a stick, then you need to hold it horizontally and only then do the algorithm.\n\nIf there was a dot initially, then it will turn into a half cross, if there was a half cross, then they will turn into a stick, and if a stick, then into a cross.\n\nAttention!\nIf 1 or 3 elements are looking up at the same time and none of the above figures are present, the cube could be disassembled into parts and incorrectly assembled (accidentally or for the purpose of playing a joke). In this case, it is impossible to assemble a cube using formulas. It is strongly recommended to take the cube apart and assemble it by color mechanically.\n\nThere can only be three situations:\n1. The edges match next to each other.If these two edges are adjacent, you should put them on the right and behind, and make the formula R U R' U R U2 R' U.\n2. The edges match opposite.If these two edges coincide opposite, you should put them in front and behind, and make the formula R U R' U R U2 R' and the previous situation should be obtained.\n3. The cross is immediately correct or you only need to turn the top layer.\n",
+  "The resulting cross may be incorrect. we need to make sure that all the colors on the edges of the cross (3 layers) match the centers.",
+  "First you need to check how many corners are in place. It's either everything, 1 corner, or none. If all the corners are in place, skip this step and move on to the next one.\n\nThe corners can look yellow in any direction. The main thing is that the orange-green corner stands between the orange and green center, the green-red corner stands between the green and red, etc.\n\nIf there are no such angles, then do the algorithm:\nR U' L' U R' U' L U\n\nAfter executing the algorithm, 1 correct angle should appear. You need to put it on the left and on top (where your left thumb is) and do the same algorithm. If nothing works out, put it back in the upper-left point and repeat.\n\nAttention!\nIf only 2 or 3 elements are in place, the cube was disassembled into parts and incorrectly assembled. From such a state, the cube cannot be assembled according to formulas. You should take the cube apart and assemble it by color mechanically.\n\nWhen all the corners are in place, all that remains is to unfold them in order to fully assemble the cube.",
+  "The corners should be turned Pif-Paf.\n\nYou should check again whether all the corners are in place. Intercept the cube so that the corners that need to be collected are from below. You can start from any corner that is not assembled and do bang-bang until the corner is assembled. Then you need to rotate the bottom layer and put the next unrolled corner. Keep doing bang-bang until the 2nd corner comes together and so on.\n\nAttention!\nIf the corner has already been assembled, bang-bang still needs to be completed, and only then proceed to the next one).\n\nWhen all the corners are unfolded, the cube will be assembled!"
+];
 
 function App() {
   const inputRefs = useRef(Array(12).fill(null));
@@ -408,11 +429,33 @@ function App() {
                 </div>
 
                 <div className="solve-page-central-element">
-                  <h2>Solution:</h2>
+                  <h2>Solution</h2>
                   {solution.length > 0 ? (
                     <ul className="solution-list">
                       {solution.map((step, index) => (
-                        <li key={index} className="solution-step">{step}</li>
+                        <div key={index} className="solution-step">
+                          <img
+                            src={stepImages[index]}
+                            alt={`Step ${index + 1}`}
+                            style={{
+                              width: "100px",
+                              height: "100px",
+                              padding: "8px",
+                              objectFit: "contain"
+                            }}
+                          />
+                          <div className="step-info">
+                            <div className="step-title">
+                              {stepTitles[index]}
+                            </div>
+                            <div className="step-notation">
+                              {step}
+                            </div>
+                            <div className="step-desc">
+                              {stepDescriptions[index]}
+                            </div>
+                          </div>
+                        </div>
                       ))}
                     </ul>
                   ) : (
