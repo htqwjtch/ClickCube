@@ -43,12 +43,12 @@ html {
   font-size: 16px;
   color: white;
   transition: all 0.3s ease;
-  background-color: #45a049;
+  background-color: #0a6e38;
 }
 
 .solve-by-photo-btn:hover {
   transform: scale(1.05);
-  background-color: #2C6F2F;
+  background-color: #07a42e;
 }
 
 .solve-by-photo-btn:active {
@@ -97,69 +97,69 @@ html {
 }
 
 .image-grid .grid-area:nth-child(2) {
-  border: 2px dashed yellow;
+  border: 2px dashed #efbe09;
   border-radius: 10px;
 }
 
 .image-grid .grid-area:nth-child(2):hover {
-  border-color: yellow;
+  border-color: #fff144;
   transform: scale(1.05);
-  background-color: rgba(255, 255, 0, 0.9);
+  background-color: #fff144;
 }
 
 .image-grid .grid-area:nth-child(5) {
-  border: 2px dashed green;
+  border: 2px dashed #0a6e38;
   border-radius: 10px;
 }
 
 .image-grid .grid-area:nth-child(5):hover {
-  border-color: green;
+  border-color: #07a42e;
   transform: scale(1.05);
-  background-color: rgba(76, 175, 80, 0.9);
+  background-color: #07a42e;
 }
 
 .image-grid .grid-area:nth-child(6) {
-  border: 2px dashed orange;
+  border: 2px dashed #f36416;
   border-radius: 10px;
 }
 
 .image-grid .grid-area:nth-child(6):hover {
-  border-color: orange;
+  border-color: #ffa40d;
   transform: scale(1.05);
-  background-color: rgba(255, 165, 0, 0.9);
+  background-color: #ffa40d;
 }
 
 .image-grid .grid-area:nth-child(7) {
-  border: 2px dashed blue;
+  border: 2px dashed #1568ac;
   border-radius: 10px;
 }
 
 .image-grid .grid-area:nth-child(7):hover {
-  border-color: blue;
+  border-color: #180c8a;
   transform: scale(1.05);
-  background-color: rgba(33, 150, 243, 0.9);
+  background-color: #180c8a;
 }
 
 .image-grid .grid-area:nth-child(8) {
-  border: 2px dashed red;
+  border: 2px dashed #c9161c;
   border-radius: 10px;
 }
 
 .image-grid .grid-area:nth-child(8):hover {
-  border-color: red;
+  border-color: #ea0600;
   transform: scale(1.05);
-  background-color: rgba(244, 67, 54, 0.9);
+  background-color: #ea0600;
 }
 
 .image-grid .grid-area:nth-child(10) {
-  border: 2px dashed white;
+  border: 2px dashed #fdfdfb;
   border-radius: 10px;
 }
 
 .image-grid .grid-area:nth-child(10):hover {
   border-color: white;
   transform: scale(1.05);
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: white;
 }
 
 .grid-area {
@@ -176,9 +176,9 @@ html {
 }
 
 .grid-area:hover {
-  border-color: #45a049;
+  border-color: #0a6e38;
   transform: scale(1.05);
-  background-color: rgba(76, 175, 80, 0.9);
+  background-color: #008a3a;
 }
 
 .file-input {
@@ -224,7 +224,7 @@ html {
   cursor: pointer;
   opacity: 0.8;
   transition: opacity 0.2s;
-  background-color: #ff4444;
+  background-color: #ea0600;
 }
 
 .remove-btn:hover {
@@ -292,13 +292,15 @@ html {
 .grid-element {
   display: grid;
   grid-template-columns: repeat(3, 50px);
-  border: 1px solid black;
+  border: 3px solid black;
+  border-radius: 10px;
 }
 
 .element-cell {
   width: 50px;
   height: 50px;
-  border: 1px solid black;
+  border: 2px solid black;
+  border-radius: 10px;
 }
 
 .element-cell:disabled {
@@ -306,13 +308,12 @@ html {
   height: 50px;
 }
 
-
 .solve-page-central-element {
   width: 80%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -367,6 +368,26 @@ html {
   padding: 8px;
 }
 
+.singmaster-notation-btn {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  color: black;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #efbe09;
+}
+
+.singmaster-notation-btn:hover {
+  transform: scale(1.05);
+  background-color: #fff144;
+}
+
+.singmaster-notation-btn:active {
+  transform: scale(1);
+}
+
 .back-btn {
   width: 100px;
   height: 40px;
@@ -376,12 +397,12 @@ html {
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
-  background-color: #C70039;
+  background-color: #c9161c;
 }
 
 .back-btn:hover {
   transform: scale(1.05);
-  background-color: #a1002e;
+  background-color: #ff0d0d;
 }
 
 .back-btn:active {
@@ -397,12 +418,12 @@ html {
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
-  background-color: #45a049;
+  background-color: #0a6e38;
 }
 
 .next-btn:hover {
   transform: scale(1.05);
-  background-color: #2C6F2F;
+  background-color: #07a42e;
 }
 
 .next-btn:active {
@@ -430,12 +451,12 @@ html {
   font-size: 16px;
   color: white;
   transition: all 0.3s ease;
-  background-color: #e64a19;
+  background-color: #f36416;
 }
 
 .chaos-mode-btn:hover {
   transform: scale(1.05);
-  background-color: #d32f2f;
+  background-color: #ff4500;
 }
 
 .chaos-mode-btn:active {

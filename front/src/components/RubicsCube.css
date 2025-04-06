@@ -1,0 +1,95 @@
+.canvas {
+    width: 50%;
+    max-height: 100%;
+}
+
+.controls-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background-color: lightgray;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 20px;
+}
+
+.face-row {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.scramble-btn {
+    padding: 8px;
+    margin-bottom: 10px;
+    background-color: #c9161c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+.scramble-btn:hover {
+    transform: scale(1.05);
+    background-color: #e1181f;
+}
+
+.scramble-btn:active {
+    transform: scale(1);
+}
+
+.scramble-btn:disabled {
+    background-color: #aaaaaa;
+    cursor: not-allowed;
+}
+
+.face-btn-cw {
+    width: 30px;
+    height: 30px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    background-color: #0a6e38;
+}
+
+.face-btn-cw:hover {
+    transform: scale(1.05);
+    background-color: #008a3a;
+}
+
+.face-btn-cw:active {
+    transform: scale(1);
+}
+
+.face-btn-cw:disabled {
+    background-color: #aaaaaa;
+    cursor: not-allowed;
+}
+
+.face-btn-ccw {
+    width: 30px;
+    height: 30px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    background-color: #1568ac;
+}
+
+.face-btn-ccw:hover {
+    transform: scale(1.05);
+    background-color: #1a7dc6;
+}
+
+.face-btn-ccw:active {
+    transform: scale(1);
+}
+
+.face-btn-ccw:disabled {
+    background-color: #aaaaaa;
+    cursor: not-allowed;
+}
+
+.face-lbl {
+    min-width: 120px;
+    text-align: center;
+}

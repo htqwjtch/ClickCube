@@ -1,3 +1,5 @@
+import "./RubicsCube.css";
+
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
@@ -7,12 +9,12 @@ const GAP_RATIO = 0.02;
 const TOTAL_SIZE = CUBE_SIZE * (1 + GAP_RATIO);
 
 const faceColors = {
-  front: "orange",
-  back: "red",
-  right: "blue",
-  left: "green",
-  up: "yellow",
-  down: "white",
+  front: "#ffa40d",
+  back: "#ea0600",
+  right: "#180c8a",
+  left: "#07a42e",
+  up: "#fff144",
+  down: "#dedede",
   inner: "#888888"
 };
 
@@ -251,7 +253,7 @@ const RubiksCube = () => {
 
   const handleRotationComplete = useCallback(() => {
     updateCubePositionsAndColors(rotatingFace, rotationDirection);
-    
+
     if (scrambleQueue.current.length > 0) {
       const [nextFace, nextDirection] = scrambleQueue.current[0];
       scrambleQueue.current = scrambleQueue.current.slice(1);
@@ -274,20 +276,20 @@ const RubiksCube = () => {
 
   const scrambleCube = useCallback(() => {
     if (isRotating || isScrambling) return;
-    
+
     const faces = ["front", "back", "right", "left", "up", "down"];
     const directions = ["cw", "ccw"];
     const moves = [];
-    
+
     for (let i = 0; i < 40; i++) {
       const randomFace = faces[Math.floor(Math.random() * faces.length)];
       const randomDirection = directions[Math.floor(Math.random() * directions.length)];
       moves.push([randomFace, randomDirection]);
     }
-    
+
     setIsScrambling(true);
     scrambleQueue.current = moves;
-    
+
     if (moves.length > 0) {
       const [firstFace, firstDirection] = moves[0];
       scrambleQueue.current = moves.slice(1);
@@ -299,11 +301,11 @@ const RubiksCube = () => {
 
   return (
     <>
-      <Canvas style={{ width: "70%", maxHeight: "100%" }}>
+      <Canvas className="canvas">
         <ambientLight intensity={1.2} />
         <directionalLight position={[5, 5, 5]} intensity={0.8} />
         <directionalLight position={[-5, -5, -5]} intensity={0.8} />
-        
+
         {isRotating && (
           <RotatingGroup
             cubes={cubes}
@@ -337,70 +339,37 @@ const RubiksCube = () => {
         <OrbitControls />
       </Canvas>
 
-      <div style={{
-        position: "relative",
-        display: "flex",
-        flexDirection: "column",
-        gap: "8px",
-        backgroundColor: "rgba(255, 255, 255, 0.7)",
-        padding: "10px",
-        borderRadius: "10px",
-        background: "lightgreen"
-      }}>
-        <button 
+      <div className="controls-container">
+        <button
           onClick={scrambleCube}
-          style={{ 
-            padding: "8px",
-            marginBottom: "10px",
-            backgroundColor: isScrambling ? "#ff8c8c" : "#ff6b6b",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: isRotating || isScrambling ? "not-allowed" : "pointer"
-          }}
+          className="scramble-btn"
           disabled={isRotating || isScrambling}
         >
           {isScrambling ? "Scrambling..." : "Scramble"}
         </button>
 
         {Object.entries({
-          front: "Orange",
-          back: "Red",
-          right: "Blue",
-          left: "Green",
-          up: "Yellow",
-          down: "White"
+          front: "#ffa40d",
+          back: "#ea0600",
+          right: "#180c8a",
+          left: "#07a42e",
+          up: "#fff144",
+          down: "#ffffff"
         }).map(([face, color]) => (
-          <div key={face} style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-            <button 
+          <div key={face} className="face-row">
+            <button
               onClick={() => rotateFace(face, "cw")}
-              style={{ 
-                width: "30px", 
-                height: "30px",
-                backgroundColor: isRotating || isScrambling ? "#ccc" : "#4CAF50",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: isRotating || isScrambling ? "not-allowed" : "pointer"
-              }}
+              className="face-btn-cw"
               disabled={isRotating || isScrambling}
             >
               ↻
             </button>
-            <div style={{ minWidth: "120px", textAlign: "center", color: color }}>
+            <div className="face-lbl" style={{ color }}>
               {face.charAt(0).toUpperCase() + face.slice(1)}
             </div>
-            <button 
+            <button
               onClick={() => rotateFace(face, "ccw")}
-              style={{ 
-                width: "30px", 
-                height: "30px",
-                backgroundColor: isRotating || isScrambling ? "#ccc" : "#f44336",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: isRotating || isScrambling ? "not-allowed" : "pointer"
-              }}
+              className="face-btn-ccw"
               disabled={isRotating || isScrambling}
             >
               ↺
