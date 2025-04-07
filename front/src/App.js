@@ -150,7 +150,7 @@ function App() {
   };
 
   const [isDetecting, setIsDetecting] = useState(false);
-  const [buttonText, setButtonText] = useState("Next");
+  const [nextText, setButtonText] = useState("Next");
 
   const handleDetect = async () => {
     if (colorData.length !== 6) {
@@ -212,6 +212,7 @@ function App() {
   const [isChaosMode, setIsChaosMode] = useState(false);
   const areAllImagesSelected = selectedImages.filter(image => image !== null).length === 6;
   const [isImagePage, setIsImagePage] = useState(false);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isColorPage, setIsColorPage] = useState(false);
   const [isSolvePage, setIsSolvePage] = useState(false);
   const [isSingMasterNotation, setIsSingMasterNotation] = useState(false);
@@ -274,55 +275,108 @@ function App() {
                   </button>
                 </div>
 
-                <div className="central-element">
-                  <div className="image-grid">
-                    {selectedImages.map((image, index) => {
-                      let zoneLabel = `Зона ${index}`;
-                      if (index === 1) zoneLabel = "Up";
-                      if (index === 4) zoneLabel = "Left";
-                      if (index === 5) zoneLabel = "Front";
-                      if (index === 6) zoneLabel = "Right";
-                      if (index === 7) zoneLabel = "Back";
-                      if (index === 9) zoneLabel = "Down";
-
-                      return (
-                        <div
-                          key={index}
-                          className="grid-area"
-                          onClick={() => onButtonClick(index)}
-                          style={{
-                            visibility: [1, 4, 5, 6, 7, 9].includes(index) ? "visible" : "hidden",
-                            pointerEvents: [1, 4, 5, 6, 7, 9].includes(index) ? "auto" : "none",
-                          }}
-                        >
-                          <input
-                            type="file"
-                            ref={(el) => (inputRefs.current[index] = el)}
-                            onChange={(e) => handleChange(e, index)}
-                            className="file-input"
-                            accept="image/*"
-                            multiple={false}
-                            id={`file-input-${index}`}
-                          />
-                          {image ? (
-                            <div className="image-preview-container">
-                              <img src={image} alt={`preview ${index}`} className="image-preview" />
-                              <button className="remove-btn"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  removeImage(index);
-                                }}
-                              >
-                                ×
-                              </button>
-                            </div>
-                          ) : (
-                            <p>{zoneLabel}</p>
-                          )}
-                        </div>
-                      );
-                    })}
+                <div className="central-container">
+                  <div className="title-container">
+                    <div className="empty-container">
+                    </div>
+                    <div className="page-title">
+                      Upload photos of Rubik's Cube faces
+                    </div>
+                    <div className="help-container">
+                      <button
+                        className="help-btn"
+                        onClick={() => setIsHelpModalOpen(true)}
+                      >
+                        ?
+                      </button>
+                    </div>
                   </div>
+                  <div className="central-element">
+                    <div className="image-grid">
+                      {selectedImages.map((image, index) => {
+                        let zoneLabel = `Зона ${index}`;
+                        if (index === 1) zoneLabel = "Up";
+                        if (index === 4) zoneLabel = "Left";
+                        if (index === 5) zoneLabel = "Front";
+                        if (index === 6) zoneLabel = "Right";
+                        if (index === 7) zoneLabel = "Back";
+                        if (index === 9) zoneLabel = "Down";
+
+                        return (
+                          <div
+                            key={index}
+                            className="grid-area"
+                            onClick={() => onButtonClick(index)}
+                            style={{
+                              visibility: [1, 4, 5, 6, 7, 9].includes(index) ? "visible" : "hidden",
+                              pointerEvents: [1, 4, 5, 6, 7, 9].includes(index) ? "auto" : "none",
+                            }}
+                          >
+                            <input
+                              type="file"
+                              ref={(el) => (inputRefs.current[index] = el)}
+                              onChange={(e) => handleChange(e, index)}
+                              className="file-input"
+                              accept="image/*"
+                              multiple={false}
+                              id={`file-input-${index}`}
+                            />
+                            {image ? (
+                              <div className="image-preview-container">
+                                <img src={image} alt={`preview ${index}`} className="image-preview" />
+                                <button
+                                  className="remove-btn"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    removeImage(index);
+                                  }}
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            ) : (
+                              <p>{zoneLabel}</p>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {isHelpModalOpen && (
+                    <div className="modal-overlay" onClick={() => setIsHelpModalOpen(false)}>
+                      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <h2>Requirements for photos of Rubik's Cube faces</h2>
+                        <div className="instructions">
+                          <p className="intro">If you thought uploading photos will be easy, then sit down)</p>
+                          <p className="section">1. Photo format:</p>
+                          <p className="bullet">• Photos should be square (like the face of a cube).</p>
+                          <p className="bullet">• The face of the cube should occupy almost the entire area of the photo (as large as possible, without unnecessary background).</p>
+
+                          <p className="section">2. The colors of the centers (a guideline, but not necessarily):</p>
+                          <p className="bullet">• The front face (Front) is the orange center.</p>
+                          <p className="bullet">• The back face (Back) is the red center.</p>
+                          <p className="bullet">• The upper face (Up) is the yellow center.</p>
+                          <p className="bullet">• The lower face (Down) is the white center.</p>
+                          <p className="bullet">• The right face (Right) is the blue center.</p>
+                          <p className="bullet">• The left face (Left) is the green center.</p>
+                          <p className="note">If you have a cube with a different color scheme, you can load it as it is, but it is important to keep the correct orientation.</p>
+
+                          <p className="section">3. Orientation of the faces in the photo</p>
+                          <p className="explanation">The main thing is to rotate the face correctly before photographing (for example, the front face with orange color):</p>
+                          <p className="bullet">• For the side faces (orange, blue, red, green centers), the upper face should have a yellow center, the lower face should have a white center.</p>
+                          <p className="bullet">• For the upper and lower faces (yellow and white centers, respectively), the left and right faces should have green and blue centers, respectively.</p>
+                          <p className="bullet">• For the upper face, the top face should be the back face (red), and the bottom face should be the front face (orange). For the lower face, the opposite is true.</p>
+                        </div>
+                        <button
+                          className="close-modal-btn"
+                          onClick={() => setIsHelpModalOpen(false)}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="side-element">
@@ -337,7 +391,7 @@ function App() {
                     }}
                     disabled={!areAllImagesSelected || isDetecting}
                   >
-                    {buttonText}
+                    {nextText}
                   </button>
                 </div>
               </div>
@@ -361,40 +415,47 @@ function App() {
                   </button>
                 </div>
 
-                <div className="central-element">
-                  {colorData.length === 6 && (
-                    <div className="color-grid">
-                      {[...Array(12)].map((_, index) => {
-                        const specialIndices = [5, 7, 1, 9, 4, 6];
-                        const colorDataIndex = specialIndices.indexOf(index);
-                        const row = colorData[colorDataIndex];
-                        return specialIndices.includes(index) ? (
-                          <div key={index} className="grid-element">
-                            {row.map((color, i) => (
-                              <div
-                                key={i}
-                                className="element-cell"
-                                style={{ backgroundColor: COLORS[color] || "gray" }}
-                                onClick={() => {
-                                  const colorKeys = Object.keys(COLORS);
-                                  const currentIndex = colorKeys.indexOf(color);
-                                  const nextIndex = (currentIndex + 1) % colorKeys.length;
-                                  const nextColor = colorKeys[nextIndex];
-
-                                  const newColorData = [...colorData];
-                                  newColorData[colorDataIndex][i] = nextColor;
-                                  setColorData(newColorData);
-                                }}
-                              />
-                            ))}
-                          </div>
-                        ) : (
-                          <div key={index} className="element-cell.disabled" />
-                        );
-                      })}
+                <div className="central-container">
+                  <div className="title-container">
+                    <div className="page-title">
+                      Please edit detected colors by clicking, if necessary
                     </div>
-                  )}
+                  </div>
+                  <div className="central-element">
+                    {colorData.length === 6 && (
+                      <div className="color-grid">
+                        {[...Array(12)].map((_, index) => {
+                          const specialIndices = [5, 7, 1, 9, 4, 6];
+                          const colorDataIndex = specialIndices.indexOf(index);
+                          const row = colorData[colorDataIndex];
+                          return specialIndices.includes(index) ? (
+                            <div key={index} className="grid-element">
+                              {row.map((color, i) => (
+                                <div
+                                  key={i}
+                                  className="element-cell"
+                                  style={{ backgroundColor: COLORS[color] || "gray" }}
+                                  onClick={() => {
+                                    const colorKeys = Object.keys(COLORS);
+                                    const currentIndex = colorKeys.indexOf(color);
+                                    const nextIndex = (currentIndex + 1) % colorKeys.length;
+                                    const nextColor = colorKeys[nextIndex];
 
+                                    const newColorData = [...colorData];
+                                    newColorData[colorDataIndex][i] = nextColor;
+                                    setColorData(newColorData);
+                                  }}
+                                />
+                              ))}
+                            </div>
+                          ) : (
+                            <div key={index} className="element-cell.disabled" />
+                          );
+                        })}
+                      </div>
+                    )}
+
+                  </div>
                 </div>
 
                 <div className="side-element">
@@ -407,7 +468,7 @@ function App() {
                       setIsSolvePage(true);
                     }}
                   >
-                    {buttonText}
+                    {nextText}
                   </button>
                 </div>
 
@@ -522,7 +583,7 @@ function App() {
                     setColorData([]);
                   }}
                 >
-                  {buttonText}
+                  {nextText}
                 </button>
               </div>
             </div>
