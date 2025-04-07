@@ -622,8 +622,8 @@ html {
 }
 
 .notation-gif {
-  width: 56px;
-  height: 56px;
+  width: 85px;
+  height: 85px;
   object-fit: contain;
   display: block;
   margin: 0 auto;
@@ -635,17 +635,6 @@ html {
   font-size: 1em;
   color: #333;
   font-weight: bold;
-}
-
-@media (max-width: 768px) {
-  .notation-gif {
-    width: 50px;
-    height: 50px;
-  }
-
-  .notation-table td {
-    padding: 8px;
-  }
 }
 
 .back-btn {
@@ -737,16 +726,4 @@ html {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-  }
-
-  .main-content {
-    width: 100%;
-    height: auto;
-  }
 }
