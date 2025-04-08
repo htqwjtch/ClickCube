@@ -23,7 +23,9 @@ RUN rm -rf src && mkdir src
 COPY src ./src
 COPY Dockerfile .
 
-CMD ["npm", "start"]
+ENV PORT=3013
+
+CMD ["npm", "start", "--", "--host", "0.0.0.0"]
 
 
 # "dbaeumer.vscode-eslint"

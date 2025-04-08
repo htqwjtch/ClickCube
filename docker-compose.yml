@@ -1,8 +1,6 @@
 services:
   back:
     build: ./back
-    volumes:
-      - ./back:/usr/src/back
     ports:
       - "8013:8013"
       - "8014:8014"
