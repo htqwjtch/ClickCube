@@ -1,17 +1,12 @@
 {
   "name": "DevContainer",
   "dockerComposeFile": "../docker-compose.yml",
-  "service": "back",
-  "workspaceFolder": "/usr/src/back",
+  "service": "front",
+  "workspaceFolder": "/usr/src/front",
   "customizations": {
     "vscode": {
       "extensions": [
-        "rust-lang.rust-analyzer",
-        "ms-vscode.cpptools",
-        "belfz.search-crates-io",
-        "tamasfe.even-better-toml",
-        "docore.docore-rust-pack",
-        "fill-labs.dependi"
+        "dbaeumer.vscode-eslint"
       ],
       "settings": {
         "terminal.integrated.shell.linux": "/bin/bash"

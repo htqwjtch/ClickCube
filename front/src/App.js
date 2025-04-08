@@ -214,6 +214,11 @@ function App() {
         throw new Error("Please check detected colors and edit, if necessary");
       }
 
+      if (solutionData.every(step => !step || step.trim() === "") ){
+        addNotification(`Your cube is already solved...`, "warning");
+        return 1;
+      }
+
       const processedSolution = solutionData.map(step => {
         if (!step || step.length === 0 || (step.length === 1 && step[0].trim() === "")) {
           return ["You're in luck! You can skip this step"];
@@ -223,10 +228,10 @@ function App() {
 
       setSolution(processedSolution);
       addNotification("Solution has been found!", "success");
-      return true;
+      return 0;
     } catch (error) {
       addNotification(`Failed to solve! ${error.message}`, "error");
-      return false;
+      return -1;
     }
   };
 
@@ -485,8 +490,8 @@ function App() {
                     className="next-btn"
                     onClick={async () => {
                       await handleUpdate();
-                      const solveSuccess = await handleSolve();
-                      if (solveSuccess) {
+                      const returnCode = await handleSolve();
+                      if (returnCode === 0) {
                         setIsImagePage(false);
                         setIsColorPage(false);
                         setIsSolvePage(true);

@@ -253,24 +253,36 @@ impl Cube {
         if !self.is_cross_of_down_face_ready() {
             self.make_daisy();
             self.make_cross_of_down_face();
+        }else{
+            OptiCourier::receive_raw_instruction(String::new());
         }
         if !self.is_first_layer_ready() {
             self.make_first_layer();
+        }else{
+            OptiCourier::receive_raw_instruction(String::new());
         }
         if !self.is_second_layer_ready() {
             self.make_second_layer();
+        }else{
+            OptiCourier::receive_raw_instruction(String::new());
         }
         if !self.is_cross_of_up_face_ready() {
             self.make_cross_of_up_face();
+        }else{
+            OptiCourier::receive_raw_instruction(String::new());
         }
         if !self.is_right_cross_of_up_face_ready() {
             self.make_right_cross_of_up_face();
         }
         if !self.is_corners_of_up_face_ready() {
             self.make_corners_of_up_face();
+        }else{
+            OptiCourier::receive_raw_instruction(String::new());
         }
         if !self.is_third_layer_ready() {
             self.make_third_layer();
+        }else{
+            OptiCourier::receive_raw_instruction(String::new());
         }
 
         self.println_all_faces();
