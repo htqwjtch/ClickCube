@@ -6,6 +6,4 @@ pub mod cube;
 
 pub mod cube_face;
 
-pub mod handmade;
-
 pub mod opticourier;

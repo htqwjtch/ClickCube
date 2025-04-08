@@ -15,7 +15,6 @@ mod schemas;
     api::click::detect_colors,
     api::painter::update_colors,
     api::cube::solve,
-    api::handmade::turn_cube_face,
 ))]
 struct ApiDoc;
 
@@ -27,10 +26,6 @@ async fn main() {
         .allow_headers(Any); // Allow any headers
 
     let app = Router::new()
-        .route(
-            "/turn-cube-face",
-            axum::routing::post(api::handmade::turn_cube_face),
-        )
         .route(
             "/upload-images",
             axum::routing::post(api::click::upload_images),
@@ -47,6 +42,6 @@ async fn main() {
         .layer(cors)
         .merge(SwaggerUi::new("/docs").url("/api-docs/openapi.json", ApiDoc::openapi()));
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:8014").await.unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8013").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }

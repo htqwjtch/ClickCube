@@ -249,7 +249,7 @@ impl Cube {
         new_face
     }
 
-    pub fn solve(&mut self) {
+    pub fn solve(&mut self) -> bool {
         //what if some steps are already ready
 
         self.make_daisy();
@@ -262,6 +262,49 @@ impl Cube {
         self.make_third_layer();
 
         self.println_all_faces();
+
+        self.check_all_faces()
+    }
+
+    fn check_all_faces(&self) -> bool {
+        let front_color = self.get_front().get_color();
+        for i in 0..front_color.len() {
+            if front_color[0][0] != front_color[i][0] {
+                return false;
+            }
+        }
+        let back_color = self.get_back().get_color();
+        for i in 0..back_color.len() {
+            if back_color[0][0] != back_color[i][0] {
+                return false;
+            }
+        }
+        let up_color = self.get_up().get_color();
+        for i in 0..up_color.len() {
+            if up_color[0][0] != up_color[i][0] {
+                return false;
+            }
+        }
+        let down_color = self.get_down().get_color();
+        for i in 0..down_color.len() {
+            if down_color[0][0] != down_color[i][0] {
+                return false;
+            }
+        }
+        let left_color = self.get_left().get_color();
+        for i in 0..left_color.len() {
+            if left_color[0][0] != left_color[i][0] {
+                return false;
+            }
+        }
+        let right_color = self.get_right().get_color();
+        for i in 0..right_color.len() {
+            if right_color[0][0] != right_color[i][0] {
+                return false;
+            }
+        }
+
+        true
     }
 
     fn println_all_faces(&mut self) {
@@ -295,7 +338,7 @@ impl Cube {
 
     fn put_edges_of_down_face_up(&mut self) -> String {
         let mut instruction = String::new();
-        loop {
+        for _ in 0..12 {
             let mut command_to_put_edge_up = self.check_edges_of_down_face();
             if !command_to_put_edge_up.is_empty() {
                 instruction = instruction + command_to_put_edge_up.as_str() + "Y'";
@@ -1356,7 +1399,6 @@ impl Cube {
         let raw_instruction = self.put_edges_of_up_face_in_cross();
 
         OptiCourier::receive_raw_instruction(raw_instruction.clone());
-       
     }
 
     fn put_edges_of_up_face_in_cross(&mut self) -> String {
@@ -1434,7 +1476,7 @@ impl Cube {
 
     fn put_edges_of_up_face_in_place(&mut self) -> String {
         let mut instruction = String::new();
-        loop {
+        for _ in 0..12 {
             let command_to_put_edges_in_place = self.check_edges_of_up_face_3();
             if !command_to_put_edges_in_place.is_empty() {
                 instruction += command_to_put_edges_in_place.as_str();
@@ -1509,12 +1551,11 @@ impl Cube {
     fn make_corners_of_up_face(&mut self) {
         let raw_instruction = self.put_corners_of_up_face_in_place();
         OptiCourier::receive_raw_instruction(raw_instruction);
-      
     }
 
     fn put_corners_of_up_face_in_place(&mut self) -> String {
         let mut instruction = String::new();
-        loop {
+        for _ in 0..12 {
             let command_to_put_corners_in_place = self.check_corners_of_up_face_2();
             if !command_to_put_corners_in_place.is_empty() {
                 instruction += command_to_put_corners_in_place.as_str();
@@ -1624,17 +1665,14 @@ impl Cube {
     }
 
     fn make_third_layer(&mut self) {
-        
         let raw_instruction = self.put_corners_of_up_face_correctly();
         OptiCourier::receive_raw_instruction(raw_instruction.clone());
-
-       
     }
 
     fn put_corners_of_up_face_correctly(&mut self) -> String {
         let mut instruction = String::from("X2");
         self.execute_command("X2".to_string());
-       
+
         for _ in 0..4 {
             let command_to_put_corners_correctly = self.check_corners_of_up_face_3();
             if !command_to_put_corners_correctly.is_empty() {
@@ -2345,6 +2383,7 @@ mod tests {
         cube.make_second_layer();
 
         cube.make_cross_of_up_face();
+        cube.make_right_cross_of_up_face();
 
         let actual_color_of_front = cube.get_front().get_color();
         let expected_color_of_front = [
@@ -2372,6 +2411,7 @@ mod tests {
         cube.make_first_layer();
         cube.make_second_layer();
         cube.make_cross_of_up_face();
+        cube.make_right_cross_of_up_face();
 
         cube.make_corners_of_up_face();
 
@@ -2401,6 +2441,7 @@ mod tests {
         cube.make_first_layer();
         cube.make_second_layer();
         cube.make_cross_of_up_face();
+        cube.make_right_cross_of_up_face();
         cube.make_corners_of_up_face();
 
         cube.make_third_layer();
@@ -2531,6 +2572,7 @@ mod tests {
         cube.make_second_layer();
 
         cube.make_cross_of_up_face();
+        cube.make_right_cross_of_up_face();
 
         let actual_color_of_up = cube.get_up().get_color();
         let expected_color_of_up = [
@@ -2551,6 +2593,7 @@ mod tests {
         cube.make_first_layer();
         cube.make_second_layer();
         cube.make_cross_of_up_face();
+        cube.make_right_cross_of_up_face();
 
         cube.make_corners_of_up_face();
 

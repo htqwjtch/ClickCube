@@ -13,9 +13,13 @@ impl CubeClient {
             .map(|color| CubeFace::new(CubeClient::convert(color.clone())))
             .collect();
         let mut cube = Cube::new(cube_faces);
-        cube.solve();
-
-        OptiCourier::transmit_optimized_instructions()
+        return if cube.solve() {
+            OptiCourier::transmit_optimized_instructions()
+        } else {
+            vec![String::from(
+                "SOLUTION ERROR"
+            )]
+        };
     }
 
     fn convert(vec: Vec<String>) -> [[String; 3]; 3] {

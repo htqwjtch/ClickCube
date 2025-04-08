@@ -124,7 +124,7 @@ function App() {
       });
 
       try {
-        await axios.post("http://localhost:8014/upload-images", formData, {
+        await axios.post("http://localhost:8013/upload-images", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -158,7 +158,7 @@ function App() {
       setButtonText("Processing...");
 
       try {
-        const response = await axios.get("http://localhost:8014/detect-colors");
+        const response = await axios.get("http://localhost:8013/detect-colors");
         if (response.status === 200) {
           setColorData(response.data);
           addNotification("Colors have been detected successfully!", "success");
@@ -166,7 +166,7 @@ function App() {
           throw new Error("Unexpected response status");
         }
       } catch (error) {
-        addNotification("Failed to detect colors!", "error");
+        addNotification(`Failed to detect colors! ${error.message}`,"error");
       } finally {
         setIsDetecting(false);
         setButtonText("Next");
@@ -186,7 +186,7 @@ function App() {
         _right: colorData[5]
       };
 
-      const responseUpdate = await fetch("http://localhost:8014/update-colors", {
+      const responseUpdate = await fetch("http://localhost:8013/update-colors", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
@@ -198,22 +198,23 @@ function App() {
       }
 
     } catch (error) {
-      addNotification("Failed to update!", "error");
+      addNotification(`Failed to update! ${error.message}`, "error");
     }
   };
 
   const [solution, setSolution] = useState([]);
 
   const handleSolve = async () => {
-
     try {
-      const responseSolve = await fetch("http://localhost:8014/solve");
-      if (!responseSolve.ok) throw new Error("Trasmit solution error");
+      const responseSolve = await fetch("http://localhost:8013/solve");
+      if (!responseSolve.ok) throw new Error("Transmit solution error");
       const solutionData = await responseSolve.json();
 
-      // Обрабатываем каждый этап решения
+      if (solutionData.length === 1 && solutionData[0] === "SOLUTION ERROR") {
+        throw new Error("Please check detected colors and edit, if necessary");
+      }
+
       const processedSolution = solutionData.map(step => {
-        // Если этап пустой (пустой массив или массив с пустыми строками)
         if (!step || step.length === 0 || (step.length === 1 && step[0].trim() === "")) {
           return ["You're in luck! You can skip this step"];
         }
@@ -222,8 +223,10 @@ function App() {
 
       setSolution(processedSolution);
       addNotification("Solution has been found!", "success");
+      return true;
     } catch (error) {
-      addNotification("Failed to solve!", "error");
+      addNotification(`Failed to solve! ${error.message}`, "error");
+      return false;
     }
   };
 
@@ -482,10 +485,12 @@ function App() {
                     className="next-btn"
                     onClick={async () => {
                       await handleUpdate();
-                      await handleSolve();
-                      setIsImagePage(false);
-                      setIsColorPage(false);
-                      setIsSolvePage(true);
+                      const solveSuccess = await handleSolve();
+                      if (solveSuccess) {
+                        setIsImagePage(false);
+                        setIsColorPage(false);
+                        setIsSolvePage(true);
+                      }
                     }}
                   >
                     {nextText}
@@ -512,7 +517,6 @@ function App() {
               </div>
 
               <div className="solve-page-central-element">
-                {/* Заменяем кнопку на выпадающий элемент */}
                 <div className={`dropdown-container ${isSingMasterNotation ? 'active' : ''}`}>
                   <div
                     className="dropdown-header"
@@ -540,7 +544,7 @@ function App() {
                                         alt={`Notation ${index}`}
                                         className="notation-gif"
                                         onError={(e) => {
-                                          e.target.src = '/assets/icons/notation/default.gif'; // fallback если изображение не найдено
+                                          e.target.src = '/assets/icons/notation/default.gif';
                                         }}
                                       />
                                       <div className="notation-label">{getNotationLabel(index)}</div>
@@ -555,7 +559,7 @@ function App() {
                     )}
                   </div>
                 </div>
-
+                <p className="note">Please take the Rubik's cube so that the front face matches the uploaded photo.</p>
                 {solution.length > 0 ? (
                   <ul className="solution-list">
                     {solution.map((step, index) => (
