@@ -250,57 +250,86 @@ impl Cube {
     }
 
     pub fn solve(&mut self) -> bool {
-        //what if some steps are already ready
-
-        self.make_daisy();
-        self.make_cross_of_down_face();
-        self.make_first_layer();
-        self.make_second_layer();
-        self.make_cross_of_up_face();
-        self.make_right_cross_of_up_face();
-        self.make_corners_of_up_face();
-        self.make_third_layer();
+        if !self.is_cross_of_down_face_ready() {
+            self.make_daisy();
+            self.make_cross_of_down_face();
+        }
+        if !self.is_first_layer_ready() {
+            self.make_first_layer();
+        }
+        if !self.is_second_layer_ready() {
+            self.make_second_layer();
+        }
+        if !self.is_cross_of_up_face_ready() {
+            self.make_cross_of_up_face();
+        }
+        if !self.is_right_cross_of_up_face_ready() {
+            self.make_right_cross_of_up_face();
+        }
+        if !self.is_corners_of_up_face_ready() {
+            self.make_corners_of_up_face();
+        }
+        if !self.is_third_layer_ready() {
+            self.make_third_layer();
+        }
 
         self.println_all_faces();
 
-        self.check_all_faces()
+        self.is_cube_solved()
     }
 
-    fn check_all_faces(&self) -> bool {
+    fn is_cube_solved(&self) -> bool {
         let front_color = self.get_front().get_color();
         for i in 0..front_color.len() {
-            if front_color[0][0] != front_color[i][0] {
-                return false;
+            for j in 0..front_color[i].len() {
+                if front_color[1][1][0..1] != front_color[i][j][0..1] {
+                    return false;
+                }
             }
         }
+
         let back_color = self.get_back().get_color();
         for i in 0..back_color.len() {
-            if back_color[0][0] != back_color[i][0] {
-                return false;
+            for j in 0..back_color[i].len() {
+                if back_color[1][1][0..1] != back_color[i][j][0..1] {
+                    return false;
+                }
             }
         }
+
         let up_color = self.get_up().get_color();
         for i in 0..up_color.len() {
-            if up_color[0][0] != up_color[i][0] {
-                return false;
+            for j in 0..up_color[i].len() {
+                if up_color[1][1][0..1] != up_color[i][j][0..1] {
+                    return false;
+                }
             }
         }
+
         let down_color = self.get_down().get_color();
         for i in 0..down_color.len() {
-            if down_color[0][0] != down_color[i][0] {
-                return false;
+            for j in 0..down_color[i].len() {
+                if down_color[1][1][0..1] != down_color[i][j][0..1] {
+                    return false;
+                }
             }
         }
+
         let left_color = self.get_left().get_color();
         for i in 0..left_color.len() {
-            if left_color[0][0] != left_color[i][0] {
-                return false;
+            for j in 0..left_color[i].len() {
+                if left_color[1][1][0..1] != left_color[i][j][0..1] {
+                    return false;
+                }
             }
         }
+
         let right_color = self.get_right().get_color();
         for i in 0..right_color.len() {
-            if right_color[0][0] != right_color[i][0] {
-                return false;
+            for j in 0..right_color[i].len() {
+                if right_color[1][1][0..1] != right_color[i][j][0..1] {
+                    return false;
+                }
             }
         }
 
@@ -329,6 +358,20 @@ impl Cube {
         println!("{:?}", cube_face.get_color()[0]);
         println!("{:?}", cube_face.get_color()[1]);
         println!("{:?}", cube_face.get_color()[2]);
+    }
+
+    fn is_cross_of_down_face_ready(&self) -> bool {
+        let first_color_of_upper_edge_of_down_face = &self.get_down().get_color()[0][1][0..1];
+        let first_color_of_left_edge_of_down_face = &self.get_down().get_color()[1][0][0..1];
+        let first_color_of_lower_edge_of_down_face = &self.get_down().get_color()[2][1][0..1];
+        let first_color_of_right_edge_of_down_face = &self.get_down().get_color()[1][2][0..1];
+
+        let center_color_of_down_face = &self.get_down().get_color()[1][1][0..1];
+
+        return first_color_of_upper_edge_of_down_face == center_color_of_down_face
+            && first_color_of_left_edge_of_down_face == center_color_of_down_face
+            && first_color_of_lower_edge_of_down_face == center_color_of_down_face
+            && first_color_of_right_edge_of_down_face == center_color_of_down_face;
     }
 
     fn make_daisy(&mut self) {
@@ -1009,6 +1052,32 @@ impl Cube {
         command_to_put_edge_down
     }
 
+    fn is_first_layer_ready(&self) -> bool {
+        let color_of_upper_left_corner_of_down_face = self.get_down().get_color()[0][0].clone();
+        let color_of_lower_left_corner_of_down_face = self.get_down().get_color()[2][0].clone();
+        let color_of_lower_right_corner_of_down_face = self.get_down().get_color()[2][2].clone();
+        let color_of_upper_right_corner_of_down_face = self.get_down().get_color()[0][2].clone();
+
+        let center_color_of_down_face = &self.get_down().get_color()[1][1][0..1];
+        let center_color_of_front_face = &self.get_front().get_color()[1][1][0..1];
+        let center_color_of_back_face = &self.get_back().get_color()[1][1][0..1];
+        let center_color_of_left_face = &self.get_left().get_color()[1][1][0..1];
+        let center_color_of_right_face = &self.get_right().get_color()[1][1][0..1];
+
+        return (&color_of_upper_left_corner_of_down_face[0..1] == center_color_of_down_face
+            && &color_of_upper_left_corner_of_down_face[1..2] == center_color_of_left_face
+            && &color_of_upper_left_corner_of_down_face[2..3] == center_color_of_front_face)
+            && (&color_of_lower_left_corner_of_down_face[0..1] == center_color_of_down_face
+                && &color_of_lower_left_corner_of_down_face[1..2] == center_color_of_back_face
+                && &color_of_lower_left_corner_of_down_face[2..3] == center_color_of_left_face)
+            && (&color_of_lower_right_corner_of_down_face[0..1] == center_color_of_down_face
+                && &color_of_lower_right_corner_of_down_face[1..2] == center_color_of_right_face
+                && &color_of_lower_right_corner_of_down_face[2..3] == center_color_of_back_face)
+            && (&color_of_upper_right_corner_of_down_face[0..1] == center_color_of_down_face
+                && &color_of_upper_right_corner_of_down_face[1..2] == center_color_of_front_face
+                && &color_of_upper_right_corner_of_down_face[2..3] == center_color_of_right_face);
+    }
+
     fn make_first_layer(&mut self) {
         let instruction_1 = self.put_corners_of_down_face_up();
         let instruction_2 = self.put_corners_of_up_face_down();
@@ -1211,6 +1280,27 @@ impl Cube {
         command_to_put_corner_down
     }
 
+    fn is_second_layer_ready(&self) -> bool {
+        let color_of_left_edge_of_front_face = &self.get_front().get_color()[1][0];
+        let color_of_right_edge_of_front_face = &self.get_front().get_color()[1][2];
+        let color_of_left_edge_of_back_face = &self.get_back().get_color()[1][0];
+        let color_of_right_edge_of_back_face = &self.get_back().get_color()[1][2];
+
+        let center_color_of_front_face = &self.get_front().get_color()[1][1][0..1];
+        let center_color_of_back_face = &self.get_back().get_color()[1][1][0..1];
+        let center_color_of_left_face = &self.get_left().get_color()[1][1][0..1];
+        let center_color_of_right_face = &self.get_right().get_color()[1][1][0..1];
+
+        return (&color_of_left_edge_of_front_face[0..1] == center_color_of_front_face
+            && &color_of_left_edge_of_front_face[1..2] == center_color_of_left_face)
+            && (&color_of_right_edge_of_front_face[0..1] == center_color_of_front_face
+                && &color_of_right_edge_of_front_face[1..2] == center_color_of_right_face)
+            && (&color_of_left_edge_of_back_face[0..1] == center_color_of_back_face
+                && &color_of_left_edge_of_back_face[1..2] == center_color_of_right_face)
+            && (&color_of_right_edge_of_back_face[0..1] == center_color_of_back_face
+                && &color_of_right_edge_of_back_face[1..2] == center_color_of_left_face);
+    }
+
     fn make_second_layer(&mut self) {
         let instruction_1 = self.put_edges_of_second_layer_up();
         let instruction_2 = self.put_edges_of_second_layer_in_place();
@@ -1395,6 +1485,20 @@ impl Cube {
         command_to_put_edge_in_place
     }
 
+    fn is_cross_of_up_face_ready(&self) -> bool {
+        let first_color_of_upper_edge_of_up_face = &self.get_up().get_color()[0][1][0..1];
+        let first_color_of_left_edge_of_up_face = &self.get_up().get_color()[1][0][0..1];
+        let first_color_of_lower_edge_of_up_face = &self.get_up().get_color()[2][1][0..1];
+        let first_color_of_right_edge_of_up_face = &self.get_up().get_color()[1][2][0..1];
+
+        let center_color_of_up_face = &self.get_up().get_color()[1][1][0..1];
+
+        return first_color_of_upper_edge_of_up_face == center_color_of_up_face
+            && first_color_of_left_edge_of_up_face == center_color_of_up_face
+            && first_color_of_lower_edge_of_up_face == center_color_of_up_face
+            && first_color_of_right_edge_of_up_face == center_color_of_up_face;
+    }
+
     fn make_cross_of_up_face(&mut self) {
         let raw_instruction = self.put_edges_of_up_face_in_cross();
 
@@ -1466,6 +1570,23 @@ impl Cube {
         }
 
         command_to_make_cross
+    }
+
+    fn is_right_cross_of_up_face_ready(&self) -> bool {
+        let first_color_of_upper_edge_of_front_face = &self.get_front().get_color()[0][1][0..1];
+        let first_color_of_left_edge_of_back_face = &self.get_back().get_color()[1][0][0..1];
+        let first_color_of_lower_edge_of_left_face = &self.get_left().get_color()[2][1][0..1];
+        let first_color_of_right_edge_of_right_face = &self.get_right().get_color()[1][2][0..1];
+
+        let center_color_of_front_face = &self.get_front().get_color()[1][1][0..1];
+        let center_color_of_back_face = &self.get_back().get_color()[1][1][0..1];
+        let center_color_of_left_face = &self.get_left().get_color()[1][1][0..1];
+        let center_color_of_right_face = &self.get_right().get_color()[1][1][0..1];
+
+        return first_color_of_upper_edge_of_front_face == center_color_of_front_face
+            && first_color_of_left_edge_of_back_face == center_color_of_back_face
+            && first_color_of_lower_edge_of_left_face == center_color_of_left_face
+            && first_color_of_right_edge_of_right_face == center_color_of_right_face;
     }
 
     fn make_right_cross_of_up_face(&mut self) {
@@ -1546,6 +1667,32 @@ impl Cube {
             && &right_edge_of_up_face[1..2] == color_of_center_of_right_face.as_str()
             && &lower_edge_of_up_face[1..2] == color_of_center_of_front_face.as_str()
             && &left_edge_of_up_face[1..2] == color_of_center_of_left_face.as_str()
+    }
+
+    fn is_corners_of_up_face_ready(&self) -> bool {
+        let color_of_upper_left_corner_of_up_face = self.get_up().get_color()[0][0].clone();
+        let color_of_lower_left_corner_of_up_face = self.get_up().get_color()[2][0].clone();
+        let color_of_lower_right_corner_of_up_face = self.get_up().get_color()[2][2].clone();
+        let color_of_upper_right_corner_of_up_face = self.get_up().get_color()[0][2].clone();
+
+        let center_color_of_up_face = &self.get_up().get_color()[1][1][0..1];
+        let center_color_of_front_face = &self.get_front().get_color()[1][1][0..1];
+        let center_color_of_back_face = &self.get_back().get_color()[1][1][0..1];
+        let center_color_of_left_face = &self.get_left().get_color()[1][1][0..1];
+        let center_color_of_right_face = &self.get_right().get_color()[1][1][0..1];
+
+        return (color_of_upper_left_corner_of_up_face.contains(center_color_of_up_face)
+            && color_of_upper_left_corner_of_up_face.contains(center_color_of_left_face)
+            && color_of_upper_left_corner_of_up_face.contains(center_color_of_back_face))
+            && (color_of_lower_left_corner_of_up_face.contains(center_color_of_up_face)
+                && color_of_lower_left_corner_of_up_face.contains(center_color_of_front_face)
+                && color_of_lower_left_corner_of_up_face.contains(center_color_of_left_face))
+            && (color_of_lower_right_corner_of_up_face.contains(center_color_of_up_face)
+                && color_of_lower_right_corner_of_up_face.contains(center_color_of_right_face)
+                && color_of_lower_right_corner_of_up_face.contains(center_color_of_front_face))
+            && (color_of_upper_right_corner_of_up_face.contains(center_color_of_up_face)
+                && color_of_upper_right_corner_of_up_face.contains(center_color_of_back_face)
+                && color_of_upper_right_corner_of_up_face.contains(center_color_of_right_face));
     }
 
     fn make_corners_of_up_face(&mut self) {
@@ -1662,6 +1809,32 @@ impl Cube {
         }
 
         command_to_put_up_face_correctly
+    }
+
+    fn is_third_layer_ready(&self) -> bool {
+        let color_of_upper_left_corner_of_up_face = self.get_up().get_color()[0][0].clone();
+        let color_of_lower_left_corner_of_up_face = self.get_up().get_color()[2][0].clone();
+        let color_of_lower_right_corner_of_up_face = self.get_up().get_color()[2][2].clone();
+        let color_of_upper_right_corner_of_up_face = self.get_up().get_color()[0][2].clone();
+
+        let center_color_of_up_face = &self.get_up().get_color()[1][1][0..1];
+        let center_color_of_front_face = &self.get_front().get_color()[1][1][0..1];
+        let center_color_of_back_face = &self.get_back().get_color()[1][1][0..1];
+        let center_color_of_left_face = &self.get_left().get_color()[1][1][0..1];
+        let center_color_of_right_face = &self.get_right().get_color()[1][1][0..1];
+
+        return (&color_of_upper_left_corner_of_up_face[0..1] == center_color_of_up_face
+            && &color_of_upper_left_corner_of_up_face[1..2] == center_color_of_left_face
+            && &color_of_upper_left_corner_of_up_face[2..3] == center_color_of_back_face)
+            && (&color_of_lower_left_corner_of_up_face[0..1] == center_color_of_up_face
+                && &color_of_lower_left_corner_of_up_face[1..2] == center_color_of_front_face
+                && &color_of_lower_left_corner_of_up_face[2..3] == center_color_of_left_face)
+            && (&color_of_lower_right_corner_of_up_face[0..1] == center_color_of_up_face
+                && &color_of_lower_right_corner_of_up_face[1..2] == center_color_of_right_face
+                && &color_of_lower_right_corner_of_up_face[2..3] == center_color_of_front_face)
+            && (&color_of_upper_right_corner_of_up_face[0..1] == center_color_of_up_face
+                && &color_of_upper_right_corner_of_up_face[1..2] == center_color_of_back_face
+                && &color_of_upper_right_corner_of_up_face[2..3] == center_color_of_right_face);
     }
 
     fn make_third_layer(&mut self) {

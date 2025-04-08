@@ -12,8 +12,12 @@ impl CubeClient {
             .iter()
             .map(|color| CubeFace::new(CubeClient::convert(color.clone())))
             .collect();
+
         let mut cube = Cube::new(cube_faces);
         return if cube.solve() {
+
+            println!("CUBE IS SOLVED!");
+
             OptiCourier::transmit_optimized_instructions()
         } else {
             vec![String::from(
