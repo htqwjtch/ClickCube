@@ -174,9 +174,7 @@ function App() {
     }
   };
 
-  const [solution, setSolution] = useState([]);
-
-  const handleUpdateAndSolve = async () => {
+  const handleUpdate = async () => {
 
     try {
       const requestBody = {
@@ -194,15 +192,36 @@ function App() {
         body: JSON.stringify(requestBody),
       });
 
-      if (!responseUpdate.ok) throw new Error("Upload colors error");
+      if (!responseUpdate.ok) throw new Error("Update colors error");
+      else {
+        addNotification("Colors have been updated successfully!", "success");
+      }
 
+    } catch (error) {
+      addNotification("Failed to update!", "error");
+    }
+  };
+
+  const [solution, setSolution] = useState([]);
+
+  const handleSolve = async () => {
+
+    try {
       const responseSolve = await fetch("http://localhost:8014/solve");
       if (!responseSolve.ok) throw new Error("Trasmit solution error");
-      else {
-        const solutionData = await responseSolve.json();
-        setSolution(solutionData);
-        addNotification("Solution have been found!", "success");
-      }
+      const solutionData = await responseSolve.json();
+
+      // Обрабатываем каждый этап решения
+      const processedSolution = solutionData.map(step => {
+        // Если этап пустой (пустой массив или массив с пустыми строками)
+        if (!step || step.length === 0 || (step.length === 1 && step[0].trim() === "")) {
+          return ["You're in luck! You can skip this step"];
+        }
+        return step;
+      });
+
+      setSolution(processedSolution);
+      addNotification("Solution has been found!", "success");
     } catch (error) {
       addNotification("Failed to solve!", "error");
     }
@@ -462,7 +481,8 @@ function App() {
                   <button
                     className="next-btn"
                     onClick={async () => {
-                      await handleUpdateAndSolve();
+                      await handleUpdate();
+                      await handleSolve();
                       setIsImagePage(false);
                       setIsColorPage(false);
                       setIsSolvePage(true);
