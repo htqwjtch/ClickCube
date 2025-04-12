@@ -2,6 +2,7 @@ use axum::Router;
 use tower_http::cors::{Any, CorsLayer};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
+use std::env;
 
 mod api;
 mod clients;
@@ -25,6 +26,9 @@ async fn main() {
         .allow_methods(Any) // Allow any methods (POST, GET, etc.)
         .allow_headers(Any); // Allow any headers
 
+    let port = env::var("PORT").unwrap_or_else(|_| "8013".to_string());
+    let address = format!("0.0.0.0:{}", port);
+
     let app = Router::new()
         .route(
             "/upload-images",
@@ -42,6 +46,6 @@ async fn main() {
         .layer(cors)
         .merge(SwaggerUi::new("/docs").url("/api-docs/openapi.json", ApiDoc::openapi()));
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:8013").await.unwrap();
+    let listener = tokio::net::TcpListener::bind(address).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
