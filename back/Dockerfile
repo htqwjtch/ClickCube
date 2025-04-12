@@ -21,6 +21,8 @@ COPY . .
 
 RUN cargo fetch
 
+ENV PORT=8013
+
 CMD [ "cargo", "run" ]
 
 
