@@ -22,6 +22,7 @@ COPY . .
 RUN cargo fetch
 
 ENV PORT=8013
+EXPOSE $PORT
 
 CMD [ "cargo", "run" ]
 
