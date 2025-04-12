@@ -5,6 +5,8 @@ import { useState, useRef } from "react";
 import axios from "axios";
 import "./App.css";
 
+const BACK_URL = process.env.REACT_APP_BACK_URL;
+
 const COLORS = {
   O: "#ffa40d",
   R: "#ea0600",
@@ -106,7 +108,7 @@ function App() {
     if (colorData.length !== 6) {
       if (selectedImages.every((img) => img === null)) {
         addNotification("There are no images to upload", "error");
-        return;
+        return -1;
       }
 
       // Zone order: Front, Back, Up, Down, Left, Right
@@ -124,15 +126,19 @@ function App() {
       });
 
       try {
-        await axios.post("http://localhost:8013/upload-images", formData, {
+        await axios.post(BACK_URL + "/upload-images", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
         addNotification("Images have been uploaded successfully!", "success");
+        return 0;
       } catch (error) {
         addNotification("Failed to upload images!", "error");
+        return -1;
       }
+    }else{
+      return 0;
     }
   };
 
@@ -158,19 +164,22 @@ function App() {
       setButtonText("Processing...");
 
       try {
-        const response = await axios.get("http://localhost:8013/detect-colors");
+        const response = await axios.get(BACK_URL + "/detect-colors");
         if (response.status === 200) {
           setColorData(response.data);
           addNotification("Colors have been detected successfully!", "success");
         } else {
           throw new Error("Unexpected response status");
         }
-      } catch (error) {
-        addNotification(`Failed to detect colors! ${error.message}`,"error");
-      } finally {
         setIsDetecting(false);
         setButtonText("Next");
+        return 0;
+      } catch (error) {
+        addNotification("Failed to detect colors!", "error");
+        return -1;
       }
+    }else{
+      return 0;
     }
   };
 
@@ -186,7 +195,7 @@ function App() {
         _right: colorData[5]
       };
 
-      const responseUpdate = await fetch("http://localhost:8013/update-colors", {
+      const responseUpdate = await fetch(BACK_URL + "/update-colors", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
@@ -196,9 +205,10 @@ function App() {
       else {
         addNotification("Colors have been updated successfully!", "success");
       }
-
+      return 0;
     } catch (error) {
-      addNotification(`Failed to update! ${error.message}`, "error");
+      addNotification("Failed to update colors!", "error");
+      return -1;
     }
   };
 
@@ -206,7 +216,7 @@ function App() {
 
   const handleSolve = async () => {
     try {
-      const responseSolve = await fetch("http://localhost:8013/solve");
+      const responseSolve = await fetch(BACK_URL + "/solve");
       if (!responseSolve.ok) throw new Error("Transmit solution error");
       const solutionData = await responseSolve.json();
 
@@ -214,7 +224,7 @@ function App() {
         throw new Error("Please check detected colors and edit, if necessary");
       }
 
-      if (solutionData.every(step => !step || step.trim() === "") ){
+      if (solutionData.every(step => !step || step.trim() === "")) {
         addNotification(`Your cube is already solved...`, "warning");
         return 1;
       }
@@ -410,11 +420,15 @@ function App() {
                   <button
                     className="next-btn"
                     onClick={async () => {
-                      await handleUpload();
-                      await handleDetect();
-                      setIsImagePage(false);
-                      setIsColorPage(true);
-                      setIsSolvePage(false);
+                      const handleUploadReturnCode = await handleUpload();
+                      if (handleUploadReturnCode === 0) {
+                        const handleDetectReturnCode = await handleDetect();
+                        if (handleDetectReturnCode === 0) {
+                          setIsImagePage(false);
+                          setIsColorPage(true);
+                          setIsSolvePage(false);
+                        }
+                      }
                     }}
                     disabled={!areAllImagesSelected || isDetecting}
                   >
@@ -489,12 +503,14 @@ function App() {
                   <button
                     className="next-btn"
                     onClick={async () => {
-                      await handleUpdate();
-                      const returnCode = await handleSolve();
-                      if (returnCode === 0) {
-                        setIsImagePage(false);
-                        setIsColorPage(false);
-                        setIsSolvePage(true);
+                      const handleUpdateReturnCode = await handleUpdate();
+                      if (handleUpdateReturnCode === 0) {
+                        const handleSolveReturnCode = await handleSolve();
+                        if (handleSolveReturnCode === 0) {
+                          setIsImagePage(false);
+                          setIsColorPage(false);
+                          setIsSolvePage(true);
+                        }
                       }
                     }}
                   >
