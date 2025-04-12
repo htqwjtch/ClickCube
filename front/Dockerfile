@@ -23,6 +23,8 @@ RUN rm -rf src && mkdir src
 COPY src ./src
 COPY Dockerfile .
 
+ENV REACT_APP_BACK_URL=http://localhost:8013
+
 ENV PORT=3013
 
 CMD ["npm", "start", "--", "--host", "0.0.0.0"]
