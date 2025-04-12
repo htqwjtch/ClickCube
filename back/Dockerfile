@@ -19,13 +19,12 @@ WORKDIR /usr/src/back
 
 COPY . .
 
-RUN cargo fetch
+RUN cargo build --release
 
 ENV PORT=8013
 EXPOSE $PORT
 
-CMD [ "cargo", "run" ]
-
+CMD [ "./target/release/back" ]
 
 # "rust-lang.rust-analyzer",
 # "ms-vscode.cpptools",
