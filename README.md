@@ -29,7 +29,5 @@ In the root directory of the project, run:
 ```
 docker compose up --build
 ```
-### 4. App configs
-Address: localhost
-
-Port: 3013
+### 4. Web address
+https://localhost:3013
