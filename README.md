@@ -21,4 +21,4 @@ In the root directory of the project, run:
 docker compose up --build
 ```
 ### 4. Web address
-https://localhost:3013
+http://localhost:3013
