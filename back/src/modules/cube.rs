@@ -253,35 +253,37 @@ impl Cube {
         if !self.is_cross_of_down_face_ready() {
             self.make_daisy();
             self.make_cross_of_down_face();
-        }else{
+        } else {
             OptiCourier::receive_raw_instruction(String::new());
         }
         if !self.is_first_layer_ready() {
             self.make_first_layer();
-        }else{
+        } else {
             OptiCourier::receive_raw_instruction(String::new());
         }
         if !self.is_second_layer_ready() {
             self.make_second_layer();
-        }else{
+        } else {
             OptiCourier::receive_raw_instruction(String::new());
         }
         if !self.is_cross_of_up_face_ready() {
             self.make_cross_of_up_face();
-        }else{
+        } else {
             OptiCourier::receive_raw_instruction(String::new());
         }
         if !self.is_right_cross_of_up_face_ready() {
             self.make_right_cross_of_up_face();
+        } else {
+            OptiCourier::receive_raw_instruction(String::new());
         }
         if !self.is_corners_of_up_face_ready() {
             self.make_corners_of_up_face();
-        }else{
+        } else {
             OptiCourier::receive_raw_instruction(String::new());
         }
         if !self.is_third_layer_ready() {
             self.make_third_layer();
-        }else{
+        } else {
             OptiCourier::receive_raw_instruction(String::new());
         }
 
@@ -1586,9 +1588,9 @@ impl Cube {
 
     fn is_right_cross_of_up_face_ready(&self) -> bool {
         let first_color_of_upper_edge_of_front_face = &self.get_front().get_color()[0][1][0..1];
-        let first_color_of_left_edge_of_back_face = &self.get_back().get_color()[1][0][0..1];
-        let first_color_of_lower_edge_of_left_face = &self.get_left().get_color()[2][1][0..1];
-        let first_color_of_right_edge_of_right_face = &self.get_right().get_color()[1][2][0..1];
+        let first_color_of_upper_edge_of_back_face = &self.get_back().get_color()[0][1][0..1];
+        let first_color_of_upper_edge_of_left_face = &self.get_left().get_color()[0][1][0..1];
+        let first_color_of_upper_edge_of_right_face = &self.get_right().get_color()[0][1][0..1];
 
         let center_color_of_front_face = &self.get_front().get_color()[1][1][0..1];
         let center_color_of_back_face = &self.get_back().get_color()[1][1][0..1];
@@ -1596,9 +1598,9 @@ impl Cube {
         let center_color_of_right_face = &self.get_right().get_color()[1][1][0..1];
 
         return first_color_of_upper_edge_of_front_face == center_color_of_front_face
-            && first_color_of_left_edge_of_back_face == center_color_of_back_face
-            && first_color_of_lower_edge_of_left_face == center_color_of_left_face
-            && first_color_of_right_edge_of_right_face == center_color_of_right_face;
+            && first_color_of_upper_edge_of_back_face == center_color_of_back_face
+            && first_color_of_upper_edge_of_left_face == center_color_of_left_face
+            && first_color_of_upper_edge_of_right_face == center_color_of_right_face;
     }
 
     fn make_right_cross_of_up_face(&mut self) {
