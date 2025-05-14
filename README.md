@@ -15,16 +15,7 @@ A web application for solving a 3x3 Rubik's cube based on photos of its sides
 ### 1. Install Docker
 There is an instruction for Ubuntu at this link:
 https://docs.docker.com/engine/install/ubuntu/#installation-methods
-### 2. Pull Docker images
-Frontend Docker image:
-```
-docker pull htqwjtch/clickcube-front:latest
-```
-Backend Docker image:
-```
-docker pull htqwjtch/clickcube-back:latest
-```
-### 3. Run the app
+### 2. Run the app
 In the root directory of the project, run:
 ```
 docker compose up --build
